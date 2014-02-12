@@ -21,6 +21,7 @@ int fileno(FILE*);
 
 %%
 "/*"			{ comment(); }
+"#"(\\\n|[^\n])*"\n"	{ count(); printf("Preproc: %s", yytext); }
 
 "auto"			{ count(); return(AUTO); }
 "break"			{ count(); return(BREAK); }
@@ -179,12 +180,12 @@ int check_type(){
 
 int main(int argc, char ** argv){
 	int t;
-
+	
 	if(argc > 1) yyin = fopen(argv[1], "r");
 	while((t = yylex())) printf("%d:%d:%d @%s@\n", linenr, column, t, yytext);
-
+	
 	fclose(yyin);
-
+	
 	return 0;
 }
 

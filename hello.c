@@ -1,5 +1,9 @@
 #include <stdio.h>
 
+#define AMULTILINEMACRO (1 + \
+	2 * 3 - 4 \
+	)
+
 /* * ** *** **** ***** ****** */
 
 /* // /// //// */
