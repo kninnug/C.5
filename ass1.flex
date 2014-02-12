@@ -55,18 +55,18 @@ int fileno(FILE*);
 "volatile"		{ count(); return(VOLATILE); }
 "while"			{ count(); return(WHILE); }
 
-{L}({L}|{D})*		{ count(); return(check_type()); }
+{L}({L}|{D})*			{ count(); return(check_type()); }
 
-0[xX]{H}+{IS}?		{ count(); return(CONSTANT); }
-0{D}+{IS}?		{ count(); return(CONSTANT); }
-{D}+{IS}?		{ count(); return(CONSTANT); }
-L?'(\\.|[^\\'])+'	{ count(); return(CONSTANT); }
+0[xX]{H}+{IS}?			{ count(); return(CONSTANT); }
+0{D}+{IS}?				{ count(); return(CONSTANT); }
+{D}+{IS}?				{ count(); return(CONSTANT); }
+L?'(\\.|[^\\'])+'		{ count(); return(CONSTANT); }
 
-{D}+{E}{FS}?		{ count(); return(CONSTANT); }
+{D}+{E}{FS}?			{ count(); return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{ count(); return(CONSTANT); }
 {D}+"."{D}*({E})?{FS}?	{ count(); return(CONSTANT); }
 
-L?\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
+L?\"(\\.|[^\\"])*\"		{ count(); return(STRING_LITERAL); }
 
 "..."			{ count(); return(ELLIPSIS); }
 ">>="			{ count(); return(ASSIGN); }
@@ -90,33 +90,33 @@ L?\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 ">="			{ count(); return(COMPARE); }
 "=="			{ count(); return(COMPARE); }
 "!="			{ count(); return(COMPARE); }
-";"			{ count(); return(';'); }
+";"				{ count(); return(';'); }
 ("{"|"<%")		{ count(); return('{'); }
 ("}"|"%>")		{ count(); return('}'); }
-","			{ count(); return(','); }
-":"			{ count(); return(':'); }
-"="			{ count(); return('='); }
-"("			{ count(); return('('); }
-")"			{ count(); return(')'); }
+","				{ count(); return(','); }
+":"				{ count(); return(':'); }
+"="				{ count(); return('='); }
+"("				{ count(); return('('); }
+")"				{ count(); return(')'); }
 ("["|"<:")		{ count(); return('['); }
 ("]"|":>")		{ count(); return(']'); }
-"."			{ count(); return('.'); }
-"&"			{ count(); return('&'); }
-"!"			{ count(); return('!'); }
-"~"			{ count(); return('~'); }
-"-"			{ count(); return('-'); }
-"+"			{ count(); return('+'); }
-"*"			{ count(); return('*'); }
-"/"			{ count(); return('/'); }
-"%"			{ count(); return('%'); }
-"<"			{ count(); return('<'); }
-">"			{ count(); return('>'); }
-"^"			{ count(); return('^'); }
-"|"			{ count(); return('|'); }
-"?"			{ count(); return('?'); }
+"."				{ count(); return('.'); }
+"&"				{ count(); return('&'); }
+"!"				{ count(); return('!'); }
+"~"				{ count(); return('~'); }
+"-"				{ count(); return('-'); }
+"+"				{ count(); return('+'); }
+"*"				{ count(); return('*'); }
+"/"				{ count(); return('/'); }
+"%"				{ count(); return('%'); }
+"<"				{ count(); return('<'); }
+">"				{ count(); return('>'); }
+"^"				{ count(); return('^'); }
+"|"				{ count(); return('|'); }
+"?"				{ count(); return('?'); }
 "\n"			{ count(); linenr++; }
 [ \t\v\f]		{ count(); }
-.			{ /* ignore bad characters */ }
+.				{ /* ignore bad characters */ }
 
 %%
 
@@ -124,23 +124,25 @@ int yywrap(){
 	return(1);
 }
 
-
 void comment(){
 	char c, c1;
-
-loop:
-	while ((c = input()) != '*' && c != 0)
+	
+	printf("Comment: ");
+	
+	while((c = input()) != 0){
+		if(c == '*'){
+			c1 = input();
+			if(c1 == 0) return;
+			if(c1 == '/') break;
+			
+			unput(c1);
+		}
+		
 		putchar(c);
-
-	if ((c1 = input()) != '/' && c != 0){
-		unput(c1);
-		goto loop;
 	}
-
-	if (c != 0)
-		putchar(c1);
+	
+	putchar('\n');
 }
-
 
 int column = 0;
 
@@ -157,7 +159,6 @@ void count(){
 
 	/* ECHO; */
 }
-
 
 int check_type(){
 	/*
