@@ -10,9 +10,13 @@ IS			(u|U|l|L)*
 
 int linenr = 0;
 
-enum tokens {AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP};
+enum tokens {AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER};
 
 void count();
+void comment();
+int check_type();
+
+int fileno(FILE*);
 %}
 
 %%
@@ -116,22 +120,19 @@ L?\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 
 %%
 
-int yywrap()
-{
+int yywrap(){
 	return(1);
 }
 
 
-void comment()
-{
+void comment(){
 	char c, c1;
 
 loop:
 	while ((c = input()) != '*' && c != 0)
 		putchar(c);
 
-	if ((c1 = input()) != '/' && c != 0)
-	{
+	if ((c1 = input()) != '/' && c != 0){
 		unput(c1);
 		goto loop;
 	}
@@ -143,8 +144,7 @@ loop:
 
 int column = 0;
 
-void count()
-{
+void count(){
 	int i;
 
 	for (i = 0; yytext[i] != '\0'; i++)
@@ -159,33 +159,31 @@ void count()
 }
 
 
-int check_type()
-{
-/*
-* pseudo code --- this is what it should check
-*
-*	if (yytext == type_name)
-*		return(TYPE_NAME);
-*
-*	return(IDENTIFIER);
-*/
+int check_type(){
+	/*
+	* pseudo code --- this is what it should check
+	*
+	*	if (yytext == type_name)
+	*		return(TYPE_NAME);
+	*
+	*	return(IDENTIFIER);
+	*/
 
-/*
-*	it actually will only return IDENTIFIER
-*/
+	/*
+	*	it actually will only return IDENTIFIER
+	*/
 
 	return(IDENTIFIER);
 }
 
 int main(int argc, char** argv){
+	int t;
 
-int t;
+	if(argc > 1) yyin = fopen(argv[1],"r");
+	while((t = yylex())) printf("%d:%d:%d @%s@\n",linenr,column,t,yytext);
 
-if(argc > 1) yyin = fopen(argv[1],"r");
-while(t = yylex()) printf("%d:%d:%d @%s@\n",linenr,column,t,yytext);
+	fclose(yyin);
 
-fclose(yyin);
-
-return 0;
+	return 0;
 }
 

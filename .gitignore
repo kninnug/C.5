@@ -16,3 +16,6 @@
 *.exe
 *.out
 *.app
+
+# Flex output
+lex.yy.c
