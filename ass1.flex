@@ -114,7 +114,7 @@ L?\"(\\.|[^\\"])*\"	{ count(); return(STRING_LITERAL); }
 "^"			{ count(); return('^'); }
 "|"			{ count(); return('|'); }
 "?"			{ count(); return('?'); }
-"\n"			{ linenr++; }
+"\n"			{ count(); linenr++; }
 [ \t\v\f]		{ count(); }
 .			{ /* ignore bad characters */ }
 
@@ -155,7 +155,7 @@ void count(){
 		else
 			column++;
 
-	ECHO;
+	/* ECHO; */
 }
 
 
@@ -176,11 +176,11 @@ int check_type(){
 	return(IDENTIFIER);
 }
 
-int main(int argc, char** argv){
+int main(int argc, char ** argv){
 	int t;
 
-	if(argc > 1) yyin = fopen(argv[1],"r");
-	while((t = yylex())) printf("%d:%d:%d @%s@\n",linenr,column,t,yytext);
+	if(argc > 1) yyin = fopen(argv[1], "r");
+	while((t = yylex())) printf("%d:%d:%d @%s@\n", linenr, column, t, yytext);
 
 	fclose(yyin);
 
