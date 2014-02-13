@@ -7,130 +7,157 @@ IS			(u|U|l|L)*
 
 %{
 #include <stdio.h>
+#include <ctype.h>
 
-int linenr = 0;
+unsigned int linenr = 1, column = 1;
 
-enum tokens {AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER};
+enum tokens {
+	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
+	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
+	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
+	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
+	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
+	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
+};
 
 void count();
 void comment();
-int check_type();
 
 int fileno(FILE*);
 %}
 
 %%
 "/*"			{ comment(); }
-"#"(\\\n|[^\n])*"\n"	{ count(); printf("Preproc: %s", yytext); }
+ /* "#"(\\\n|[^\n])*"\n"	{ return PREPROC; } */
 
-"auto"			{ count(); return(AUTO); }
-"break"			{ count(); return(BREAK); }
-"case"			{ count(); return(CASE); }
-"char"			{ count(); return(CHAR); }
-"const"			{ count(); return(CONST); }
-"continue"		{ count(); return(CONTINUE); }
-"default"		{ count(); return(DEFAULT); }
-"do"			{ count(); return(DO); }
-"double"		{ count(); return(DOUBLE); }
-"else"			{ count(); return(ELSE); }
-"enum"			{ count(); return(ENUM); }
-"extern"		{ count(); return(EXTERN); }
-"float"			{ count(); return(FLOAT); }
-"for"			{ count(); return(FOR); }
-"goto"			{ count(); return(GOTO); }
-"if"			{ count(); return(IF); }
-"int"			{ count(); return(INT); }
-"long"			{ count(); return(LONG); }
-"register"		{ count(); return(REGISTER); }
-"return"		{ count(); return(RETURN); }
-"short"			{ count(); return(SHORT); }
-"signed"		{ count(); return(SIGNED); }
-"sizeof"		{ count(); return(SIZEOF); }
-"static"		{ count(); return(STATIC); }
-"struct"		{ count(); return(STRUCT); }
-"switch"		{ count(); return(SWITCH); }
-"typedef"		{ count(); return(TYPEDEF); }
-"union"			{ count(); return(UNION); }
-"unsigned"		{ count(); return(UNSIGNED); }
-"void"			{ count(); return(VOID); }
-"volatile"		{ count(); return(VOLATILE); }
-"while"			{ count(); return(WHILE); }
+"include"		{ return INCLUDE; }
 
-{L}({L}|{D})*			{ count(); return(check_type()); }
+"auto"			{ return AUTO; }
+"break"			{ return BREAK; }
+"case"			{ return CASE; }
+"char"			{ return CHAR; }
+"const"			{ return CONST; }
+"continue"		{ return CONTINUE; }
+"default"		{ return DEFAULT; }
+"do"			{ return DO; }
+"double"		{ return DOUBLE; }
+"else"			{ return ELSE; }
+"enum"			{ return ENUM; }
+"extern"		{ return EXTERN; }
+"float"			{ return FLOAT; }
+"for"			{ return FOR; }
+"goto"			{ return GOTO; }
+"if"			{ return IF; }
+"int"			{ return INT; }
+"long"			{ return LONG; }
+"register"		{ return REGISTER; }
+"return"		{ return RETURN; }
+"short"			{ return SHORT; }
+"signed"		{ return SIGNED; }
+"sizeof"		{ return SIZEOF; }
+"static"		{ return STATIC; }
+"struct"		{ return STRUCT; }
+"switch"		{ return SWITCH; }
+"typedef"		{ return TYPEDEF; }
+"union"			{ return UNION; }
+"unsigned"		{ return UNSIGNED; }
+"void"			{ return VOID; }
+"volatile"		{ return VOLATILE; }
+"while"			{ return WHILE; }
 
-0[xX]{H}+{IS}?			{ count(); return(CONSTANT); }
-0{D}+{IS}?				{ count(); return(CONSTANT); }
-{D}+{IS}?				{ count(); return(CONSTANT); }
-L?'(\\.|[^\\'])+'		{ count(); return(CONSTANT); }
+{L}({L}|{D})*			{ return IDENTIFIER; }
 
-{D}+{E}{FS}?			{ count(); return(CONSTANT); }
-{D}*"."{D}+({E})?{FS}?	{ count(); return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?	{ count(); return(CONSTANT); }
+0[xX]{H}+{IS}?			{ return INTCONST; }
+0{D}+{IS}?				{ return INTCONST; }
+{D}+{IS}?				{ return INTCONST; }
+L?'(\\.|[^\\'])'		{ return CHARACTER; }
+						/* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
+						 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
+L?'(\\.|[^\\']){2,}		{ printf("%u:%u: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
 
-L?\"(\\.|[^\\"])*\"		{ count(); return(STRING_LITERAL); }
+{D}+{E}{FS}?			{ return FLOATCONST; }
+{D}*"."{D}+({E})?{FS}?	{ return FLOATCONST; }
+{D}+"."{D}*({E})?{FS}?	{ return FLOATCONST; }
 
-"..."			{ count(); return(ELLIPSIS); }
-">>="			{ count(); return(ASSIGN); }
-"<<="			{ count(); return(ASSIGN); }
-"+="			{ count(); return(ASSIGN); }
-"-="			{ count(); return(ASSIGN); }
-"*="			{ count(); return(ASSIGN); }
-"/="			{ count(); return(ASSIGN); }
-"%="			{ count(); return(ASSIGN); }
-"&="			{ count(); return(ASSIGN); }
-"^="			{ count(); return(ASSIGN); }
-"|="			{ count(); return(ASSIGN); }
-">>"			{ count(); return(ARIT_OP); }
-"<<"			{ count(); return(ARIT_OP); }
-"++"			{ count(); return(INC_OP); }
-"--"			{ count(); return(DEC_OP); }
-"->"			{ count(); return(PTR_OP); }
-"&&"			{ count(); return(LOGIC_OP); }
-"||"			{ count(); return(LOGIC_OP); }
-"<="			{ count(); return(COMPARE); }
-">="			{ count(); return(COMPARE); }
-"=="			{ count(); return(COMPARE); }
-"!="			{ count(); return(COMPARE); }
-";"				{ count(); return(';'); }
-("{"|"<%")		{ count(); return('{'); }
-("}"|"%>")		{ count(); return('}'); }
-","				{ count(); return(','); }
-":"				{ count(); return(':'); }
-"="				{ count(); return('='); }
-"("				{ count(); return('('); }
-")"				{ count(); return(')'); }
-("["|"<:")		{ count(); return('['); }
-("]"|":>")		{ count(); return(']'); }
-"."				{ count(); return('.'); }
-"&"				{ count(); return('&'); }
-"!"				{ count(); return('!'); }
-"~"				{ count(); return('~'); }
-"-"				{ count(); return('-'); }
-"+"				{ count(); return('+'); }
-"*"				{ count(); return('*'); }
-"/"				{ count(); return('/'); }
-"%"				{ count(); return('%'); }
-"<"				{ count(); return('<'); }
-">"				{ count(); return('>'); }
-"^"				{ count(); return('^'); }
-"|"				{ count(); return('|'); }
-"?"				{ count(); return('?'); }
-"\n"			{ count(); linenr++; }
-[ \t\v\f]		{ count(); }
-.				{ /* ignore bad characters */ }
+L?\"(\\.|[^\\"\n])*\"		{ return STRING_LITERAL; }
+
+"..."			{ return ELLIPSIS; }
+">>="			{ return ASSIGN; }
+"<<="			{ return ASSIGN; }
+"+="			{ return ASSIGN; }
+"-="			{ return ASSIGN; }
+"*="			{ return ASSIGN; }
+"/="			{ return ASSIGN; }
+"%="			{ return ASSIGN; }
+"&="			{ return ASSIGN; }
+"^="			{ return ASSIGN; }
+"|="			{ return ASSIGN; }
+">>"			{ return ARIT_OP; }
+"<<"			{ return ARIT_OP; }
+"++"			{ return INC_OP; }
+"--"			{ return DEC_OP; }
+"->"			{ return PTR_OP; }
+"&&"			{ return LOGIC_OP; }
+"||"			{ return LOGIC_OP; }
+"<="			{ return COMPARE; }
+">="			{ return COMPARE; }
+"=="			{ return COMPARE; }
+"!="			{ return COMPARE; }
+";"				{ return ';'; }
+("{"|"<%")		{ return '{'; }
+("}"|"%>")		{ return '}'; }
+","				{ return ','; }
+":"				{ return ':'; }
+"="				{ return ASSIGN; }
+"("				{ return '('; }
+")"				{ return(')'); }
+("["|"<:")		{ return '['; }
+("]"|":>")		{ return ']'; }
+"."				{ return '.'; }
+"&"				{ return BIT_OP; }
+"!"				{ return '!'; }
+"~"				{ return BIT_OP; }
+"-"				{ return '-'; }
+"+"				{ return '+'; }
+"*"				{ return '*'; }
+"/"				{ return '/'; }
+"%"				{ return '%'; }
+"<"				{ return COMPARE; }
+">"				{ return COMPARE; }
+"^"				{ return BIT_OP; }
+"|"				{ return BIT_OP; }
+"?"				{ return '?'; }
+"#"				{ return '#'; }
+[ \t\v\f\n]		{ count(); }
+.				{ 
+		int c = yytext[0]; 
+		printf("%u:%u: Illegal character (", linenr, column);
+		
+		if(isprint(c)) putchar(c); 
+		else printf("%i", c);
+		
+		printf(")....abort\n"); 
+		exit(-1); 
+	}
 
 %%
 
 int yywrap(){
-	return(1);
+	return 1;
 }
 
 void comment(){
 	char c, c1;
 	
-	printf("Comment: ");
+	column += 2;
 	
 	while((c = input()) != 0){
+		if(c == '\n'){
+			linenr++;
+			column = 0;
+		}
+		column++;
+		
 		if(c == '*'){
 			c1 = input();
 			if(c1 == 0) return;
@@ -138,51 +165,31 @@ void comment(){
 			
 			unput(c1);
 		}
-		
-		putchar(c);
 	}
 	
-	putchar('\n');
+	column++;
 }
-
-int column = 0;
 
 void count(){
 	int i;
 
-	for (i = 0; yytext[i] != '\0'; i++)
-		if (yytext[i] == '\n')
-			column = 0;
-		else if (yytext[i] == '\t')
-			column += 8 - (column % 8);
-		else
-			column++;
-
-	/* ECHO; */
-}
-
-int check_type(){
-	/*
-	* pseudo code --- this is what it should check
-	*
-	*	if (yytext == type_name)
-	*		return(TYPE_NAME);
-	*
-	*	return(IDENTIFIER);
-	*/
-
-	/*
-	*	it actually will only return IDENTIFIER
-	*/
-
-	return(IDENTIFIER);
+	for (i = 0; yytext[i] != '\0'; i++){
+		if (yytext[i] == '\n'){
+			linenr++;
+			column = 1;
+		}
+		else column++;
+	}
 }
 
 int main(int argc, char ** argv){
 	int t;
 	
 	if(argc > 1) yyin = fopen(argv[1], "r");
-	while((t = yylex())) printf("%d:%d:%d @%s@\n", linenr, column, t, yytext);
+	while((t = yylex())){
+		printf("%u:%u:%d @%s@\n", linenr, column, t, yytext);
+		count();
+	}
 	
 	fclose(yyin);
 	

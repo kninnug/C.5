@@ -1,14 +1,10 @@
 #include <stdio.h>
 
-#define AMULTILINEMACRO (1 + \
-	2 * 3 - 4 \
-	)
+/* This is the famous 'Hello world' program */
 
-/* * ** *** **** ***** ****** */
-
-/* // /// //// */
+/* the following */  @ /* is not ok */
 
 int main(int argc, char *argv[]) {
-	printf("Hello World\n");
-	return 0;
+  printf("Hello World\n");
+  return 0;  
 }
