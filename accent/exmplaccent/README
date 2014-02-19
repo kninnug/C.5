@@ -1,0 +1,8 @@
+This directory, `exmplaccent',
+contains a simple application of the Accent Compiler Compiler,
+a desk calculator.
+
+Before running the example, you have to compile/install Accent
+in `../accent'.
+
+To compile this example, just type: make

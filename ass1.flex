@@ -8,17 +8,19 @@ IS			(u|U|l|L)*
 %{
 #include <stdio.h>
 #include <ctype.h>
+#include "yygrammar.h"
 
 unsigned int linenr = 1, column = 1;
+long yypos;
 
-enum tokens {
+/*enum tokens {
 	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
 	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
 	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
 	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
-};
+}; */
 
 void count();
 void comment();
@@ -176,6 +178,7 @@ void count(){
 	for (i = 0; yytext[i] != '\0'; i++){
 		if (yytext[i] == '\n'){
 			linenr++;
+			yypos = linenr;
 			column = 1;
 		}
 		else column++;
