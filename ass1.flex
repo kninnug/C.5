@@ -13,8 +13,6 @@ IS			(u|U|l|L)*
 %{
 #include <stdio.h>
 #include <ctype.h>
-#include "yygrammar.h"
-
 /* Warning: older compilers may complain about the %zu printf-specifier as it's
 	C99 feature. Not on a recent (4.8.1) GCC, even with -ansi -pedantic... */
 size_t linenr = 1, column = 1;
