@@ -13,19 +13,21 @@ IS			(u|U|l|L)*
 %{
 #include <stdio.h>
 #include <ctype.h>
+
 /* Warning: older compilers may complain about the %zu printf-specifier as it's
 	C99 feature. Not on a recent (4.8.1) GCC, even with -ansi -pedantic... */
 size_t linenr = 1, column = 1;
 
 /* We return character-literals for many single-character tokens, start these 
 	with 256 to make sure they never collide */
+enum tokens {
 	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
 	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
 	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
 	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
-}; */
+};
 
 /* Keeps track of lines and columns */
 void count();
@@ -195,7 +197,6 @@ void count(){
 	for (i = 0; yytext[i] != '\0'; i++){
 		if (yytext[i] == '\n'){
 			linenr++;
-			yypos = linenr;
 			column = 1;
 		}else column++;
 		/* <Rant> The original included a case for tabs, reporting them as 8 columns.
