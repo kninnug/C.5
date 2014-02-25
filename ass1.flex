@@ -1,3 +1,8 @@
+/**
+ * C lexer, by Marco Gunnink (2170248) and Bart Offereins (2255243)
+ * inspired by http://www.lysator.liu.se/c/ANSI-C-grammar-l.html
+*/
+
 D			[0-9]
 L			[a-zA-Z_]
 H			[a-fA-F0-9]
@@ -10,10 +15,12 @@ IS			(u|U|l|L)*
 #include <ctype.h>
 #include "yygrammar.h"
 
-unsigned int linenr = 1, column = 1;
-long yypos;
+/* Warning: older compilers may complain about the %zu printf-specifier as it's
+	C99 feature. Not on a recent (4.8.1) GCC, even with -ansi -pedantic... */
+size_t linenr = 1, column = 1;
 
-/*enum tokens {
+/* We return character-literals for many single-character tokens, start these 
+	with 256 to make sure they never collide */
 	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
 	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
@@ -22,15 +29,17 @@ long yypos;
 	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
 }; */
 
+/* Keeps track of lines and columns */
 void count();
+/* Eats multi-line comments */
 void comment();
 
+/* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
 %}
 
 %%
 "/*"			{ comment(); }
- /* "#"(\\\n|[^\n])*"\n"	{ return PREPROC; } */
 
 "include"		{ return INCLUDE; }
 
@@ -73,9 +82,9 @@ int fileno(FILE*);
 0{D}+{IS}?				{ return INTCONST; }
 {D}+{IS}?				{ return INTCONST; }
 L?'(\\.|[^\\'])'		{ return CHARACTER; }
-						/* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
-						 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
-L?'(\\.|[^\\']){2,}		{ printf("%u:%u: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
+	/* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
+	 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
+L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
 
 {D}+{E}{FS}?			{ return FLOATCONST; }
 {D}*"."{D}+({E})?{FS}?	{ return FLOATCONST; }
@@ -84,6 +93,8 @@ L?'(\\.|[^\\']){2,}		{ printf("%u:%u: Illegal or unterminated character constant
 L?\"(\\.|[^\\"\n])*\"		{ return STRING_LITERAL; }
 
 "..."			{ return ELLIPSIS; }
+
+"="				{ return ASSIGN; }
 ">>="			{ return ASSIGN; }
 "<<="			{ return ASSIGN; }
 "+="			{ return ASSIGN; }
@@ -94,46 +105,54 @@ L?\"(\\.|[^\\"\n])*\"		{ return STRING_LITERAL; }
 "&="			{ return ASSIGN; }
 "^="			{ return ASSIGN; }
 "|="			{ return ASSIGN; }
+
 ">>"			{ return ARIT_OP; }
 "<<"			{ return ARIT_OP; }
-"++"			{ return INC_OP; }
-"--"			{ return DEC_OP; }
-"->"			{ return PTR_OP; }
-"&&"			{ return LOGIC_OP; }
-"||"			{ return LOGIC_OP; }
+
+"&"				{ return BIT_OP; }
+"^"				{ return BIT_OP; }
+"|"				{ return BIT_OP; }
+"~"				{ return BIT_OP; }
+
 "<="			{ return COMPARE; }
 ">="			{ return COMPARE; }
 "=="			{ return COMPARE; }
 "!="			{ return COMPARE; }
+"<"				{ return COMPARE; }
+">"				{ return COMPARE; }
+
+"&&"			{ return LOGIC_OP; }
+"||"			{ return LOGIC_OP; }
+
+"++"			{ return INC_OP; }
+"--"			{ return DEC_OP; }
+
+"->"			{ return PTR_OP; }
+
 ";"				{ return ';'; }
-("{"|"<%")		{ return '{'; }
+("{"|"<%")		{ return '{'; } /* Who *doesn't* like di-graphs? -_- */
 ("}"|"%>")		{ return '}'; }
 ","				{ return ','; }
 ":"				{ return ':'; }
-"="				{ return ASSIGN; }
 "("				{ return '('; }
 ")"				{ return(')'); }
 ("["|"<:")		{ return '['; }
 ("]"|":>")		{ return ']'; }
 "."				{ return '.'; }
-"&"				{ return BIT_OP; }
 "!"				{ return '!'; }
-"~"				{ return BIT_OP; }
 "-"				{ return '-'; }
 "+"				{ return '+'; }
 "*"				{ return '*'; }
 "/"				{ return '/'; }
 "%"				{ return '%'; }
-"<"				{ return COMPARE; }
-">"				{ return COMPARE; }
-"^"				{ return BIT_OP; }
-"|"				{ return BIT_OP; }
 "?"				{ return '?'; }
 "#"				{ return '#'; }
+
 [ \t\v\f\n]		{ count(); }
+
 .				{ 
 		int c = yytext[0]; 
-		printf("%u:%u: Illegal character (", linenr, column);
+		printf("%zu:%zu: Illegal character (", linenr, column);
 		
 		if(isprint(c)) putchar(c); 
 		else printf("%i", c);
@@ -180,8 +199,11 @@ void count(){
 			linenr++;
 			yypos = linenr;
 			column = 1;
-		}
-		else column++;
+		}else column++;
+		/* <Rant> The original included a case for tabs, reporting them as 8 columns.
+		Everyone knows that tabs are never replaced by spaces, but always 
+		displayed with a maximum width of 4 spaces. Aligned with the tab-stop.
+		</Rant> */
 	}
 }
 
@@ -189,8 +211,9 @@ int main(int argc, char ** argv){
 	int t;
 	
 	if(argc > 1) yyin = fopen(argv[1], "r");
+	
 	while((t = yylex())){
-		printf("%u:%u:%d @%s@\n", linenr, column, t, yytext);
+		printf("%zu:%zu:%d @%s@\n", linenr, column, t, yytext);
 		count();
 	}
 	
@@ -198,4 +221,3 @@ int main(int argc, char ** argv){
 	
 	return 0;
 }
-
