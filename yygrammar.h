@@ -4,14 +4,18 @@
 extern YYSTYPE yylval;
 extern long yypos;
 
-#define INTCONST 304
-#define FLOATCONST 303
-#define CHARACTER 302
-#define INCLUDE 301
-#define BIT_OP 300
-#define PREPROC 299
-#define IDENTIFIER 298
-#define LOGIC_OP 297
+#define INTCONST 308
+#define FLOATCONST 307
+#define CHARACTER 306
+#define INCLUDE 305
+#define SHIFT 304
+#define BIT_XOR 303
+#define BIT_AND 302
+#define BIT_OR 301
+#define PREPROC 300
+#define IDENTIFIER 299
+#define LOGICAL_AND 298
+#define LOGICAL_OR 297
 #define PTR_OP 296
 #define DEC_OP 295
 #define INC_OP 294
@@ -19,7 +23,7 @@ extern long yypos;
 #define COMPARE 292
 #define ASSIGN 291
 #define ELLIPSIS 290
-#define STRING_LITERAL 289
+#define STRING 289
 #define CONSTANT 288
 #define WHILE 287
 #define VOLATILE 286

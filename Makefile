@@ -1,4 +1,4 @@
-OPTIONS = -Wall -pedantic -ansi
+OPTIONS = -ansi
 # Needed because flex and it's library is installed in MSYS, not MinGW
 MINGWHACKS = -L/usr/lib -DYY_NO_UNISTD_H
 
@@ -12,5 +12,10 @@ lex.yy.c: ass1.flex
 
 ass2: ass2.y
 	accent/accent/accent ass2.y
+	flex -o ass2.yy.c ass2.flex
+	gcc $(OPTIONS) $(MINGWHACKS) -o ass2 ass2.yy.c yygrammar.c auxil.c accent/entire/entire.c -lfl
+	
+ass2-acc: ass2.acc
+	accent/accent/accent ass2.acc
 	flex -o ass2.yy.c ass2.flex
 	gcc $(OPTIONS) $(MINGWHACKS) -o ass2 ass2.yy.c yygrammar.c auxil.c accent/entire/entire.c -lfl

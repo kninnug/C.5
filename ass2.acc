@@ -1,13 +1,14 @@
 %prelude{
-
+	#include <stdio.h>
+	#include <stdlib.h>
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
 	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
-	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
-	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
+	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, 
+	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, 
+	PREPROC, BIT_OR, BIT_AND, BIT_XOR, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
 
 /* Rules */
 translation_unit
@@ -50,15 +51,15 @@ type_qualifier
 	;
 
 struct_or_union_specifier
-	: struct_or_union ( identifier )? '{' struct_declaration_list '}'
-	| struct_or_union identifier
+	: struct_or_union ( IDENTIFIER )? '{' struct_declaration_list '}'
+	| struct_or_union IDENTIFIER
 	;
 	
 struct_or_union
 	: STRUCT | UNION
 	;
 	
-struct_declation_list
+struct_declaration_list
 	: ( struct_declaration_list )? struct_declaration 
 	;
 	
@@ -89,8 +90,8 @@ struct_declarator
 	;
 
 enum_specifier
-	: ENUM ( identifier )? '{' enumerator_list '}'
-	| ENUM identifier
+	: ENUM ( IDENTIFIER )? '{' enumerator_list '}'
+	| ENUM IDENTIFIER
 	;
 	
 enumerator_list
@@ -98,7 +99,7 @@ enumerator_list
 	;
 	
 enumerator
-	: identifier ( '=' constant_expression )
+	: IDENTIFIER ( '=' constant_expression )
 	;
 	
 declarator
@@ -106,13 +107,14 @@ declarator
 	;
 	
 direct_declarator
-	: identifier
+	: IDENTIFIER
 	| '(' declarator ')'
-	| direct_declarator ( '[' ( constant_expression )? ']' | '(' parameter_type_list ')' | '(' ( identifier_list )? ')'
+	| direct_declarator ( '[' ( constant_expression )? ']' | '(' parameter_type_list ')' | '(' ( IDENTIFIER_list )? ')' )
 	;
 	
 pointer
 	: '*' ( type_qualifier_list )? ( pointer )?
+	;
 	
 type_qualifier_list
 	: ( type_qualifier_list )? type_qualifier
@@ -128,9 +130,10 @@ parameter_list
 	
 parameter_declaration
 	: declaration_specifiers ( declarator | ( abstract_declarator )? )
+	;
 	
-identifier_list
-	: ( identifier_list ',' )? identifier
+IDENTIFIER_list
+	: ( IDENTIFIER_list ',' )? IDENTIFIER
 	;
 	
 initializer
@@ -157,7 +160,7 @@ direct_abstract_declarator
 	;
 	
 typedef_name
-	: identifier
+	: IDENTIFIER
 	;
 	
 statement
@@ -170,7 +173,7 @@ statement
 	;
 	
 labeled_statement
-	: identifier ':' statement	/* warning: labels & GOTO's make Dijkstra angry! */
+	: IDENTIFIER ':' statement	/* warning: labels & GOTO's make Dijkstra angry! */
 	| CASE constant_expression ':' statement
 	| DEFAULT ':' statement
 	;
@@ -199,17 +202,18 @@ iteration_statement
 	;
 	
 jump_statement
-	: GOTO identifier ';'	/* warning: labels & GOTO's make Dijkstra angry! */
+	: GOTO IDENTIFIER ';'	/* warning: labels & GOTO's make Dijkstra angry! */
 	| CONTINUE ';'
 	| BREAK ';'
 	| RETURN ( expression )? ';'
+	;
 	
 expression
 	: ( expression ',' )? assignment_expression
 	;
 
 assignment_expression
-	: conditional_expresion
+	: conditional_expression
 	| unary_expression assignment_operator assignment_expression
 	;
 	
@@ -223,7 +227,7 @@ conditional_expression
 	;
 	
 constant_expression
-	: conditional_expresion
+	: conditional_expression
 	;
 	
 logical_OR_expression
@@ -239,10 +243,10 @@ inclusive_OR_expression
 	;
 	
 exclusive_OR_expression
-	: ( exclusive_OR_expressioin BIT_XOR )? AND_expression
+	: ( exclusive_OR_expression BIT_XOR )? AND_expression
 	;
 	
-AND_expresssion
+AND_expression
 	: (AND_expression BIT_AND )? equality_expression
 	;
 	
@@ -269,7 +273,7 @@ cast_expression
 	
 unary_expression
 	: postfix_expression
-	| ( INC_OP | DEC_OP ) unary_expressioin
+	| ( INC_OP | DEC_OP ) unary_expression
 	| unary_operator cast_expression
 	| SIZEOF unary_expression
 	| SIZEOF '(' type_name ')'
@@ -281,13 +285,13 @@ unary_operator
 	
 postfix_expression
 	: primary_expression
-	| postfix_expression ( '[' expression ']' | '(' ( argument_expression_list )? ')' | '.' identifier | PTR_OP identifier | INC_OP | DEC_OP )
+	| postfix_expression ( '[' expression ']' | '(' ( argument_expression_list )? ')' | '.' IDENTIFIER | PTR_OP IDENTIFIER | INC_OP | DEC_OP )
 	;
 	
 primary_expression
-	: identifier
+	: IDENTIFIER
 	| constant
-	| string
+	| STRING
 	| '(' expression ')'
 	;
 	

@@ -98,7 +98,7 @@ L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character consta
 {D}*"."{D}+({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 {D}+"."{D}*({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 
-L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING_LITERAL; }
+L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING; }
 
 "..."			{ return ELLIPSIS; }
 
@@ -114,13 +114,13 @@ L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING_LITERAL; }
 "^="			{ yylval.subtype = ASSIGN_XOR; return ASSIGN; }
 "|="			{ yylval.subtype = ASSIGN_OR; return ASSIGN; }
 
-">>"			{ yylval.subtype = SHIFT_RIGHT; return ARIT_OP; }
-"<<"			{ yylval.subtype = SHIFT_LEFT; return ARIT_OP; }
+">>"			{ yylval.subtype = SHIFT_RIGHT; return SHIFT; }
+"<<"			{ yylval.subtype = SHIFT_LEFT; return SHIFT; }
 
-"&"				{ yylval.subtype = BIT_AND; return BIT_OP; }
-"^"				{ yylval.subtype = BIT_XOR; return BIT_OP; }
-"|"				{ yylval.subtype = BIT_OR; return BIT_OP; }
-"~"				{ yylval.subtype = BIT_NOT; return BIT_OP; }
+"&"				{ return BIT_AND; }
+"^"				{ return BIT_XOR; }
+"|"				{ return BIT_OR; }
+"~"				{ return BIT_NOT; }
 
 "<="			{ yylval.subtype = COMPARE_LEQ; return COMPARE; }
 ">="			{ yylval.subtype = COMPARE_GREQ; return COMPARE; }
@@ -129,8 +129,8 @@ L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING_LITERAL; }
 "<"				{ yylval.subtype = COMPARE_LESS; return COMPARE; }
 ">"				{ yylval.subtype = COMPARE_GREATER; return COMPARE; }
 
-"&&"			{ return LOGIC_AND; }
-"||"			{ return LOGIC_OR; }
+"&&"			{ return LOGICAL_AND; }
+"||"			{ return LOGICAL_OR; }
 
 "++"			{ return INC_OP; }
 "--"			{ return DEC_OP; }
