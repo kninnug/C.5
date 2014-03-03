@@ -1,34 +1,32 @@
-%prelude {
-	#include <stdio.h>
 
-	extern char yytext[];
-	extern int column;
-	extern long int yypos;
+ANSI C Yacc grammar
+In 1985, Jeff Lee published his Yacc grammar (which is accompanied by a matching Lex specification) for the April 30, 1985 draft version of the ANSI C standard.  Tom Stockfisch reposted it to net.sources in 1987; that original, as mentioned in the answer to question 17.25 of the comp.lang.c FAQ, can be ftp'ed from ftp.uu.net, file usenet/net.sources/ansi.c.grammar.Z.
 
-	/*	void yyerror(char * s){
-		fflush(stdout);
-		printf("%u: Syntax error: %s\n", yypos, s);
-		}*/
+Jutta Degener, 1995
 
-}
+%token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
+%token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
+%token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
+%token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
+%token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
-%token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
-	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
-	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
-	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
-	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
-	
+%token TYPEDEF EXTERN STATIC AUTO REGISTER
+%token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID
+%token STRUCT UNION ENUM ELLIPSIS
+
+%token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+
+
 translation_unit
 	: external_declaration
 	| translation_unit external_declaration
 	;
 
 primary_expression
-	: IDENTIFIER			{ printf("Identifier\n"); }
-	| CONSTANT				{ printf("Constant\n"); }
-	| STRING_LITERAL		{ printf("String\n"); }
-	| '(' expression ')'	{ printf("Expression\n"); }
+	: IDENTIFIER
+	| CONSTANT
+	| STRING_LITERAL
+	| '(' expression ')'
 	;
 
 postfix_expression
@@ -85,17 +83,22 @@ additive_expression
 
 shift_expression
 	: additive_expression
-	| shift_expression ARIT_OP additive_expression
+	| shift_expression LEFT_OP additive_expression
+	| shift_expression RIGHT_OP additive_expression
 	;
 
 relational_expression
 	: shift_expression
-	| relational_expression COMPARE shift_expression
+	| relational_expression '<' shift_expression
+	| relational_expression '>' shift_expression
+	| relational_expression LE_OP shift_expression
+	| relational_expression GE_OP shift_expression
 	;
 
 equality_expression
 	: relational_expression
-	| equality_expression COMPARE relational_expression
+	| equality_expression EQ_OP relational_expression
+	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
@@ -115,12 +118,12 @@ inclusive_or_expression
 
 logical_and_expression
 	: inclusive_or_expression
-	| logical_and_expression LOGIC_OP inclusive_or_expression
+	| logical_and_expression AND_OP inclusive_or_expression
 	;
 
 logical_or_expression
 	: logical_and_expression
-	| logical_or_expression LOGIC_OP logical_and_expression
+	| logical_or_expression OR_OP logical_and_expression
 	;
 
 conditional_expression
@@ -130,7 +133,21 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression
-	| unary_expression ASSIGN assignment_expression
+	| unary_expression assignment_operator assignment_expression
+	;
+
+assignment_operator
+	: '='
+	| MUL_ASSIGN
+	| DIV_ASSIGN
+	| MOD_ASSIGN
+	| ADD_ASSIGN
+	| SUB_ASSIGN
+	| LEFT_ASSIGN
+	| RIGHT_ASSIGN
+	| AND_ASSIGN
+	| XOR_ASSIGN
+	| OR_ASSIGN
 	;
 
 expression
@@ -178,7 +195,7 @@ type_specifier
 	: VOID
 	| CHAR
 	| SHORT
-	| INT             {printf("Integer specifier");}
+	| INT
 	| LONG
 	| FLOAT
 	| DOUBLE
@@ -186,7 +203,7 @@ type_specifier
 	| UNSIGNED
 	| struct_or_union_specifier
 	| enum_specifier
-	| IDENTIFIER
+	| TYPE_NAME
 	;
 
 struct_or_union_specifier
@@ -386,11 +403,7 @@ jump_statement
 	| CONTINUE ';'
 	| BREAK ';'
 	| RETURN ';'
-	| RETURN expression ';'   { printf("returns");}
-	;
-root
-	: external_declaration
-	| root external_declaration
+	| RETURN expression ';'
 	;
 
 external_declaration
@@ -399,9 +412,10 @@ external_declaration
 	;
 
 function_definition
-        : declaration_specifiers declarator declaration_list compound_statement  {printf("func1");}
-	| declaration_specifiers declarator compound_statement {printf("func2");}
-	| declarator declaration_list compound_statement {printf("func3");}
-	| declarator compound_statement {printf("func4");}
+	: declaration_specifiers declarator declaration_list compound_statement
+	| declaration_specifiers declarator compound_statement
+	| declarator declaration_list compound_statement
+	| declarator compound_statement
 	;
+
 

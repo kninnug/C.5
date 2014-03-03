@@ -9,7 +9,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_SUBMINOR_VERSION 37
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -142,15 +142,7 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
-#define YY_BUF_SIZE 32768
-#else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -162,7 +154,12 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int yyleng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t yyleng;
 
 extern FILE *yyin, *yyout;
 
@@ -171,6 +168,7 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_LAST_MATCH 2
 
     #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -187,11 +185,6 @@ extern FILE *yyin, *yyout;
 	while ( 0 )
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -210,7 +203,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -280,8 +273,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
-int yyleng;
+static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
+yy_size_t yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -309,7 +302,7 @@ static void yy_init_buffer (YY_BUFFER_STATE b,FILE *file  );
 
 YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size  );
 YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,int len  );
+YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,yy_size_t len  );
 
 void *yyalloc (yy_size_t  );
 void *yyrealloc (void *,yy_size_t  );
@@ -673,9 +666,12 @@ void count();
 /* Eats multi-line comments */
 void comment();
 
+
+char* mystrdup(char* yytext);
+
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
-#line 679 "ass2.yy.c"
+#line 675 "ass2.yy.c"
 
 #define INITIAL 0
 
@@ -714,7 +710,7 @@ FILE *yyget_out (void );
 
 void yyset_out  (FILE * out_str  );
 
-int yyget_leng (void );
+yy_size_t yyget_leng (void );
 
 char *yyget_text (void );
 
@@ -756,12 +752,7 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
-#else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -862,10 +853,6 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 46 "ass2.flex"
-
-#line 868 "ass2.yy.c"
-
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -892,6 +879,11 @@ YY_DECL
 		yy_load_buffer_state( );
 		}
 
+	{
+#line 49 "ass2.flex"
+
+#line 886 "ass2.yy.c"
+
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
 		yy_cp = (yy_c_buf_p);
@@ -908,7 +900,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
 			if ( yy_accept[yy_current_state] )
 				{
 				(yy_last_accepting_state) = yy_current_state;
@@ -949,198 +941,198 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 47 "ass2.flex"
+#line 50 "ass2.flex"
 { comment(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 49 "ass2.flex"
+#line 52 "ass2.flex"
 { return INCLUDE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 51 "ass2.flex"
+#line 54 "ass2.flex"
 { return AUTO; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 52 "ass2.flex"
+#line 55 "ass2.flex"
 { return BREAK; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 53 "ass2.flex"
+#line 56 "ass2.flex"
 { return CASE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 54 "ass2.flex"
+#line 57 "ass2.flex"
 { return CHAR; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 55 "ass2.flex"
+#line 58 "ass2.flex"
 { return CONST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "ass2.flex"
+#line 59 "ass2.flex"
 { return CONTINUE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "ass2.flex"
+#line 60 "ass2.flex"
 { return DEFAULT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 58 "ass2.flex"
+#line 61 "ass2.flex"
 { return DO; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 59 "ass2.flex"
+#line 62 "ass2.flex"
 { return DOUBLE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 60 "ass2.flex"
+#line 63 "ass2.flex"
 { return ELSE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 61 "ass2.flex"
+#line 64 "ass2.flex"
 { return ENUM; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 62 "ass2.flex"
+#line 65 "ass2.flex"
 { return EXTERN; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 63 "ass2.flex"
+#line 66 "ass2.flex"
 { return FLOAT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 64 "ass2.flex"
+#line 67 "ass2.flex"
 { return FOR; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 65 "ass2.flex"
+#line 68 "ass2.flex"
 { return GOTO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 66 "ass2.flex"
+#line 69 "ass2.flex"
 { return IF; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 67 "ass2.flex"
+#line 70 "ass2.flex"
 { return INT; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 68 "ass2.flex"
+#line 71 "ass2.flex"
 { return LONG; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "ass2.flex"
+#line 72 "ass2.flex"
 { return REGISTER; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 70 "ass2.flex"
+#line 73 "ass2.flex"
 { return RETURN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 71 "ass2.flex"
+#line 74 "ass2.flex"
 { return SHORT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 72 "ass2.flex"
+#line 75 "ass2.flex"
 { return SIGNED; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 73 "ass2.flex"
+#line 76 "ass2.flex"
 { return SIZEOF; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 74 "ass2.flex"
+#line 77 "ass2.flex"
 { return STATIC; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 75 "ass2.flex"
+#line 78 "ass2.flex"
 { return STRUCT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 76 "ass2.flex"
+#line 79 "ass2.flex"
 { return SWITCH; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 77 "ass2.flex"
+#line 80 "ass2.flex"
 { return TYPEDEF; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 78 "ass2.flex"
+#line 81 "ass2.flex"
 { return UNION; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 79 "ass2.flex"
+#line 82 "ass2.flex"
 { return UNSIGNED; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 80 "ass2.flex"
+#line 83 "ass2.flex"
 { return VOID; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 81 "ass2.flex"
+#line 84 "ass2.flex"
 { return VOLATILE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 82 "ass2.flex"
+#line 85 "ass2.flex"
 { return WHILE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 84 "ass2.flex"
-{ yylval.s = strdup(yytext); return IDENTIFIER; }
+#line 87 "ass2.flex"
+{ yylval.s = mystrdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 86 "ass2.flex"
+#line 89 "ass2.flex"
 { yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 87 "ass2.flex"
+#line 90 "ass2.flex"
 { yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 88 "ass2.flex"
+#line 91 "ass2.flex"
 { yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 89 "ass2.flex"
+#line 92 "ass2.flex"
 { yylval.c = yytext[0]; return CHARACTER; }
 	YY_BREAK
 /* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
@@ -1148,273 +1140,273 @@ YY_RULE_SETUP
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 92 "ass2.flex"
+#line 95 "ass2.flex"
 { printf("%zu:%zu: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 94 "ass2.flex"
+#line 97 "ass2.flex"
 { yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 95 "ass2.flex"
+#line 98 "ass2.flex"
 { yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 96 "ass2.flex"
+#line 99 "ass2.flex"
 { yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 98 "ass2.flex"
-{ yylval.s = strdup(yytext); return STRING_LITERAL; }
+#line 101 "ass2.flex"
+{ yylval.s = mystrdup(yytext); return STRING_LITERAL; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 100 "ass2.flex"
+#line 103 "ass2.flex"
 { return ELLIPSIS; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 102 "ass2.flex"
-{ yylval.subtype = ASSIGN_ASSIGN; return ASSIGN; }
+#line 105 "ass2.flex"
+{ return '='; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 103 "ass2.flex"
+#line 106 "ass2.flex"
 { yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 104 "ass2.flex"
+#line 107 "ass2.flex"
 { yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 105 "ass2.flex"
+#line 108 "ass2.flex"
 { yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 106 "ass2.flex"
+#line 109 "ass2.flex"
 { yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 107 "ass2.flex"
+#line 110 "ass2.flex"
 { yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 108 "ass2.flex"
+#line 111 "ass2.flex"
 { yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 109 "ass2.flex"
+#line 112 "ass2.flex"
 { yylval.subtype = ASSIGN_MOD; return ASSIGN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 110 "ass2.flex"
+#line 113 "ass2.flex"
 { yylval.subtype = ASSIGN_AND; return ASSIGN; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 111 "ass2.flex"
+#line 114 "ass2.flex"
 { yylval.subtype = ASSIGN_XOR; return ASSIGN; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 112 "ass2.flex"
+#line 115 "ass2.flex"
 { yylval.subtype = ASSIGN_OR; return ASSIGN; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 114 "ass2.flex"
+#line 117 "ass2.flex"
 { yylval.subtype = SHIFT_RIGHT; return ARIT_OP; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 115 "ass2.flex"
+#line 118 "ass2.flex"
 { yylval.subtype = SHIFT_LEFT; return ARIT_OP; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 117 "ass2.flex"
+#line 120 "ass2.flex"
 { yylval.subtype = BIT_AND; return BIT_OP; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 118 "ass2.flex"
+#line 121 "ass2.flex"
 { yylval.subtype = BIT_XOR; return BIT_OP; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 119 "ass2.flex"
+#line 122 "ass2.flex"
 { yylval.subtype = BIT_OR; return BIT_OP; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 120 "ass2.flex"
+#line 123 "ass2.flex"
 { yylval.subtype = BIT_NOT; return BIT_OP; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 122 "ass2.flex"
+#line 125 "ass2.flex"
 { yylval.subtype = COMPARE_LEQ; return COMPARE; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 123 "ass2.flex"
+#line 126 "ass2.flex"
 { yylval.subtype = COMPARE_GREQ; return COMPARE; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 124 "ass2.flex"
+#line 127 "ass2.flex"
 { yylval.subtype = COMPARE_EQUAL; return COMPARE; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 125 "ass2.flex"
+#line 128 "ass2.flex"
 { yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 126 "ass2.flex"
+#line 129 "ass2.flex"
 { yylval.subtype = COMPARE_LESS; return COMPARE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 127 "ass2.flex"
+#line 130 "ass2.flex"
 { yylval.subtype = COMPARE_GREATER; return COMPARE; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 129 "ass2.flex"
+#line 132 "ass2.flex"
 { yylval.subtype = LOGIC_AND; return LOGIC_OP; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 130 "ass2.flex"
+#line 133 "ass2.flex"
 { yylval.subtype = LOGIC_OR; return LOGIC_OP; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 132 "ass2.flex"
+#line 135 "ass2.flex"
 { return INC_OP; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 133 "ass2.flex"
+#line 136 "ass2.flex"
 { return DEC_OP; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 135 "ass2.flex"
+#line 138 "ass2.flex"
 { return PTR_OP; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 137 "ass2.flex"
+#line 140 "ass2.flex"
 { return ';'; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 138 "ass2.flex"
+#line 141 "ass2.flex"
 { return '{'; } /* Who *doesn't* like di-graphs? -_- */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 139 "ass2.flex"
+#line 142 "ass2.flex"
 { return '}'; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 140 "ass2.flex"
+#line 143 "ass2.flex"
 { return ','; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 141 "ass2.flex"
+#line 144 "ass2.flex"
 { return ':'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 142 "ass2.flex"
+#line 145 "ass2.flex"
 { return '('; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 143 "ass2.flex"
+#line 146 "ass2.flex"
 { return ')'; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 144 "ass2.flex"
+#line 147 "ass2.flex"
 { return '['; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 145 "ass2.flex"
+#line 148 "ass2.flex"
 { return ']'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 146 "ass2.flex"
+#line 149 "ass2.flex"
 { return '.'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 147 "ass2.flex"
+#line 150 "ass2.flex"
 { return '!'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 148 "ass2.flex"
+#line 151 "ass2.flex"
 { return '-'; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 149 "ass2.flex"
+#line 152 "ass2.flex"
 { return '+'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 150 "ass2.flex"
+#line 153 "ass2.flex"
 { return '*'; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 151 "ass2.flex"
+#line 154 "ass2.flex"
 { return '/'; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 152 "ass2.flex"
+#line 155 "ass2.flex"
 { return '%'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 153 "ass2.flex"
+#line 156 "ass2.flex"
 { return '?'; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 154 "ass2.flex"
+#line 157 "ass2.flex"
 { return '#'; }
 	YY_BREAK
 case 92:
 /* rule 92 can match eol */
 YY_RULE_SETUP
-#line 156 "ass2.flex"
+#line 159 "ass2.flex"
 { count(); }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 158 "ass2.flex"
+#line 161 "ass2.flex"
 { 
 		int c = yytext[0]; 
 		printf("%zu:%zu: Illegal character (", linenr, column);
@@ -1428,10 +1420,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 169 "ass2.flex"
+#line 172 "ass2.flex"
 ECHO;
 	YY_BREAK
-#line 1435 "ass2.yy.c"
+#line 1427 "ass2.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1562,6 +1554,7 @@ case YY_STATE_EOF(INITIAL):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
+	} /* end of user's declarations */
 } /* end of yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
@@ -1617,21 +1610,21 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			int num_to_read =
+			yy_size_t num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
 
 			if ( b->yy_is_our_buffer )
 				{
-				int new_size = b->yy_buf_size * 2;
+				yy_size_t new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1662,7 +1655,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), (size_t) num_to_read );
+			(yy_n_chars), num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1757,7 +1750,7 @@ static int yy_get_next_buffer (void)
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 	yy_is_jam = (yy_current_state == 251);
 
-	return yy_is_jam ? 0 : yy_current_state;
+		return yy_is_jam ? 0 : yy_current_state;
 }
 
     static void yyunput (int c, register char * yy_bp )
@@ -1772,7 +1765,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
+		register yy_size_t number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -1821,7 +1814,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (yy_c_buf_p) - (yytext_ptr);
+			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1981,10 +1974,6 @@ static void yy_load_buffer_state  (void)
 	yyfree((void *) b  );
 }
 
-#ifndef __cplusplus
-extern int isatty (int );
-#endif /* __cplusplus */
-    
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
  * such as during a yyrestart() or at EOF.
@@ -2097,7 +2086,7 @@ void yypop_buffer_state (void)
  */
 static void yyensure_buffer_stack (void)
 {
-	int num_to_alloc;
+	yy_size_t num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -2194,12 +2183,12 @@ YY_BUFFER_STATE yy_scan_string (yyconst char * yystr )
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	int i;
+	yy_size_t i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -2281,7 +2270,7 @@ FILE *yyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-int yyget_leng  (void)
+yy_size_t yyget_leng  (void)
 {
         return yyleng;
 }
@@ -2429,14 +2418,14 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 169 "ass2.flex"
+#line 172 "ass2.flex"
 
 
 
-int yywrap(){
+/*int yywrap(){
 	return 1;
 }
-
+*/
 void comment(){
 	char c, c1;
 	
@@ -2461,6 +2450,15 @@ void comment(){
 	
 	column++;
 }
+
+
+char * mystrdup(char * src){
+ size_t len = strlen(src);
+ char * dst = malloc(len + 1);
+ strcpy(dst, src);
+ return dst;
+}
+
 
 void count(){
 	int i;

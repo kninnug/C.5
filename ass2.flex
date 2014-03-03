@@ -39,6 +39,9 @@ void count();
 /* Eats multi-line comments */
 void comment();
 
+
+char* mystrdup(char* yytext);
+
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
 %}
@@ -81,7 +84,7 @@ int fileno(FILE*);
 "volatile"		{ return VOLATILE; }
 "while"			{ return WHILE; }
 
-{L}({L}|{D})*			{ yylval.s = strdup(yytext); return IDENTIFIER; }
+{L}({L}|{D})*			{ yylval.s = mystrdup(yytext); return IDENTIFIER; }
 
 0[xX]{H}+{IS}?			{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 0{D}+{IS}?				{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
@@ -95,11 +98,11 @@ L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character consta
 {D}*"."{D}+({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 {D}+"."{D}*({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 
-L?\"(\\.|[^\\"\n])*\"		{ yylval.s = strdup(yytext); return STRING_LITERAL; }
+L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING_LITERAL; }
 
 "..."			{ return ELLIPSIS; }
 
-"="				{ yylval.subtype = ASSIGN_ASSIGN; return ASSIGN; }
+"="				{ return '='; }
 ">>="			{ yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
 "<<="			{ yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
 "+="			{ yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
@@ -126,8 +129,8 @@ L?\"(\\.|[^\\"\n])*\"		{ yylval.s = strdup(yytext); return STRING_LITERAL; }
 "<"				{ yylval.subtype = COMPARE_LESS; return COMPARE; }
 ">"				{ yylval.subtype = COMPARE_GREATER; return COMPARE; }
 
-"&&"			{ yylval.subtype = LOGIC_AND; return LOGIC_OP; }
-"||"			{ yylval.subtype = LOGIC_OR; return LOGIC_OP; }
+"&&"			{ return LOGIC_AND; }
+"||"			{ return LOGIC_OR; }
 
 "++"			{ return INC_OP; }
 "--"			{ return DEC_OP; }
@@ -168,10 +171,10 @@ L?\"(\\.|[^\\"\n])*\"		{ yylval.s = strdup(yytext); return STRING_LITERAL; }
 
 %%
 
-int yywrap(){
+/*int yywrap(){
 	return 1;
 }
-
+*/
 void comment(){
 	char c, c1;
 	
@@ -196,6 +199,15 @@ void comment(){
 	
 	column++;
 }
+
+
+char * mystrdup(char * src){
+ size_t len = strlen(src);
+ char * dst = malloc(len + 1);
+ strcpy(dst, src);
+ return dst;
+}
+
 
 void count(){
 	int i;

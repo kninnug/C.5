@@ -1,18 +1,21 @@
 #line 1 "ass2.y"
 
-#include <stdio.h>
+	#include <stdio.h>
 
-extern char yytext[];
-extern int column;
-extern long int yypos;
+	extern char yytext[];
+	extern int column;
+	extern long int yypos;
 
-void yyerror(char * s){
-	fflush(stdout);
-	printf("%u: Syntax error: %s\n", yypos, s);
-}
+	/*	void yyerror(char * s){
+
+		fflush(stdout);
+
+		printf("%u: Syntax error: %s\n", yypos, s);
+
+		}*/
 
 
-# line 16 "yygrammar.c"
+# line 19 "yygrammar.c"
 #include "yygrammar.h"
 
 YYSTART ()
@@ -45,19 +48,19 @@ primary_expression ()
       get_lexval();
 #line 28 "ass2.y"
  printf("Identifier\n"); 
-# line 49 "yygrammar.c"
+# line 52 "yygrammar.c"
       } break;
    case 4: {
       get_lexval();
 #line 29 "ass2.y"
  printf("Constant\n"); 
-# line 55 "yygrammar.c"
+# line 58 "yygrammar.c"
       } break;
    case 5: {
       get_lexval();
 #line 30 "ass2.y"
  printf("String\n"); 
-# line 61 "yygrammar.c"
+# line 64 "yygrammar.c"
       } break;
    case 6: {
       get_lexval();
@@ -65,7 +68,7 @@ primary_expression ()
       get_lexval();
 #line 31 "ass2.y"
  printf("Expression\n"); 
-# line 69 "yygrammar.c"
+# line 72 "yygrammar.c"
       } break;
    }
 }
@@ -511,6 +514,9 @@ type_specifier ()
       } break;
    case 81: {
       get_lexval();
+#line 181 "ass2.y"
+printf("Integer specifier");
+# line 520 "yygrammar.c"
       } break;
    case 82: {
       get_lexval();
@@ -1179,6 +1185,9 @@ jump_statement ()
       get_lexval();
       expression();
       get_lexval();
+#line 389 "ass2.y"
+ printf("returns");
+# line 1191 "yygrammar.c"
       } break;
    }
 }
@@ -1216,20 +1225,32 @@ function_definition ()
       declarator();
       declaration_list();
       compound_statement();
+#line 402 "ass2.y"
+printf("func1");
+# line 1231 "yygrammar.c"
       } break;
    case 195: {
       declaration_specifiers();
       declarator();
       compound_statement();
+#line 403 "ass2.y"
+printf("func2");
+# line 1239 "yygrammar.c"
       } break;
    case 196: {
       declarator();
       declaration_list();
       compound_statement();
+#line 404 "ass2.y"
+printf("func3");
+# line 1247 "yygrammar.c"
       } break;
    case 197: {
       declarator();
       compound_statement();
+#line 405 "ass2.y"
+printf("func4");
+# line 1254 "yygrammar.c"
       } break;
    }
 }
@@ -4342,12 +4363,12 @@ int yycoordinate[] = {
 /* 996 */ 9999,
 /* 997 */ 398014,
 /* 998 */ 9999,
-/* 999 */ 402004,
-/* 1000 */ 402027,
-/* 1001 */ 402038,
-/* 1002 */ 402055,
+/* 999 */ 402003,
+/* 1000 */ 402026,
+/* 1001 */ 402037,
+/* 1002 */ 402054,
 /* 1003 */ 9999,
-/* 1004 */ 402025,
+/* 1004 */ 402024,
 /* 1005 */ 9999,
 /* 1006 */ 403004,
 /* 1007 */ 403027,

@@ -1,0 +1,9 @@
+#include "parser.h"
+#include "yygrammar.h"
+
+#include <stdio.h>
+
+int main(int argc, char ** argv){
+	yyparse();
+	return 0;
+}
