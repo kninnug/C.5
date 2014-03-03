@@ -205,7 +205,7 @@ jump_statement
 	: GOTO IDENTIFIER ';'	/* warning: labels & GOTO's make Dijkstra angry! */
 	| CONTINUE ';'
 	| BREAK ';'
-	| RETURN ( expression )? ';'
+	| RETURN ( expression )? ';' { printf("Return\n"); }
 	;
 	
 expression
@@ -300,5 +300,5 @@ argument_expression_list
 	;
 	
 constant
-	: INTCONST | CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */
+	: INTCONST | CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */ { printf("Constant\n"); }
 	;

@@ -882,6 +882,9 @@ jump_statement ()
       default: ;
       }
       get_lexval();
+#line 208 "ass2.acc"
+ printf("Return\n"); 
+# line 888 "yygrammar.c"
       } break;
    }
 }
@@ -1286,6 +1289,9 @@ constant ()
       } break;
    case 124: {
       get_lexval();
+#line 303 "ass2.acc"
+ printf("Constant\n"); 
+# line 1295 "yygrammar.c"
       } break;
    }
 }

@@ -20,5 +20,13 @@
 # Flex output
 lex.yy.c
 
+# Accent output
+yygrammar.h
+yygrammar.c
+
 #autosave files
 [#]*[#] 
+
+accent/accent/accent
+ass1
+ass2
