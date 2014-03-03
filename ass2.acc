@@ -71,4 +71,230 @@ init_declarator
 	;
 	
 struct_declaration
-	: 
+	: specifier_qualifier_list struct_declarator_list ';'
+	;
+
+specifier_qualifier_list
+	: ( type_specifier | type_qualifier ) ( specifier_qualifier_list )?
+	;
+
+struct_declarator_list
+	: struct_declarator
+	| struct_declarator_list ',' struct_declarator
+	;
+	
+struct_declarator
+	: declarator
+	| ( declarator )? ':' constant_expression
+	;
+
+enum_specifier
+	: ENUM ( identifier )? '{' enumerator_list '}'
+	| ENUM identifier
+	;
+	
+enumerator_list
+	: ( enumerator_list ',' )? enumerator
+	;
+	
+enumerator
+	: identifier ( '=' constant_expression )
+	;
+	
+declarator
+	: ( pointer )? direct_declarator
+	;
+	
+direct_declarator
+	: identifier
+	| '(' declarator ')'
+	| direct_declarator ( '[' ( constant_expression )? ']' | '(' parameter_type_list ')' | '(' ( identifier_list )? ')'
+	;
+	
+pointer
+	: '*' ( type_qualifier_list )? ( pointer )?
+	
+type_qualifier_list
+	: ( type_qualifier_list )? type_qualifier
+	;
+	
+parameter_type_list
+	: parameter_list ( ',' ELLIPSIS )
+	;
+
+parameter_list
+	: ( parameter_list ',' )? parameter_declaration
+	;
+	
+parameter_declaration
+	: declaration_specifiers ( declarator | ( abstract_declarator )? )
+	
+identifier_list
+	: ( identifier_list ',' )? identifier
+	;
+	
+initializer
+	: assignment_expression
+	| '{' initializer_list ( ',' )? '}'
+	;
+	
+initializer_list
+	: ( initializer_list ',' )? initializer
+	;
+	
+type_name
+	: specifier_qualifier_list ( abstract_declarator )?
+	;
+	
+abstract_declarator
+	: pointer
+	| ( pointer )? direct_abstract_declarator
+	;
+	
+direct_abstract_declarator
+	: '(' abstract_declarator ')'
+	| ( direct_abstract_declarator )? ( '[' ( constant_expression )? ']' | '(' ( parameter_type_list )? ')' )
+	;
+	
+typedef_name
+	: identifier
+	;
+	
+statement
+	: labeled_statement
+	| expression_statement
+	| compound_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+	;
+	
+labeled_statement
+	: identifier ':' statement	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CASE constant_expression ':' statement
+	| DEFAULT ':' statement
+	;
+	
+expression_statement
+	: ( expression )? ';'
+	;
+	
+compound_statement
+	: '{' ( declaration_list )? ( statement_list )? '}'
+	;
+	
+statement_list
+	: ( statement_list )? statement
+	;
+	
+selection_statement
+	: IF '(' expression ')' statement ( ELSE statement )?
+	| SWITCH '(' expression ')' statement
+	;
+
+iteration_statement
+	: WHILE '(' expression ')' statement
+	| DO statement WHILE '(' expression ')' ';'
+	| FOR '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement
+	;
+	
+jump_statement
+	: GOTO identifier ';'	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE ';'
+	| BREAK ';'
+	| RETURN ( expression )? ';'
+	
+expression
+	: ( expression ',' )? assignment_expression
+	;
+
+assignment_expression
+	: conditional_expresion
+	| unary_expression assignment_operator assignment_expression
+	;
+	
+assignment_operator
+	: ASSIGN 
+	| '='
+	;
+	
+conditional_expression
+	: logical_OR_expression ( '?' expression ':' conditional_expression )?
+	;
+	
+constant_expression
+	: conditional_expresion
+	;
+	
+logical_OR_expression
+	: ( logical_OR_expression LOGICAL_OR )? logical_AND_expression
+	;
+	
+logical_AND_expression
+	: ( logical_AND_expression LOGICAL_AND )? inclusive_OR_expression
+	;
+
+inclusive_OR_expression
+	: ( inclusive_OR_expression BIT_OR )? exclusive_OR_expression
+	;
+	
+exclusive_OR_expression
+	: ( exclusive_OR_expressioin BIT_XOR )? AND_expression
+	;
+	
+AND_expresssion
+	: (AND_expression BIT_AND )? equality_expression
+	;
+	
+equality_expression
+	: ( equality_expression COMPARE )? shift_expression
+	;
+
+shift_expression
+	: (shift_expression SHIFT )? additive_expression
+	;
+	
+additive_expression
+	: ( additive_expression ( '+' | '-' ) )? multiplicative_expression
+	;
+	
+multiplicative_expression
+	: ( multiplicative_expression ( '*' | '/' | '%' ) )? cast_expression
+	;
+	
+cast_expression
+	: unary_expression
+	| '(' type_name ')' cast_expression
+	;
+	
+unary_expression
+	: postfix_expression
+	| ( INC_OP | DEC_OP ) unary_expressioin
+	| unary_operator cast_expression
+	| SIZEOF unary_expression
+	| SIZEOF '(' type_name ')'
+	;
+	
+unary_operator
+	: '&' | '*' | '+' | '-' | '~' | '!'
+	;
+	
+postfix_expression
+	: primary_expression
+	| postfix_expression ( '[' expression ']' | '(' ( argument_expression_list )? ')' | '.' identifier | PTR_OP identifier | INC_OP | DEC_OP )
+	;
+	
+primary_expression
+	: identifier
+	| constant
+	| string
+	| '(' expression ')'
+	;
+	
+argument_expression_list
+	: ( argument_expression_list ',' )? assignment_expression
+	;
+	
+constant
+	: INTCONST | CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */
+	;
