@@ -19,3 +19,6 @@
 
 # Flex output
 lex.yy.c
+
+#autosave files
+[#]*[#] 
