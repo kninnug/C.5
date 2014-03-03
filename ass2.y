@@ -1,15 +1,14 @@
 %prelude {
-#include <stdio.h>
+	#include <stdio.h>
 
-extern char yytext[];
-extern int column;
+	extern char yytext[];
+	extern int column;
+	extern long int yypos;
 
-yyerror(s)
-char *s;
-{
-	fflush(stdout);
-	printf("%u: Syntax error\n", yypos);
-}
+	void yyerror(char * s){
+		fflush(stdout);
+		printf("%u: Syntax error: %s\n", yypos, s);
+	}
 
 }
 
@@ -19,25 +18,17 @@ char *s;
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
 	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
 	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
-
- /* %token IDENTIFIER, CONSTANT, STRING_LITERAL, SIZEOF,
-	PTR_OP, INC_OP, DEC_OP, LEFT_OP, RIGHT_OP, LE_OP, GE_OP, EQ_OP, NE_OP,
-	AND_OP, OR_OP, MUL_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, ADD_ASSIGN,
-	SUB_ASSIGN, LEFT_ASSIGN, RIGHT_ASSIGN, AND_ASSIGN,
-	XOR_ASSIGN, OR_ASSIGN, TYPE_NAME,
 	
-	TYPEDEF, EXTERN, STATIC, AUTO, REGISTER,
-	CHAR, SHORT, INT, LONG, SIGNED, UNSIGNED, FLOAT, DOUBLE, CONST, VOLATILE, VOID,
-	STRUCT, UNION, ENUM, ELLIPSIS,
-	
-	CASE, DEFAULT, IF, ELSE, SWITCH, WHILE, DO, FOR, GOTO, CONTINUE, BREAK, RETURN;
-	*/
+translation_unit
+	: external_declaration
+	| translation_unit external_declaration
+	;
 
 primary_expression
-	: IDENTIFIER
-	| CONSTANT
-	| STRING_LITERAL
-	| '(' expression ')'
+	: IDENTIFIER			{ printf("Identifier\n"); }
+	| CONSTANT				{ printf("Constant\n"); }
+	| STRING_LITERAL		{ printf("String\n"); }
+	| '(' expression ')'	{ printf("Expression\n"); }
 	;
 
 postfix_expression
@@ -139,11 +130,7 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression
-	| unary_expression assignment_operator assignment_expression
-	;
-
-assignment_operator
-	: ASSIGN
+	| unary_expression ASSIGN assignment_expression
 	;
 
 expression

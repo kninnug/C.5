@@ -220,7 +220,7 @@ PRIVATE char * lookaheadtokenname;
 /* PRINT ROUTINES                                                             */
 /*============================================================================*/
 
-PRIVATE print_item(p)
+PRIVATE void print_item(p)
    int p;
 /*
  * print the item with index p
@@ -278,7 +278,7 @@ PRIVATE print_item(p)
 
 /*----------------------------------------------------------------------------*/
 
-PRIVATE print_coordinate(i)
+PRIVATE void print_coordinate(i)
    int i;
 /*
  * print source coordinate (of grammar file) with code i

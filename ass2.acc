@@ -1,0 +1,74 @@
+%prelude{
+
+}
+
+%token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
+	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
+	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
+	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
+	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
+	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
+
+/* Rules */
+translation_unit
+	: external_declaration
+	| translation_unit external_declaration
+	;
+	
+external_declaration
+	: function_definition
+	| declaration
+	;
+	
+function_definition
+	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement
+	;
+	
+declaration
+	: declaration_specifiers ( init_declarator_list )? ';' 
+	;
+	
+declaration_list
+	: ( declaration_list )? declaration
+	;
+	
+declaration_specifiers
+	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
+	;
+
+storage_class_specifier
+	: AUTO | REGISTER | STATIC | EXTERN | TYPEDEF
+	;
+	
+type_specifier
+	: VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE | SIGNED | UNSIGNED
+	| struct_or_union_specifier | enum_specifier | typedef_name
+	;
+	
+type_qualifier
+	: CONST | VOLATILE
+	;
+
+struct_or_union_specifier
+	: struct_or_union ( identifier )? '{' struct_declaration_list '}'
+	| struct_or_union identifier
+	;
+	
+struct_or_union
+	: STRUCT | UNION
+	;
+	
+struct_declation_list
+	: ( struct_declaration_list )? struct_declaration 
+	;
+	
+init_declarator_list
+	: ( init_declarator_list ',' )? init_declarator
+	;
+	
+init_declarator
+	: ( declarator '=' )? initializer
+	;
+	
+struct_declaration
+	: 
