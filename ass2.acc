@@ -1,6 +1,8 @@
 %prelude{
 	#include <stdio.h>
 	#include <stdlib.h>
+	
+	#include "parser.h"
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
@@ -22,7 +24,7 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement
+	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement { printf("found a function\n");}
 	;
 	
 declaration
@@ -34,16 +36,16 @@ declaration_list
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
+	: ( storage_class_specifier | type_specifier {printf("type specifier\n");}| type_qualifier ) ( declaration_specifiers )? {printf("specifier:\n");}
 	;
 
 storage_class_specifier
 	: AUTO | REGISTER | STATIC | EXTERN | TYPEDEF
 	;
-	
+	/*typedef-name removed*/
 type_specifier
-	: VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE | SIGNED | UNSIGNED
-	| struct_or_union_specifier | enum_specifier | typedef_name
+	: VOID | CHAR | SHORT | INT {printf("Int found, ");} | LONG | FLOAT | DOUBLE | SIGNED | UNSIGNED {printf("type specifier\n");}
+	| struct_or_union_specifier | enum_specifier
 	;
 	
 type_qualifier
@@ -80,8 +82,7 @@ specifier_qualifier_list
 	;
 
 struct_declarator_list
-	: struct_declarator
-	| struct_declarator_list ',' struct_declarator
+	: ( struct_declarator_list ',' )? struct_declarator
 	;
 	
 struct_declarator
@@ -99,7 +100,7 @@ enumerator_list
 	;
 	
 enumerator
-	: IDENTIFIER ( '=' constant_expression )
+	: IDENTIFIER ( '=' constant_expression )?
 	;
 	
 declarator
@@ -107,9 +108,9 @@ declarator
 	;
 	
 direct_declarator
-	: IDENTIFIER
-	| '(' declarator ')'
-	| direct_declarator ( '[' ( constant_expression )? ']' | '(' parameter_type_list ')' | '(' ( IDENTIFIER_list )? ')' )
+	: IDENTIFIER  {printf("Identifier within declarator: %s\n", yylval.s);}
+	| '(' declarator ')' {printf("iets met haakjes\n");}
+	| direct_declarator ( '[' ( constant_expression )? ']' | '(' parameter_type_list ')' | '(' ( identifier_list )? ')' ) {printf("nog iets met haakjes\n");}
 	;
 	
 pointer
@@ -121,7 +122,7 @@ type_qualifier_list
 	;
 	
 parameter_type_list
-	: parameter_list ( ',' ELLIPSIS )
+	: parameter_list ( ',' ELLIPSIS )?
 	;
 
 parameter_list
@@ -132,8 +133,8 @@ parameter_declaration
 	: declaration_specifiers ( declarator | ( abstract_declarator )? )
 	;
 	
-IDENTIFIER_list
-	: ( IDENTIFIER_list ',' )? IDENTIFIER
+identifier_list
+	: ( identifier_list ',' )? IDENTIFIER
 	;
 	
 initializer
@@ -183,7 +184,7 @@ expression_statement
 	;
 	
 compound_statement
-	: '{' ( declaration_list )? ( statement_list )? '}'
+	: '{' ( declaration_list )? ( statement_list )? '}' {printf("Compound statement\n");}
 	;
 	
 statement_list
@@ -300,5 +301,5 @@ argument_expression_list
 	;
 	
 constant
-	: INTCONST | CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */ { printf("Constant\n"); }
+	: INTCONST {printf("intconst: %lu\n", yylval.i);}| CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */ { printf("Constant\n"); }
 	;
