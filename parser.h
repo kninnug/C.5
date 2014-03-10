@@ -26,20 +26,4 @@ union lexeme{
 
 #define YYSTYPE union lexeme
 
-struct function{
-	char * name;
-	struct typeSpec type;
-	struct parameter * paramList;
-	struct compound * body;
-};
-
-struct compound{
-	struct declaration * decs;
-	struct statement * stmts;
-};
-
-struct typeSpec{
-	
-};
-
 #endif
