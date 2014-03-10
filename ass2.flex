@@ -49,40 +49,40 @@ int fileno(FILE*);
 %%
 "/*"			{ comment(); }
 
-"include"		{ return INCLUDE; }
+"include"		{ yylval.s = mystrdup(yytext); return INCLUDE; }
 
-"auto"			{ return AUTO; }
-"break"			{ return BREAK; }
-"case"			{ return CASE; }
-"char"			{ return CHAR; }
-"const"			{ return CONST; }
-"continue"		{ return CONTINUE; }
-"default"		{ return DEFAULT; }
-"do"			{ return DO; }
-"double"		{ return DOUBLE; }
-"else"			{ return ELSE; }
-"enum"			{ return ENUM; }
-"extern"		{ return EXTERN; }
-"float"			{ return FLOAT; }
-"for"			{ return FOR; }
-"goto"			{ return GOTO; }
-"if"			{ return IF; }
-"int"			{ return INT; }
-"long"			{ return LONG; }
-"register"		{ return REGISTER; }
-"return"		{ return RETURN; }
-"short"			{ return SHORT; }
-"signed"		{ return SIGNED; }
-"sizeof"		{ return SIZEOF; }
-"static"		{ return STATIC; }
-"struct"		{ return STRUCT; }
-"switch"		{ return SWITCH; }
-"typedef"		{ return TYPEDEF; }
-"union"			{ return UNION; }
-"unsigned"		{ return UNSIGNED; }
-"void"			{ return VOID; }
-"volatile"		{ return VOLATILE; }
-"while"			{ return WHILE; }
+"auto"			{ yylval.s = mystrdup(yytext); return AUTO; }
+"break"			{ yylval.s = mystrdup(yytext); return BREAK; }
+"case"			{ yylval.s = mystrdup(yytext); return CASE; }
+"char"			{ yylval.s = mystrdup(yytext); return CHAR; }
+"const"			{ yylval.s = mystrdup(yytext); return CONST; }
+"continue"		{ yylval.s = mystrdup(yytext); return CONTINUE; }
+"default"		{ yylval.s = mystrdup(yytext); return DEFAULT; }
+"do"			{ yylval.s = mystrdup(yytext); return DO; }
+"double"		{ yylval.s = mystrdup(yytext); return DOUBLE; }
+"else"			{ yylval.s = mystrdup(yytext); return ELSE; }
+"enum"			{ yylval.s = mystrdup(yytext); return ENUM; }
+"extern"		{ yylval.s = mystrdup(yytext); return EXTERN; }
+"float"			{ yylval.s = mystrdup(yytext); return FLOAT; }
+"for"			{ yylval.s = mystrdup(yytext); return FOR; }
+"goto"			{ yylval.s = mystrdup(yytext); return GOTO; }
+"if"			{ yylval.s = mystrdup(yytext); return IF; }
+"int"			{ yylval.s = mystrdup(yytext); return INT; }
+"long"			{ yylval.s = mystrdup(yytext); return LONG; }
+"register"		{ yylval.s = mystrdup(yytext); return REGISTER; }
+"return"		{ yylval.s = mystrdup(yytext); return RETURN; }
+"short"			{ yylval.s = mystrdup(yytext); return SHORT; }
+"signed"		{ yylval.s = mystrdup(yytext); return SIGNED; }
+"sizeof"		{ yylval.s = mystrdup(yytext); return SIZEOF; }
+"static"		{ yylval.s = mystrdup(yytext); return STATIC; }
+"struct"		{ yylval.s = mystrdup(yytext); return STRUCT; }
+"switch"		{ yylval.s = mystrdup(yytext); return SWITCH; }
+"typedef"		{ yylval.s = mystrdup(yytext); return TYPEDEF; }
+"union"			{ yylval.s = mystrdup(yytext); return UNION; }
+"unsigned"		{ yylval.s = mystrdup(yytext); return UNSIGNED; }
+"void"			{ yylval.s = mystrdup(yytext); return VOID; }
+"volatile"		{ yylval.s = mystrdup(yytext); return VOLATILE; }
+"while"			{ yylval.s = mystrdup(yytext); return WHILE; }
 
 {L}({L}|{D})*			{ yylval.s = mystrdup(yytext); return IDENTIFIER; }
 
@@ -98,7 +98,7 @@ L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character consta
 {D}*"."{D}+({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 {D}+"."{D}*({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 
-L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING; }
+L?\"(\\.|[^\\"\n])*\"		{ yytext[yyleng - 1] = '\0'; yylval.s = mystrdup(yytext + 1); return STRING; }
 
 "..."			{ return ELLIPSIS; }
 

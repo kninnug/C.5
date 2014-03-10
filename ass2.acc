@@ -3,6 +3,8 @@
 	#include <stdlib.h>
 	
 	#include "parser.h"
+	
+	extern FILE * f;
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
@@ -24,11 +26,11 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement { printf("found a function\n");}
+	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement
 	;
 	
 declaration
-	: declaration_specifiers ( init_declarator_list )? ';' 
+	: declaration_specifiers ( init_declarator_list )? ';' { fputs(";\\\\\n", f); }
 	;
 	
 declaration_list
@@ -36,29 +38,42 @@ declaration_list
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier {printf("type specifier\n");}| type_qualifier ) ( declaration_specifiers )? {printf("specifier:\n");}
+	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
 	;
 
 storage_class_specifier
-	: AUTO | REGISTER | STATIC | EXTERN | TYPEDEF
+	: ( AUTO<s>
+	| REGISTER<s>
+	| STATIC<s>
+	| EXTERN<s>
+	| TYPEDEF<s> ) { fprintf(f, "{\\bf %s}", s.s); }
 	;
 	/*typedef-name removed*/
 type_specifier
-	: VOID | CHAR | SHORT | INT {printf("Int found, ");} | LONG | FLOAT | DOUBLE | SIGNED | UNSIGNED {printf("type specifier\n");}
+	: ( VOID<s>
+	| CHAR<s>
+	| SHORT<s>
+	| INT<s>
+	| LONG<s>
+	| FLOAT<s>
+	| DOUBLE<s>
+	| SIGNED<s>
+	| UNSIGNED<s> ) { fprintf(f, "{\\bf %s}", s.s); }
 	| struct_or_union_specifier | enum_specifier
 	;
 	
 type_qualifier
-	: CONST | VOLATILE
+	: ( CONST<s>
+	| VOLATILE<s> ) { fprintf(f, "{\\bf %s}", s.s); }
 	;
 
 struct_or_union_specifier
-	: struct_or_union ( IDENTIFIER )? '{' struct_declaration_list '}'
+	: struct_or_union ( IDENTIFIER )? '{' { fputs("\\{\\\\\n", f); } struct_declaration_list '}' { fputs("\\}\\\\\n", f); }
 	| struct_or_union IDENTIFIER
 	;
 	
 struct_or_union
-	: STRUCT | UNION
+	: ( STRUCT<s> | UNION<s> ) { fprintf(f, "{\\bf %s}", s.s); }
 	;
 	
 struct_declaration_list
@@ -74,7 +89,7 @@ init_declarator
 	;
 	
 struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';'
+	: specifier_qualifier_list struct_declarator_list ';' { fputs(";\\\\\n", f); }
 	;
 
 specifier_qualifier_list
@@ -91,7 +106,7 @@ struct_declarator
 	;
 
 enum_specifier
-	: ENUM ( IDENTIFIER )? '{' enumerator_list '}'
+	: ENUM ( IDENTIFIER )? { fputs("\\{\\\\\n", f); } '{' enumerator_list '}' { fputs("\\}\\\\\n", f); }
 	| ENUM IDENTIFIER
 	;
 	
@@ -139,7 +154,7 @@ identifier_list
 	
 initializer
 	: assignment_expression
-	| '{' initializer_list ( ',' )? '}'
+	| '{' { fputs("\\{\\\\\n", f); } initializer_list ( ',' )? '}' { fputs("\\}\\\\\n", f); }
 	;
 	
 initializer_list
@@ -180,11 +195,11 @@ labeled_statement
 	;
 	
 expression_statement
-	: ( expression )? ';'
+	: ( expression )? ';' { fputs(";\\\\\n", f); }
 	;
 	
 compound_statement
-	: '{' ( declaration_list )? ( statement_list )? '}' {printf("Compound statement\n");}
+	: '{' { fputs("\\{\\\\\n", f); } ( declaration_list )? ( statement_list )? '}' { fputs("\\}\\\\\n", f); }
 	;
 	
 statement_list
@@ -198,15 +213,15 @@ selection_statement
 
 iteration_statement
 	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
+	| DO statement WHILE '(' expression ')' ';' { fputs(";\\\\\n", f); }
 	| FOR '(' ( expression )? ';' ( expression )? ';' ( expression )? ')' statement
 	;
 	
 jump_statement
-	: GOTO IDENTIFIER ';'	/* warning: labels & GOTO's make Dijkstra angry! */
-	| CONTINUE ';'
-	| BREAK ';'
-	| RETURN ( expression )? ';' { printf("Return\n"); }
+	: GOTO IDENTIFIER ';' { fputs(";\\\\\n", f); } /* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE ';' { fputs(";\\\\\n", f); }
+	| BREAK ';' { fputs(";\\\\\n", f); }
+	| RETURN ( expression )? ';' { printf("Return\n"); fputs(";\\\\\n", f); }
 	;
 	
 expression
@@ -292,7 +307,7 @@ postfix_expression
 primary_expression
 	: IDENTIFIER
 	| constant
-	| STRING
+	| STRING { fprintf(f, "\"%s\"\n", yylval.s); }
 	| '(' expression ')'
 	;
 	
@@ -301,5 +316,8 @@ argument_expression_list
 	;
 	
 constant
-	: INTCONST {printf("intconst: %lu\n", yylval.i);}| CHARACTER | FLOATCONST | IDENTIFIER /* enumeration-constant..? haax */ { printf("Constant\n"); }
+	: INTCONST {printf("intconst: %lu\n", yylval.i); fprintf(f, "$ %u $\n", yylval.i); }
+	| CHARACTER 
+	| FLOATCONST 
+	| IDENTIFIER /* enumeration-constant..? haax */ { printf("Constant\n"); }
 	;

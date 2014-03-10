@@ -21,7 +21,10 @@ union lexeme{
 		COMPARE_LEQ, COMPARE_GREQ, COMPARE_EQUAL, COMPARE_UNEQUAL,
 		COMPARE_LESS, COMPARE_GREATER,
 		
-		LOGIC_AND, LOGIC_OR} subtype;
+		LOGIC_AND, LOGIC_OR
+	} subtype;
+	
+	char * text;
 };
 
 #define YYSTYPE union lexeme

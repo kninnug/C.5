@@ -1,25 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char * initString = "\\documentclass{article}\\author{The accent compiler compiler}\\title{Latex pretty printer}\\begin{document}\\maketitle";
-const char * endString = "\\end{document}";
+const char * initString = "\\documentclass{article}\\author{The accent compiler compiler}\\title{Latex pretty printer}\\begin{document}\\maketitle\n";
+const char * endString = "\\end{document}\n";
 
-main()
+FILE * f;
+
+int main()
 {
-   yyparse();
+	f = fopen("pretty.tex", "w");
+	if (f == NULL){
+		printf("Error opening file!\n");
+		exit(1);
+	}
+	
+	fputs(initString, f);
+	
+	yyparse();
 
-   FILE *f = fopen("pretty.tex", "w");
-   if (f == NULL)
-     {
-       printf("Error opening file!\n");
-       exit(1);
-     }
+	fputs(endString, f);
 
-   fprintf(f, "%s %s", initString, endString);
+	fclose(f);
 
-   fclose(f);
-
-   return 0;
+	return 0;
 }
 
 yyerror(msg)
