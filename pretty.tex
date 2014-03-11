@@ -1,5 +1,22 @@
-\documentclass{article}\author{The accent compiler compiler}\title{Latex pretty printer}\begin{document}\maketitle
-\begin{tabbing}xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\kill{\bf int}  printf({\bf char}  *fmt);\\\
+\documentclass{article}\begin{document}
+\begin{tabbing}xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\kill{\bf int}  main({\bf int} argc ,\ {\bf char}  *argv[])\{\+\\
+printf ("Hello world!");\\
+{\bf return} $0$;\\
+\<\}\-\\
+\\
+{\bf float}  Q\_rsqrt({\bf float} number )\{\+\\
+{\bf long} i ;\\
+{\bf float}  x2,\ y;\\
+{\bf const} {\bf float}  threehalfs\ =\ $1.500000$;\\
+ x2\ =\ number\ *\ $0.500000$;\\
+ y\ =\ number;\\
+ i\ =\ *({\bf long} *)\&y;\\
+ i\ =\ $0$\ -\ (i\ $>>$\ $1$);\\
+ y\ =\ *({\bf float} *)\&i;\\
+ y\ =\ y\ *\ (threehalfs\ -\ (x2\ *\ y\ *\ y));\\
+{\bf return} y;\\
+\<\}\-\\
+\\
 {\bf void}  quick\_sort({\bf int} arr [$20$],\ {\bf int} low ,\ {\bf int} high )\{\+\\
 {\bf int}  pivot,\ j,\ temp,\ i;\\
 {\bf if} (low\ $<$\ high)\{\+\\
@@ -18,43 +35,49 @@
  arr[i]\ =\ arr[j];\\
  arr[j]\ =\ temp;\\
 \<\}\-\\
-{\bf else} {\bf if} (derp)\{\+\\
- bjork();\\
 \<\}\-\\
-{\bf else} \{\+\\
- derp();\\
-\<\}\-\\
-\<\}\-\\
-temp=\ arr[pivot];\\
-arr[pivot]=\ arr[j];\\
-arr[j]=\ temp;\\
+temp\ =\ arr[pivot];\\
+arr[pivot]\ =\ arr[j];\\
+arr[j]\ =\ temp;\\
 quick\_sort(arr,\ low,\ j\ -\ $1$);\\
 quick\_sort(arr,\ j\ +\ $1$,\ high);\\
 \<\}\-\\
 \<\}\-\\
 \\
-{\bf int}  main({\bf int} argc ,\ {\bf char}  *argv[])\{\+\\
-{\bf int}  i,\ a[$10$]\ =\ \{$1$,\ $5$,\ $3$,\ $8$,\ $6$,\ $2$,\ $8$,\ $6$,\ $4$,\ $1$\};\\
+{\bf void}  duff({\bf register} {\bf short}  *to,\ {\bf register} {\bf short}  *from,\ {\bf register} count )\{\+\\
 {\bf register}  n\ =\ (count\ +\ $7$)\ /\ $8$;\\
-quick\_sort (a,\ $0$,\ $9$);\\
-{\bf for} (i=\ $0$;\ i\ $<$\ $10$;\ i++)\{\+\\
-printf (" \%4d",\ a[i]);\\
-\<\}\-\\
-putchar('\textbackslash n');\\
 {\bf switch} (count\ \%\ $8$)\{\+\\
-{\bf case} $0$:{\bf do} \{\+\\
- *to++=\ *from++;\\
-{\bf case} $1$:*to++=\ *from++;\\
-{\bf case} $2$:*to++=\ *from++;\\
-{\bf case} $3$:*to++=\ *from++;\\
-{\bf case} $4$:*to++=\ *from++;\\
-{\bf case} $5$:*to++=\ *from++;\\
-{\bf case} $6$:*to++=\ *from++;\\
-{\bf case} $7$:*to++=\ *from++;\\
+{\bf case} $0$: {\bf do} \{\+\\
+ *to++\ =\ *from++;\\
+{\bf case} $7$: *to++\ =\ *from++;\\
+{\bf case} $6$: *to++\ =\ *from++;\\
+{\bf case} $5$: *to++\ =\ *from++;\\
+{\bf case} $4$: *to++\ =\ *from++;\\
+{\bf case} $3$: *to++\ =\ *from++;\\
+{\bf case} $2$: *to++\ =\ *from++;\\
+{\bf case} $1$: *to++\ =\ *from++;\\
 \<\}\-\\
 {\bf while} (--n\ $>$\ $0$);\\
 \<\}\-\\
-{\bf return} $0$;\\
+\<\}\-\\
+\\
+send(to,\ from,\ count){\bf register} {\bf short}  *to,\ *from;\\
+{\bf register} count ;\\
+\{\+\\
+{\bf register}  n\ =\ (count\ +\ $7$)\ /\ $8$;\\
+{\bf switch} (count\ \%\ $8$)\{\+\\
+{\bf case} $0$: {\bf do} \{\+\\
+ *to\ =\ *from++;\\
+{\bf case} $7$: *to\ =\ *from++;\\
+{\bf case} $6$: *to\ =\ *from++;\\
+{\bf case} $5$: *to\ =\ *from++;\\
+{\bf case} $4$: *to\ =\ *from++;\\
+{\bf case} $3$: *to\ =\ *from++;\\
+{\bf case} $2$: *to\ =\ *from++;\\
+{\bf case} $1$: *to\ =\ *from++;\\
+\<\}\-\\
+{\bf while} (--n\ $>$\ $0$);\\
+\<\}\-\\
 \<\}\-\\
 \\
 \end{tabbing}\end{document}

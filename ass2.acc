@@ -75,6 +75,7 @@
 	#define SPRCHS fputs("\\ ", f), PRCHS
 	#define PRS fprintStringConst(f, yylval.s)
 	#define PRKW fprintf(f, "{\\bf %s} ", yylval.s)
+	#define PRSC fputs(";\\\\\n", f)
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
@@ -99,7 +100,7 @@ function_definition
 	;
 	
 declaration
-	: declaration_specifiers ( init_declarator_list )? ';' { fputs(";\\\\\n", f); }
+	: declaration_specifiers ( init_declarator_list )? ';' { PRSC; }
 	;
 	
 declaration_list
@@ -160,7 +161,7 @@ init_declarator
 	;
 	
 struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';' { fputs(";\\\\\n", f); }
+	: specifier_qualifier_list struct_declarator_list ';' { PRSC; }
 	;
 
 specifier_qualifier_list
@@ -260,13 +261,13 @@ statement
 	;
 	
 labeled_statement
-	: id ':' { PRCH; } statement	/* warning: labels & GOTO's make Dijkstra angry! */
-	| CASE { PRKW; } constant_expression ':' { PRCH; } statement
-	| DEFAULT { PRKW; } ':' { PRCH; } statement
+	: id ':' { PRCH; fputc(' ', f); } statement	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CASE { PRKW; } constant_expression ':' { PRCH; fputc(' ', f); } statement
+	| DEFAULT { PRKW; } ':' { PRCH; fputc(' ', f); } statement
 	;
 	
 expression_statement
-	: ( expression )? ';' { fputs(";\\\\\n", f); }
+	: ( expression )? ';' { PRSC; }
 	;
 	
 compound_statement
@@ -284,15 +285,15 @@ selection_statement
 
 iteration_statement
 	: WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } statement
-	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } ';' { fputs(";\\\\\n", f); }
+	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } ';' { PRSC; }
 	| FOR { PRKW; } '(' { PRCH; } ( expression )? ';' { PRCHS; } ( expression )? ';' { PRCHS; } ( expression )? ')' { PRCH; } statement
 	;
 	
 jump_statement
-	: GOTO { PRKW; } id ';' { fputs(";\\\\\n", f); } /* warning: labels & GOTO's make Dijkstra angry! */
-	| CONTINUE { PRKW; } ';' { fputs(";\\\\\n", f); }
-	| BREAK { PRKW; } ';' { fputs(";\\\\\n", f); }
-	| RETURN { PRKW; } ( expression )? ';' { printf("Return\n"); fputs(";\\\\\n", f); }
+	: GOTO { PRKW; } id ';' { PRSC; } /* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE { PRKW; } ';' { PRSC; }
+	| BREAK { PRKW; } ';' { PRSC; }
+	| RETURN { PRKW; } ( expression )? ';' { printf("Return\n"); PRSC; }
 	;
 	
 expression
@@ -306,7 +307,7 @@ assignment_expression
 	
 assignment_operator
 	: ASSIGN { fprintCompare(f, yylval.subtype); }
-	| '=' { PRCHS; }
+	| '=' { SPRCHS; }
 	;
 	
 conditional_expression
@@ -372,7 +373,12 @@ unary_operator
 	
 postfix_expression
 	: primary_expression
-	| postfix_expression ( '[' { PRCH; } expression ']' { PRCH; } | '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } | '.' { PRCH; } id | PTR_OP { fputs("$\\rightarrow$", f); } id | INC_OP { fputs("++", f); } | DEC_OP { fputs("--", f); } )
+	| postfix_expression ( '[' { PRCH; } expression ']' { PRCH; } 
+		| '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } 
+		| '.' { PRCH; } id 
+		| PTR_OP { fputs("$\\rightarrow$", f); } id 
+		| INC_OP { fputs("++", f); } 
+		| DEC_OP { fputs("--", f); } )
 	;
 	
 primary_expression
