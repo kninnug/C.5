@@ -20,21 +20,10 @@ IS			(u|U|l|L)*
 
 /* Warning: older compilers may complain about the %zu printf-specifier as it's
 	C99 feature. Not on a recent (4.8.1) GCC, even with -ansi -pedantic... */
-size_t linenr = 1, column = 1;
+size_t column = 1;
 extern long int yypos;
 
-/* We return character-literals for many single-character tokens, start these 
-	with 256 to make sure they never collide 
-enum tokens {
-	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
-	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
-	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
-	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
-	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
-}; */
-
-/* Keeps track of lines and columns */
+/* Keeps track of lines (and columns, though not accurately anymore) */
 void count();
 /* Eats multi-line comments */
 void comment();
@@ -46,121 +35,130 @@ char* mystrdup(char* yytext);
 int fileno(FILE*);
 %}
 
+/* We copy keyword-names into yylval.s to eliminate having 
+to retype them all into the parser for pretty-printing.
+Same for operator-characters into yylval.c. 
+
+Similar for string- and character-literals: we copy the matched text
+into yylval.s (also for characters), so that they can be printed with
+quotes and all directly from yylval. */
+
 %%
 "/*"			{ comment(); }
 
-"include"		{ yylval.s = mystrdup(yytext); return INCLUDE; }
+"include"		{ count(); yylval.s = mystrdup(yytext); return INCLUDE; }
 
-"auto"			{ yylval.s = mystrdup(yytext); return AUTO; }
-"break"			{ yylval.s = mystrdup(yytext); return BREAK; }
-"case"			{ yylval.s = mystrdup(yytext); return CASE; }
-"char"			{ yylval.s = mystrdup(yytext); return CHAR; }
-"const"			{ yylval.s = mystrdup(yytext); return CONST; }
-"continue"		{ yylval.s = mystrdup(yytext); return CONTINUE; }
-"default"		{ yylval.s = mystrdup(yytext); return DEFAULT; }
-"do"			{ yylval.s = mystrdup(yytext); return DO; }
-"double"		{ yylval.s = mystrdup(yytext); return DOUBLE; }
-"else"			{ yylval.s = mystrdup(yytext); return ELSE; }
-"enum"			{ yylval.s = mystrdup(yytext); return ENUM; }
-"extern"		{ yylval.s = mystrdup(yytext); return EXTERN; }
-"float"			{ yylval.s = mystrdup(yytext); return FLOAT; }
-"for"			{ yylval.s = mystrdup(yytext); return FOR; }
-"goto"			{ yylval.s = mystrdup(yytext); return GOTO; }
-"if"			{ yylval.s = mystrdup(yytext); return IF; }
-"int"			{ yylval.s = mystrdup(yytext); return INT; }
-"long"			{ yylval.s = mystrdup(yytext); return LONG; }
-"register"		{ yylval.s = mystrdup(yytext); return REGISTER; }
-"return"		{ yylval.s = mystrdup(yytext); return RETURN; }
-"short"			{ yylval.s = mystrdup(yytext); return SHORT; }
-"signed"		{ yylval.s = mystrdup(yytext); return SIGNED; }
-"sizeof"		{ yylval.s = mystrdup(yytext); return SIZEOF; }
-"static"		{ yylval.s = mystrdup(yytext); return STATIC; }
-"struct"		{ yylval.s = mystrdup(yytext); return STRUCT; }
-"switch"		{ yylval.s = mystrdup(yytext); return SWITCH; }
-"typedef"		{ yylval.s = mystrdup(yytext); return TYPEDEF; }
-"union"			{ yylval.s = mystrdup(yytext); return UNION; }
-"unsigned"		{ yylval.s = mystrdup(yytext); return UNSIGNED; }
-"void"			{ yylval.s = mystrdup(yytext); return VOID; }
-"volatile"		{ yylval.s = mystrdup(yytext); return VOLATILE; }
-"while"			{ yylval.s = mystrdup(yytext); return WHILE; }
+"auto"			{ count(); yylval.s = mystrdup(yytext); return AUTO; }
+"break"			{ count(); yylval.s = mystrdup(yytext); return BREAK; }
+"case"			{ count(); yylval.s = mystrdup(yytext); return CASE; }
+"char"			{ count(); yylval.s = mystrdup(yytext); return CHAR; }
+"const"			{ count(); yylval.s = mystrdup(yytext); return CONST; }
+"continue"		{ count(); yylval.s = mystrdup(yytext); return CONTINUE; }
+"default"		{ count(); yylval.s = mystrdup(yytext); return DEFAULT; }
+"do"			{ count(); yylval.s = mystrdup(yytext); return DO; }
+"double"		{ count(); yylval.s = mystrdup(yytext); return DOUBLE; }
+"else"			{ count(); yylval.s = mystrdup(yytext); return ELSE; }
+"enum"			{ count(); yylval.s = mystrdup(yytext); return ENUM; }
+"extern"		{ count(); yylval.s = mystrdup(yytext); return EXTERN; }
+"float"			{ count(); yylval.s = mystrdup(yytext); return FLOAT; }
+"for"			{ count(); yylval.s = mystrdup(yytext); return FOR; }
+"goto"			{ count(); yylval.s = mystrdup(yytext); return GOTO; }
+"if"			{ count(); yylval.s = mystrdup(yytext); return IF; }
+"int"			{ count(); yylval.s = mystrdup(yytext); return INT; }
+"long"			{ count(); yylval.s = mystrdup(yytext); return LONG; }
+"register"		{ count(); yylval.s = mystrdup(yytext); return REGISTER; }
+"return"		{ count(); yylval.s = mystrdup(yytext); return RETURN; }
+"short"			{ count(); yylval.s = mystrdup(yytext); return SHORT; }
+"signed"		{ count(); yylval.s = mystrdup(yytext); return SIGNED; }
+"sizeof"		{ count(); yylval.s = mystrdup(yytext); return SIZEOF; }
+"static"		{ count(); yylval.s = mystrdup(yytext); return STATIC; }
+"struct"		{ count(); yylval.s = mystrdup(yytext); return STRUCT; }
+"switch"		{ count(); yylval.s = mystrdup(yytext); return SWITCH; }
+"typedef"		{ count(); yylval.s = mystrdup(yytext); return TYPEDEF; }
+"union"			{ count(); yylval.s = mystrdup(yytext); return UNION; }
+"unsigned"		{ count(); yylval.s = mystrdup(yytext); return UNSIGNED; }
+"void"			{ count(); yylval.s = mystrdup(yytext); return VOID; }
+"volatile"		{ count(); yylval.s = mystrdup(yytext); return VOLATILE; }
+"while"			{ count(); yylval.s = mystrdup(yytext); return WHILE; }
 
-{L}({L}|{D})*			{ yylval.s = mystrdup(yytext); return IDENTIFIER; }
+{L}({L}|{D})*			{ count(); yylval.s = mystrdup(yytext); return IDENTIFIER; }
 
-0[xX]{H}+{IS}?			{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
-0{D}+{IS}?				{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
-{D}+{IS}?				{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
-L?'(\\.|[^\\'])'		{ yylval.s = mystrdup(yytext); return CHARACTER; }
+0[xX]{H}+{IS}?			{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+0{D}+{IS}?				{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+{D}+{IS}?				{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+
+L?'(\\.|[^\\'])'		{ count(); yylval.s = mystrdup(yytext); return CHARACTER; }
 	/* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
 	 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
-L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
+L?'(\\.|[^\\']){2,}		{ count(); printf("%zu:%zu: Illegal or unterminated character constant....abort\n", yypos, column); exit(-1); }
 
-{D}+{E}{FS}?			{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
-{D}*"."{D}+({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
-{D}+"."{D}*({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+L?\"(\\.|[^\\"\n])*\"		{ count(); yylval.s = mystrdup(yytext); return STRING; }
 
-L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING; }
+{D}+{E}{FS}?			{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+{D}*"."{D}+({E})?{FS}?	{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+{D}+"."{D}*({E})?{FS}?	{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 
-"..."			{ return ELLIPSIS; }
+"..."			{ count(); return ELLIPSIS; }
 
-"="				{ yylval.c = '='; return '='; }
-">>="			{ yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
-"<<="			{ yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
-"+="			{ yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
-"-="			{ yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
-"*="			{ yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
-"/="			{ yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
-"%="			{ yylval.subtype = ASSIGN_MOD; return ASSIGN; }
-"&="			{ yylval.subtype = ASSIGN_AND; return ASSIGN; }
-"^="			{ yylval.subtype = ASSIGN_XOR; return ASSIGN; }
-"|="			{ yylval.subtype = ASSIGN_OR; return ASSIGN; }
+"="				{ count(); yylval.c = '='; return '='; }
+">>="			{ count(); yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
+"<<="			{ count(); yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
+"+="			{ count(); yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
+"-="			{ count(); yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
+"*="			{ count(); yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
+"/="			{ count(); yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
+"%="			{ count(); yylval.subtype = ASSIGN_MOD; return ASSIGN; }
+"&="			{ count(); yylval.subtype = ASSIGN_AND; return ASSIGN; }
+"^="			{ count(); yylval.subtype = ASSIGN_XOR; return ASSIGN; }
+"|="			{ count(); yylval.subtype = ASSIGN_OR; return ASSIGN; }
 
-">>"			{ yylval.subtype = SHIFT_RIGHT; return SHIFT; }
-"<<"			{ yylval.subtype = SHIFT_LEFT; return SHIFT; }
+">>"			{ count(); yylval.subtype = SHIFT_RIGHT; return SHIFT; }
+"<<"			{ count(); yylval.subtype = SHIFT_LEFT; return SHIFT; }
 
-"&"				{ yylval.c = '&'; return BIT_AND; }
-"^"				{ yylval.c = '^'; return BIT_XOR; }
-"|"				{ yylval.c = '|'; return BIT_OR; }
-"~"				{ yylval.c = '~'; return BIT_NOT; }
+"&"				{ count(); yylval.c = '&'; return BIT_AND; }
+"^"				{ count(); yylval.c = '^'; return BIT_XOR; }
+"|"				{ count(); yylval.c = '|'; return BIT_OR; }
+"~"				{ count(); yylval.c = '~'; return BIT_NOT; }
 
-"<="			{ yylval.subtype = COMPARE_LEQ; return COMPARE; }
-">="			{ yylval.subtype = COMPARE_GREQ; return COMPARE; }
-"=="			{ yylval.subtype = COMPARE_EQUAL; return COMPARE; }
-"!="			{ yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
-"<"				{ yylval.subtype = COMPARE_LESS; return COMPARE; }
-">"				{ yylval.subtype = COMPARE_GREATER; return COMPARE; }
+"<="			{ count(); yylval.subtype = COMPARE_LEQ; return COMPARE; }
+">="			{ count(); yylval.subtype = COMPARE_GREQ; return COMPARE; }
+"=="			{ count(); yylval.subtype = COMPARE_EQUAL; return COMPARE; }
+"!="			{ count(); yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
+"<"				{ count(); yylval.subtype = COMPARE_LESS; return COMPARE; }
+">"				{ count(); yylval.subtype = COMPARE_GREATER; return COMPARE; }
 
-"&&"			{ return LOGICAL_AND; }
-"||"			{ return LOGICAL_OR; }
+"&&"			{ count(); return LOGICAL_AND; }
+"||"			{ count(); return LOGICAL_OR; }
 
-"++"			{ return INC_OP; }
-"--"			{ return DEC_OP; }
+"++"			{ count(); return INC_OP; }
+"--"			{ count(); return DEC_OP; }
 
-"->"			{ return PTR_OP; }
+"->"			{ count(); return PTR_OP; }
 
-";"				{ yylval.c = ';'; return ';'; }
-("{"|"<%")		{ yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
-("}"|"%>")		{ yylval.c = '}'; return '}'; }
-","				{ yylval.c = ','; return ','; }
-":"				{ yylval.c = ':'; return ':'; }
-"("				{ yylval.c = '('; return '('; }
-")"				{ yylval.c = ')'; return ')'; }
-("["|"<:")		{ yylval.c = '['; return '['; }
-("]"|":>")		{ yylval.c = ']'; return ']'; }
-"."				{ yylval.c = '.'; return '.'; }
-"!"				{ yylval.c = '!'; return '!'; }
-"-"				{ yylval.c = '-'; return '-'; }
-"+"				{ yylval.c = '+'; return '+'; }
-"*"				{ yylval.c = '*'; return '*'; }
-"/"				{ yylval.c = '/'; return '/'; }
-"%"				{ yylval.c = '%'; return '%'; }
-"?"				{ yylval.c = '?'; return '?'; }
-"#"				{ yylval.c = '#'; return '#'; }
+";"				{ count(); yylval.c = ';'; return ';'; }
+("{"|"<%")		{ count(); yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
+("}"|"%>")		{ count(); yylval.c = '}'; return '}'; }
+","				{ count(); yylval.c = ','; return ','; }
+":"				{ count(); yylval.c = ':'; return ':'; }
+"("				{ count(); yylval.c = '('; return '('; }
+")"				{ count(); yylval.c = ')'; return ')'; }
+("["|"<:")		{ count(); yylval.c = '['; return '['; }
+("]"|":>")		{ count(); yylval.c = ']'; return ']'; }
+"."				{ count(); yylval.c = '.'; return '.'; }
+"!"				{ count(); yylval.c = '!'; return '!'; }
+"-"				{ count(); yylval.c = '-'; return '-'; }
+"+"				{ count(); yylval.c = '+'; return '+'; }
+"*"				{ count(); yylval.c = '*'; return '*'; }
+"/"				{ count(); yylval.c = '/'; return '/'; }
+"%"				{ count(); yylval.c = '%'; return '%'; }
+"?"				{ count(); yylval.c = '?'; return '?'; }
+"#"				{ count(); yylval.c = '#'; return '#'; }
 
 [ \t\v\f\n]		{ count(); }
 
-.				{ 
+.				{ count();
 		int c = yytext[0]; 
-		printf("%zu:%zu: Illegal character (", linenr, column);
+		printf("%zu:%zu: Illegal character (", yypos, column);
 		
 		if(isprint(c)) putchar(c); 
 		else printf("%i", c);
@@ -171,10 +169,6 @@ L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING; }
 
 %%
 
-/*int yywrap(){
-	return 1;
-}
-*/
 void comment(){
 	char c, c1;
 	
@@ -182,8 +176,7 @@ void comment(){
 	
 	while((c = input()) != 0){
 		if(c == '\n'){
-			linenr++;
-			yypos = linenr;
+			yypos++;
 			column = 0;
 		}
 		column++;
@@ -200,42 +193,28 @@ void comment(){
 	column++;
 }
 
-
+/**
+ * Since strdup is *not* C-standard it isn't always available
+ * instead of mucking about with feature-test-macros we simply
+ * define our own, with a different name so as to not cause linker-errors
+*/
 char * mystrdup(char * src){
- size_t len = strlen(src);
- char * dst = malloc(len + 1);
- strcpy(dst, src);
- return dst;
+	size_t len = strlen(src);
+	char * dst = malloc(len + 1);
+	if(dst) strcpy(dst, src);
+	return dst;
 }
 
-
+/**
+ * Colum-count is no longer accurate, but the linenr (yypos) is
+*/
 void count(){
 	int i;
 
 	for (i = 0; yytext[i] != '\0'; i++){
 		if (yytext[i] == '\n'){
-			linenr++;
-			yypos = linenr;
+			yypos++;
 			column = 1;
 		}else column++;
-		/* <Rant> The original included a case for tabs, reporting them as 8 columns.
-		Everyone knows that tabs are never replaced by spaces, but always 
-		displayed with a maximum width of 4 spaces. Aligned with the tab-stop.
-		</Rant> */
 	}
 }
-
-/*int main(int argc, char ** argv){
-	int t;
-	
-	if(argc > 1) yyin = fopen(argv[1], "r");
-	
-	while((t = yylex())){
-		printf("%zu:%zu:%d @%s@\n", linenr, column, t, yytext);
-		count();
-	}
-	
-	fclose(yyin);
-	
-	return 0;
-}*/

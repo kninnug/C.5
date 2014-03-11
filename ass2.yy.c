@@ -378,24 +378,24 @@ static yyconst flex_int16_t yy_accept[252] =
        38,   38,   78,   74,   67,   46,   68,   90,   35,   35,
        81,   82,   60,   35,   35,   35,   35,   35,   35,   35,
        35,   35,   35,   35,   35,   35,   35,   35,   75,   61,
-       76,   62,   66,    0,   44,    0,   53,   76,   69,   54,
-        0,    0,   51,   71,   49,   72,   50,   73,    0,   42,
-        1,   52,   43,   37,    0,   38,    0,   38,   82,   75,
+       76,   62,   66,    0,   41,    0,   53,   76,   69,   54,
+        0,    0,   51,   71,   49,   72,   50,   73,    0,   43,
+        1,   52,   44,   37,    0,   38,    0,   38,   82,   75,
        81,   58,   63,   65,   64,   57,   35,    0,    0,   55,
        35,   35,   35,   35,   35,   35,   10,   35,   35,   35,
 
        35,   35,   35,   18,   35,   35,   35,   35,   35,   35,
        35,   35,   35,   35,   35,   56,   70,   40,   39,    0,
-       45,    0,   42,   42,    0,   43,   37,    0,   41,   36,
+       45,    0,   43,   43,    0,   44,   37,    0,   42,   36,
        48,   47,   35,   35,   35,   35,   35,   35,   35,   35,
        35,   35,   35,   16,   35,   35,   19,   35,   35,   35,
        35,   35,   35,   35,   35,   35,   35,   35,   35,   35,
-       35,   35,   40,    0,    0,   42,    0,   42,    0,   43,
-       41,   36,    3,   35,    5,    6,   35,   35,   35,   35,
+       35,   35,   40,    0,    0,   43,    0,   43,    0,   44,
+       42,   36,    3,   35,    5,    6,   35,   35,   35,   35,
        12,   13,   35,   35,   17,   35,   20,   35,   35,   35,
        35,   35,   35,   35,   35,   35,   35,   35,   32,   35,
 
-       35,    0,   42,    4,    7,   35,   35,   35,   35,   15,
+       35,    0,   43,    4,    7,   35,   35,   35,   35,   15,
        35,   35,   35,   23,   35,   35,   35,   35,   35,   35,
        30,   35,   35,   34,   35,   35,   11,   14,   35,   35,
        22,   24,   25,   26,   27,   28,   35,   35,   35,   35,
@@ -647,21 +647,10 @@ char *yytext;
 
 /* Warning: older compilers may complain about the %zu printf-specifier as it's
 	C99 feature. Not on a recent (4.8.1) GCC, even with -ansi -pedantic... */
-size_t linenr = 1, column = 1;
+size_t column = 1;
 extern long int yypos;
 
-/* We return character-literals for many single-character tokens, start these 
-	with 256 to make sure they never collide 
-enum tokens {
-	AUTO = 256, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
-	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
-	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
-	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING_LITERAL, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGIC_OP, IDENTIFIER, 
-	PREPROC, BIT_OP, INCLUDE, CHARACTER, FLOATCONST, INTCONST
-}; */
-
-/* Keeps track of lines and columns */
+/* Keeps track of lines (and columns, though not accurately anymore) */
 void count();
 /* Eats multi-line comments */
 void comment();
@@ -671,7 +660,14 @@ char* mystrdup(char* yytext);
 
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
-#line 675 "ass2.yy.c"
+#line 682 "ass2.yy.c"
+to retype them all into the parser for pretty-printing.
+Same for operator-characters into yylval.c. 
+
+Similar for string- and character-literals: we copy the matched text
+into yylval.s (also for characters), so that they can be printed with
+quotes and all directly from yylval. */
+#line 678 "ass2.yy.c"
 
 #define INITIAL 0
 
@@ -853,6 +849,8 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
+#line 49 "ass2.flex"
+#line 871 "ass2.yy.c"
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -941,475 +939,475 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 50 "ass2.flex"
+#line 47 "ass2.flex"
 { comment(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 52 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return INCLUDE; }
+#line 49 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return INCLUDE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 54 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return AUTO; }
+#line 51 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return AUTO; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 55 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return BREAK; }
+#line 52 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return BREAK; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 56 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return CASE; }
+#line 53 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return CASE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 57 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return CHAR; }
+#line 54 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return CHAR; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 58 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return CONST; }
+#line 55 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return CONST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 59 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return CONTINUE; }
+#line 56 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return CONTINUE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 60 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return DEFAULT; }
+#line 57 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return DEFAULT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 61 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return DO; }
+#line 58 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return DO; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 62 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return DOUBLE; }
+#line 59 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return DOUBLE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 63 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return ELSE; }
+#line 60 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return ELSE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 64 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return ENUM; }
+#line 61 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return ENUM; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 65 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return EXTERN; }
+#line 62 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return EXTERN; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 66 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return FLOAT; }
+#line 63 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return FLOAT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 67 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return FOR; }
+#line 64 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return FOR; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 68 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return GOTO; }
+#line 65 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return GOTO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 69 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return IF; }
+#line 66 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return IF; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 70 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return INT; }
+#line 67 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return INT; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 71 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return LONG; }
+#line 68 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return LONG; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 72 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return REGISTER; }
+#line 69 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return REGISTER; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 73 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return RETURN; }
+#line 70 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return RETURN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 74 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return SHORT; }
+#line 71 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return SHORT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 75 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return SIGNED; }
+#line 72 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return SIGNED; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 76 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return SIZEOF; }
+#line 73 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return SIZEOF; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 77 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return STATIC; }
+#line 74 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return STATIC; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 78 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return STRUCT; }
+#line 75 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return STRUCT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 79 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return SWITCH; }
+#line 76 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return SWITCH; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 80 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return TYPEDEF; }
+#line 77 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return TYPEDEF; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 81 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return UNION; }
+#line 78 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return UNION; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 82 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return UNSIGNED; }
+#line 79 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return UNSIGNED; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 83 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return VOID; }
+#line 80 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return VOID; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 84 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return VOLATILE; }
+#line 81 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return VOLATILE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 85 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return WHILE; }
+#line 82 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return WHILE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 87 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return IDENTIFIER; }
+#line 84 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 89 "ass2.flex"
-{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+#line 86 "ass2.flex"
+{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 90 "ass2.flex"
-{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+#line 87 "ass2.flex"
+{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 91 "ass2.flex"
-{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
+#line 88 "ass2.flex"
+{ count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 92 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return CHARACTER; }
+#line 90 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return CHARACTER; }
 	YY_BREAK
 /* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
 	 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 95 "ass2.flex"
-{ printf("%zu:%zu: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
+#line 93 "ass2.flex"
+{ count(); printf("%zu:%zu: Illegal or unterminated character constant....abort\n", yypos, column); exit(-1); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 97 "ass2.flex"
-{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+#line 95 "ass2.flex"
+{ count(); yylval.s = mystrdup(yytext); return STRING; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 98 "ass2.flex"
-{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+#line 97 "ass2.flex"
+{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 99 "ass2.flex"
-{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
+#line 98 "ass2.flex"
+{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 101 "ass2.flex"
-{ yylval.s = mystrdup(yytext); return STRING; }
+#line 99 "ass2.flex"
+{ count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 103 "ass2.flex"
-{ return ELLIPSIS; }
+#line 101 "ass2.flex"
+{ count(); return ELLIPSIS; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 105 "ass2.flex"
-{ yylval.c = '='; return '='; }
+#line 103 "ass2.flex"
+{ count(); yylval.c = '='; return '='; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 106 "ass2.flex"
-{ yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
+#line 104 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 107 "ass2.flex"
-{ yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
+#line 105 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 108 "ass2.flex"
-{ yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
+#line 106 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 109 "ass2.flex"
-{ yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
+#line 107 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 110 "ass2.flex"
-{ yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
+#line 108 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 111 "ass2.flex"
-{ yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
+#line 109 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 112 "ass2.flex"
-{ yylval.subtype = ASSIGN_MOD; return ASSIGN; }
+#line 110 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_MOD; return ASSIGN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 113 "ass2.flex"
-{ yylval.subtype = ASSIGN_AND; return ASSIGN; }
+#line 111 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_AND; return ASSIGN; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 114 "ass2.flex"
-{ yylval.subtype = ASSIGN_XOR; return ASSIGN; }
+#line 112 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_XOR; return ASSIGN; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 115 "ass2.flex"
-{ yylval.subtype = ASSIGN_OR; return ASSIGN; }
+#line 113 "ass2.flex"
+{ count(); yylval.subtype = ASSIGN_OR; return ASSIGN; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 117 "ass2.flex"
-{ yylval.subtype = SHIFT_RIGHT; return SHIFT; }
+#line 115 "ass2.flex"
+{ count(); yylval.subtype = SHIFT_RIGHT; return SHIFT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 118 "ass2.flex"
-{ yylval.subtype = SHIFT_LEFT; return SHIFT; }
+#line 116 "ass2.flex"
+{ count(); yylval.subtype = SHIFT_LEFT; return SHIFT; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 120 "ass2.flex"
-{ yylval.c = '&'; return BIT_AND; }
+#line 118 "ass2.flex"
+{ count(); yylval.c = '&'; return BIT_AND; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 121 "ass2.flex"
-{ yylval.c = '^'; return BIT_XOR; }
+#line 119 "ass2.flex"
+{ count(); yylval.c = '^'; return BIT_XOR; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 122 "ass2.flex"
-{ yylval.c = '|'; return BIT_OR; }
+#line 120 "ass2.flex"
+{ count(); yylval.c = '|'; return BIT_OR; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 123 "ass2.flex"
-{ yylval.c = '~'; return BIT_NOT; }
+#line 121 "ass2.flex"
+{ count(); yylval.c = '~'; return BIT_NOT; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 125 "ass2.flex"
-{ yylval.subtype = COMPARE_LEQ; return COMPARE; }
+#line 123 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_LEQ; return COMPARE; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 126 "ass2.flex"
-{ yylval.subtype = COMPARE_GREQ; return COMPARE; }
+#line 124 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_GREQ; return COMPARE; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 127 "ass2.flex"
-{ yylval.subtype = COMPARE_EQUAL; return COMPARE; }
+#line 125 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_EQUAL; return COMPARE; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 128 "ass2.flex"
-{ yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
+#line 126 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 129 "ass2.flex"
-{ yylval.subtype = COMPARE_LESS; return COMPARE; }
+#line 127 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_LESS; return COMPARE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 130 "ass2.flex"
-{ yylval.subtype = COMPARE_GREATER; return COMPARE; }
+#line 128 "ass2.flex"
+{ count(); yylval.subtype = COMPARE_GREATER; return COMPARE; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 132 "ass2.flex"
-{ return LOGICAL_AND; }
+#line 130 "ass2.flex"
+{ count(); return LOGICAL_AND; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 133 "ass2.flex"
-{ return LOGICAL_OR; }
+#line 131 "ass2.flex"
+{ count(); return LOGICAL_OR; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 135 "ass2.flex"
-{ return INC_OP; }
+#line 133 "ass2.flex"
+{ count(); return INC_OP; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 136 "ass2.flex"
-{ return DEC_OP; }
+#line 134 "ass2.flex"
+{ count(); return DEC_OP; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 138 "ass2.flex"
-{ return PTR_OP; }
+#line 136 "ass2.flex"
+{ count(); return PTR_OP; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 140 "ass2.flex"
-{ yylval.c = ';'; return ';'; }
+#line 138 "ass2.flex"
+{ count(); yylval.c = ';'; return ';'; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 141 "ass2.flex"
-{ yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
+#line 139 "ass2.flex"
+{ count(); yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 142 "ass2.flex"
-{ yylval.c = '}'; return '}'; }
+#line 140 "ass2.flex"
+{ count(); yylval.c = '}'; return '}'; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 143 "ass2.flex"
-{ yylval.c = ','; return ','; }
+#line 141 "ass2.flex"
+{ count(); yylval.c = ','; return ','; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 144 "ass2.flex"
-{ yylval.c = ':'; return ':'; }
+#line 142 "ass2.flex"
+{ count(); yylval.c = ':'; return ':'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 145 "ass2.flex"
-{ yylval.c = '('; return '('; }
+#line 143 "ass2.flex"
+{ count(); yylval.c = '('; return '('; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 146 "ass2.flex"
-{ yylval.c = ')'; return ')'; }
+#line 144 "ass2.flex"
+{ count(); yylval.c = ')'; return ')'; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 147 "ass2.flex"
-{ yylval.c = '['; return '['; }
+#line 145 "ass2.flex"
+{ count(); yylval.c = '['; return '['; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 148 "ass2.flex"
-{ yylval.c = ']'; return ']'; }
+#line 146 "ass2.flex"
+{ count(); yylval.c = ']'; return ']'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 149 "ass2.flex"
-{ yylval.c = '.'; return '.'; }
+#line 147 "ass2.flex"
+{ count(); yylval.c = '.'; return '.'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 150 "ass2.flex"
-{ yylval.c = '!'; return '!'; }
+#line 148 "ass2.flex"
+{ count(); yylval.c = '!'; return '!'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 151 "ass2.flex"
-{ yylval.c = '-'; return '-'; }
+#line 149 "ass2.flex"
+{ count(); yylval.c = '-'; return '-'; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 152 "ass2.flex"
-{ yylval.c = '+'; return '+'; }
+#line 150 "ass2.flex"
+{ count(); yylval.c = '+'; return '+'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 153 "ass2.flex"
-{ yylval.c = '*'; return '*'; }
+#line 151 "ass2.flex"
+{ count(); yylval.c = '*'; return '*'; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 154 "ass2.flex"
-{ yylval.c = '/'; return '/'; }
+#line 152 "ass2.flex"
+{ count(); yylval.c = '/'; return '/'; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 155 "ass2.flex"
-{ yylval.c = '%'; return '%'; }
+#line 153 "ass2.flex"
+{ count(); yylval.c = '%'; return '%'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 156 "ass2.flex"
-{ yylval.c = '?'; return '?'; }
+#line 154 "ass2.flex"
+{ count(); yylval.c = '?'; return '?'; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 157 "ass2.flex"
-{ yylval.c = '#'; return '#'; }
+#line 155 "ass2.flex"
+{ count(); yylval.c = '#'; return '#'; }
 	YY_BREAK
 case 92:
 /* rule 92 can match eol */
 YY_RULE_SETUP
-#line 159 "ass2.flex"
+#line 157 "ass2.flex"
 { count(); }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 161 "ass2.flex"
-{ 
+#line 159 "ass2.flex"
+{ count();
 		int c = yytext[0]; 
-		printf("%zu:%zu: Illegal character (", linenr, column);
+		printf("%zu:%zu: Illegal character (", yypos, column);
 		
 		if(isprint(c)) putchar(c); 
 		else printf("%i", c);
@@ -1420,10 +1418,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 172 "ass2.flex"
+#line 170 "ass2.flex"
 ECHO;
 	YY_BREAK
-#line 1427 "ass2.yy.c"
+#line 1438 "ass2.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2418,14 +2416,10 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 172 "ass2.flex"
+#line 170 "ass2.flex"
 
 
 
-/*int yywrap(){
-	return 1;
-}
-*/
 void comment(){
 	char c, c1;
 	
@@ -2433,8 +2427,7 @@ void comment(){
 	
 	while((c = input()) != 0){
 		if(c == '\n'){
-			linenr++;
-			yypos = linenr;
+			yypos++;
 			column = 0;
 		}
 		column++;
@@ -2451,43 +2444,29 @@ void comment(){
 	column++;
 }
 
-
+/**
+ * Since strdup is *not* C-standard it isn't always available
+ * instead of mucking about with feature-test-macros we simply
+ * define our own, with a different name so as to not cause linker-errors
+*/
 char * mystrdup(char * src){
- size_t len = strlen(src);
- char * dst = malloc(len + 1);
- strcpy(dst, src);
- return dst;
+	size_t len = strlen(src);
+	char * dst = malloc(len + 1);
+	if(dst) strcpy(dst, src);
+	return dst;
 }
 
-
+/**
+ * Colum-count is no longer accurate, but the linenr (yypos) is
+*/
 void count(){
 	int i;
 
 	for (i = 0; yytext[i] != '\0'; i++){
 		if (yytext[i] == '\n'){
-			linenr++;
-			yypos = linenr;
+			yypos++;
 			column = 1;
 		}else column++;
-		/* <Rant> The original included a case for tabs, reporting them as 8 columns.
-		Everyone knows that tabs are never replaced by spaces, but always 
-		displayed with a maximum width of 4 spaces. Aligned with the tab-stop.
-		</Rant> */
 	}
 }
-
-/*int main(int argc, char ** argv){
-	int t;
-	
-	if(argc > 1) yyin = fopen(argv[1], "r");
-	
-	while((t = yylex())){
-		printf("%zu:%zu:%d @%s@\n", linenr, column, t, yytext);
-		count();
-	}
-	
-	fclose(yyin);
-	
-	return 0;
-}*/
 

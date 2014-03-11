@@ -1,6 +1,6 @@
 \begin{tabbing}xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\kill{\bf int}  main({\bf int} argc ,\ {\bf char}  *argv[])\{\+\\
-printf ("Hello world!");\\
-{\bf return} $0$;\\
+printf ("Hello world!\textbackslash n");\\
+{\bf return} argc\ $>$\ $1$\ ?\ atoi(argv[$1$])\ :\ $5$["Hello world!"]\ +\ '\textbackslash v'\ -\ !!argc;\\
 \<\}\-\\
 \\
 {\bf float}  Q\_rsqrt({\bf float} number )\{\+\\
@@ -46,18 +46,18 @@ quick\_sort(arr,\ j\ +\ $1$,\ high);\\
 {\bf void}  duff({\bf register} {\bf short}  *to,\ {\bf register} {\bf short}  *from,\ {\bf register} count )\{\+\\
 {\bf register}  n\ =\ (count\ +\ $7$)\ /\ $8$;\\
 {\bf switch} (count\ \%\ $8$)\{\+\\
-{\bf case} $0$: {\bf do} \{\+\\
+{\bf case} $0$:\ {\bf do} \{\+\\
  *to++\ =\ *from++;\\
-{\bf case} $7$: *to++\ =\ *from++;\\
-{\bf case} $6$: *to++\ =\ *from++;\\
-{\bf case} $5$: *to++\ =\ *from++;\\
-{\bf case} $4$: *to++\ =\ *from++;\\
-{\bf case} $3$: *to++\ =\ *from++;\\
-{\bf case} $2$: *to++\ =\ *from++;\\
-{\bf case} $1$: *to++\ =\ *from++;\\
+{\bf case} $7$:\ *to++\ =\ *from++;\\
+{\bf case} $6$:\ *to++\ =\ *from++;\\
+{\bf case} $5$:\ *to++\ =\ *from++;\\
+{\bf case} $4$:\ *to++\ =\ *from++;\\
+{\bf case} $3$:\ *to++\ =\ *from++;\\
+{\bf case} $2$:\ *to++\ =\ *from++;\\
+{\bf case} $1$:\ *to++\ =\ *from++;\\
 \<\}\-\\
 {\bf while} (--n\ $>$\ $0$);\\
 \<\}\-\\
 \<\}\-\\
 \\
-\end{tabbing}
+send(to,\ from,\ count){\bf register} {\bf short}  *to,\ *from;\\

@@ -6,37 +6,44 @@ const char * initString = /*"\\documentclass{article}\\begin{document}\n"*/
 const char * endString = "\\end{tabbing}";
 /*\\end{document}\n";*/
 
-FILE * f;
+FILE * out;
+extern FILE * yyin;
 
-int main()
-{
-	f = fopen("pretty.tex", "w");
-	if (f == NULL){
+int main(int argc, char ** argv){
+	yyin = stdin;
+	out = stdout;
+	
+	if(argc == 2){
+		yyin = fopen(argv[1], "r");
+	}
+	if(argc == 3){
+		yyin = fopen(argv[1], "r");
+		out = fopen(argv[2], "w");
+	}
+	
+	if (out == NULL || yyin == NULL){
 		printf("Error opening file!\n");
 		exit(1);
 	}
 	
-	fputs(initString, f);
+	fputs(initString, out);
 	
 	yyparse();
 
-	fputs(endString, f);
+	fputs(endString, out);
 
-	fclose(f);
+	fclose(out);
 
 	return 0;
 }
 
-yyerror(msg)
-   char *msg;
-{
+yyerror(char * msg){
    extern long yypos;
 
    printf("line %ld: %s\n", yypos, msg);
    exit(1);
 }
 
-yywrap()
-{
+yywrap(){
    return 1;
 }

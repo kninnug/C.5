@@ -1,81 +1,76 @@
+/**
+ * The Duff parser: a C-parser-to-LaTeX-pretty-printer
+ * by Marco Gunnink (2170248) and Bart Offereins (2255243)
+*/
+
 %prelude{
 	#include <stdio.h>
 	#include <stdlib.h>
 	
 	#include "parser.h"
 	
-	extern FILE * f;
+	extern FILE * out;
 	
-	void fprintStringConst(FILE * f, char * s){
-		while(*s){
-			if(*s == '\\') fputs("\\textbackslash ", f);
-			else if(*s == '%') fputs("\\%", f);
-			else if(*s == '$') fputs("\\$", f);
-			else if(*s == '>') fputs("$>$", f);
-			else if(*s == '<') fputs("$<$", f);
-			else if(*s == '{') fputs("\\{", f);
-			else if(*s == '}') fputs("\\}", f);
-			else if(*s == '&') fputs("\\&", f);
-			else fputc(*s, f);
-			s++;
-		}
-	}
-	
-	void fprintIdentifier(FILE * f, char * s){
-		while(*s){
-			if(*s == '_') fputc('\\', f), fputc('_', f);
-			else fputc(*s, f);
-			s++;
-		}
-	}
-	
-	void prCh(FILE * f, int c){
+	void escapeChar(FILE * out, int c){
 		switch(c){
+			case '\\':
+				fputs("\\textbackslash ", out);
+			break;
+			
+			case '<':
+			case '>':
+				fputc('$', out);
+				fputc(c, out);
+				fputc('$', out);
+			break;
+			
 			case '&':
 			case '%':
 			case '{':
 			case '}':
-				fputc('\\', f);
-				fputc(c, f);
-			break;
-			case '<':
-			case '>':
-				fputc('$', f);
-				fputc(c, f);
-				fputc('$', f);
-			break;
+			case '_':
+				fputc('\\', out);
+			/* fall-through: w00t! */
 			default:
-				fputc(c, f);
+				fputc(c, out);
 		}
 	}
 	
-	void fprintCompare(FILE * f, int st){
+	void escapeString(FILE * out, char * s){
+		while(*s) escapeChar(out, *s++);
+	}
+	
+	void printSubtype(FILE * out, int st){
+		fputs("\\ $", out);
 		switch(st){
-			case COMPARE_EQUAL: fputs("\\ $==$\\ ", f); break;
-			case COMPARE_UNEQUAL: fputs("\\ $\\neq$\\ ", f); break;
-			case COMPARE_LEQ: fputs("\\ $\\leq$\\ ", f); break;
-			case COMPARE_GREQ: fputs("\\ $\\geq$\\ ", f); break;
-			case COMPARE_GREATER: fputs("\\ $>$\\ ", f); break;
-			case COMPARE_LESS: fputs("\\ $<$\\ ", f); break;
+			case COMPARE_EQUAL: fputs("==", out); break;
+			case COMPARE_UNEQUAL: fputs("\\neq", out); break;
+			case COMPARE_LEQ: fputs("\\leq", out); break;
+			case COMPARE_GREQ: fputs("\\geq", out); break;
+			case COMPARE_GREATER: fputs(">", out); break;
+			case COMPARE_LESS: fputs("<", out); break;
 			
-			case ASSIGN_AND: fputs("\\ $\\&=$\\ ", f); break;
-			case ASSIGN_DIVIDE: fputs("\\ $/=$\\ ", f); break;
-			case ASSIGN_MINUS: fputs("\\ $-=$\\ ", f); break;
-			case ASSIGN_MOD: fputs("\\ $\\%=$\\ ", f); break;
-			case ASSIGN_OR: fputs("\\ $|=$\\ ", f); break;
-			case ASSIGN_PLUS: fputs("\\ $+=$\\ ", f); break;
-			case ASSIGN_SHLEFT: fputs("\\ $<<=$\\ ", f); break;
-			case ASSIGN_SHRIGHT: fputs("\\ $>>=$\\ ", f); break;
-			case ASSIGN_XOR: fputs("\\ $\\^=$\\ ", f); break;
+			case ASSIGN_AND: fputs("\\&=", out); break;
+			case ASSIGN_DIVIDE: fputs("/=", out); break;
+			case ASSIGN_MINUS: fputs("-=", out); break;
+			case ASSIGN_MOD: fputs("\\%=", out); break;
+			case ASSIGN_OR: fputs("|=", out); break;
+			case ASSIGN_PLUS: fputs("+=", out); break;
+			case ASSIGN_SHLEFT: fputs("<<=", out); break;
+			case ASSIGN_SHRIGHT: fputs(">>=", out); break;
+			case ASSIGN_XOR: fputs("\\^=", out); break;
 		}
+		fputs("$\\ ", out);
 	}
 	
-	#define PRCH prCh(f, yylval.c)
-	#define PRCHS PRCH, fputs("\\ ", f)
-	#define SPRCHS fputs("\\ ", f), PRCHS
-	#define PRS fprintStringConst(f, yylval.s)
-	#define PRKW fprintf(f, "{\\bf %s} ", yylval.s)
-	#define PRSC fputs(";\\\\\n", f)
+	/* Nice cryptic macros for shortening semantic-action blocks */
+	#define PRCH escapeChar(out, yylval.c)
+	#define PRCHS PRCH, fputs("\\ ", out)
+	/* long live the comma-operator! */
+	#define SPRCHS fputs("\\ ", out), PRCHS
+	#define PRS escapeString(out, yylval.s)
+	#define PRKW fprintf(out, "{\\bf %s} ", yylval.s)
+	#define PRSC fputs(";\\\\\n", out)
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
@@ -83,9 +78,9 @@
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, 
 	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, 
-	PREPROC, BIT_OR, BIT_AND, BIT_XOR, SHIFT, BIT_NOT, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
+	BIT_OR, BIT_AND, BIT_XOR, BIT_NOT, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
 
-/* Rules */
+/* Rules: heavily modified, based on the official grammar as found in K&R ANSI-C second edition (§A13). */
 translation_unit
 	: ( external_declaration )*
 	;
@@ -96,7 +91,7 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' { fputs(";\\\\\\\n", f); } | compound_statement { fputs("\\\\\n", f); } )
+	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' { fputs(";\\\\\\\n", out); } | compound_statement { fputs("\\\\\n", out); } )
 	;
 	
 declaration
@@ -108,7 +103,7 @@ declaration_list
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier )* { fputc(' ', f); }
+	: ( storage_class_specifier | type_specifier | type_qualifier )* { fputc(' ', out); }
 	;
 
 storage_class_specifier
@@ -119,7 +114,7 @@ storage_class_specifier
 	| TYPEDEF ) { PRKW; }
 	;
 
-/*typedef-name removed*/
+/*typedef-name replaced with 'id' */
 type_specifier
 	: ( VOID
 	| CHAR
@@ -140,7 +135,7 @@ type_qualifier
 	;
 
 struct_or_union_specifier
-	: struct_or_union ( id )? '{' { fputs("\\{\\\\\n", f); } struct_declaration_list '}' { fputs("\\}\\\\\n", f); }
+	: struct_or_union ( id )? '{' { fputs("\\{\\\\\n", out); } struct_declaration_list '}' { fputs("\\}\\\\\n", out); }
 	| struct_or_union id
 	;
 	
@@ -174,11 +169,11 @@ struct_declarator_list
 	
 struct_declarator
 	: declarator
-	| ( declarator )? ':' { PRCH; } constant_expression
+	| ( declarator )? ':' { PRCHS; } constant_expression
 	;
 
 enum_specifier
-	: ENUM { PRKW; } ( id )? { fputs("\\{\\\\\n", f); } '{' enumerator_list '}' { fputs("\\}\\\\\n", f); }
+	: ENUM { PRKW; } ( id )? { fputs("\\{\\\\\n", out); } '{' enumerator_list '}' { fputs("\\}\\\\\n", out); }
 	| ENUM { PRKW; } id
 	;
 	
@@ -197,7 +192,9 @@ declarator
 direct_declarator
 	: id
 	| '(' { PRCH; } declarator ')' { PRCH; }
-	| direct_declarator ( '[' { PRCH; } ( constant_expression )? ']' { PRCH; } | '(' { PRCH; } parameter_type_list ')' { PRCH; } | '(' { PRCH; } ( identifier_list )? ')' { PRCH; } )
+	| direct_declarator ( '[' { PRCH; } ( constant_expression )? ']' { PRCH; } 
+		| '(' { PRCH; } parameter_type_list ')' { PRCH; } 
+		| '(' { PRCH; } ( identifier_list )? ')' { PRCH; } )
 	;
 	
 pointer
@@ -226,7 +223,7 @@ identifier_list
 	
 initializer
 	: assignment_expression
-	| '{' { fputs("\\{", f); } initializer_list ( ',' )? '}' { fputs("\\}", f); }
+	| '{' { fputs("\\{", out); } initializer_list ( ',' )? '}' { fputs("\\}", out); }
 	;
 	
 initializer_list
@@ -244,7 +241,8 @@ abstract_declarator
 	
 direct_abstract_declarator
 	: '(' { PRCH; } abstract_declarator ')' { PRCH; }
-	| ( direct_abstract_declarator )? ( '[' { PRCH; } ( constant_expression )? ']' { PRCH; } | '(' { PRCH; } ( parameter_type_list )? ')' { PRCH; } )
+	| ( direct_abstract_declarator )? ( '[' { PRCH; } ( constant_expression )? ']' { PRCH; } 
+		| '(' { PRCH; } ( parameter_type_list )? ')' { PRCH; } )
 	;
 	
 typedef_name
@@ -261,9 +259,9 @@ statement
 	;
 	
 labeled_statement
-	: id ':' { PRCH; fputc(' ', f); } statement	/* warning: labels & GOTO's make Dijkstra angry! */
-	| CASE { PRKW; } constant_expression ':' { PRCH; fputc(' ', f); } statement
-	| DEFAULT { PRKW; } ':' { PRCH; fputc(' ', f); } statement
+	: id ':' { PRCHS; } statement	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CASE { PRKW; } constant_expression ':' { PRCHS; } statement
+	| DEFAULT { PRKW; } ':' { PRCHS; } statement
 	;
 	
 expression_statement
@@ -271,7 +269,7 @@ expression_statement
 	;
 	
 compound_statement
-	: '{' { fputs("\\{\\+\\\\\n", f); } ( declaration_list )? ( statement_list )? '}' { fputs("\\<\\}\\-\\\\\n", f); }
+	: '{' { fputs("\\{\\+\\\\\n", out); } ( declaration_list )? ( statement_list )? '}' { fputs("\\<\\}\\-\\\\\n", out); }
 	;
 	
 statement_list
@@ -293,7 +291,7 @@ jump_statement
 	: GOTO { PRKW; } id ';' { PRSC; } /* warning: labels & GOTO's make Dijkstra angry! */
 	| CONTINUE { PRKW; } ';' { PRSC; }
 	| BREAK { PRKW; } ';' { PRSC; }
-	| RETURN { PRKW; } ( expression )? ';' { printf("Return\n"); PRSC; }
+	| RETURN { PRKW; } ( expression )? ';' { PRSC; }
 	;
 	
 expression
@@ -306,12 +304,12 @@ assignment_expression
 	;
 	
 assignment_operator
-	: ASSIGN { fprintCompare(f, yylval.subtype); }
+	: ASSIGN { printSubtype(out, yylval.subtype); }
 	| '=' { SPRCHS; }
 	;
 	
 conditional_expression
-	: logical_OR_expression ( '?' { PRCH; } expression ':' { PRCH; } conditional_expression )?
+	: logical_OR_expression ( '?' { SPRCHS; } expression ':' { SPRCHS; } conditional_expression )?
 	;
 	
 constant_expression
@@ -319,11 +317,11 @@ constant_expression
 	;
 	
 logical_OR_expression
-	: ( logical_OR_expression LOGICAL_OR { fputs("\\ $\\vee$\\ ", f); } )? logical_AND_expression
+	: ( logical_OR_expression LOGICAL_OR { fputs("\\ $\\vee$\\ ", out); } )? logical_AND_expression
 	;
 	
 logical_AND_expression
-	: ( logical_AND_expression LOGICAL_AND { fputs("\\ $\\wedge$\\ ", f); } )? inclusive_OR_expression
+	: ( logical_AND_expression LOGICAL_AND { fputs("\\ $\\wedge$\\ ", out); } )? inclusive_OR_expression
 	;
 
 inclusive_OR_expression
@@ -339,11 +337,11 @@ AND_expression
 	;
 	
 equality_expression
-	: ( equality_expression COMPARE { fprintCompare(f, yylval.subtype); } )? shift_expression
+	: ( equality_expression COMPARE { printSubtype(out, yylval.subtype); } )? shift_expression
 	;
 
 shift_expression
-	: (shift_expression SHIFT { yylval.subtype == SHIFT_LEFT ? fputs("\\ $<<$\\ ", f) : fputs("\\ $>>$\\ ", f); } )? additive_expression
+	: (shift_expression SHIFT { yylval.subtype == SHIFT_LEFT ? fputs("\\ $<<$\\ ", out) : fputs("\\ $>>$\\ ", out); } )? additive_expression
 	;
 	
 additive_expression
@@ -361,7 +359,7 @@ cast_expression
 	
 unary_expression
 	: postfix_expression
-	| ( INC_OP { fputs("++", f); } | DEC_OP { fputs("--", f); } ) unary_expression
+	| ( INC_OP { fputs("++", out); } | DEC_OP { fputs("--", out); } ) unary_expression
 	| unary_operator cast_expression
 	| SIZEOF { PRKW; } unary_expression
 	| SIZEOF { PRKW; } '(' { PRCH; } type_name ')' { PRCH; }
@@ -376,15 +374,15 @@ postfix_expression
 	| postfix_expression ( '[' { PRCH; } expression ']' { PRCH; } 
 		| '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } 
 		| '.' { PRCH; } id 
-		| PTR_OP { fputs("$\\rightarrow$", f); } id 
-		| INC_OP { fputs("++", f); } 
-		| DEC_OP { fputs("--", f); } )
+		| PTR_OP { fputs("$\\rightarrow$", out); } id 
+		| INC_OP { fputs("++", out); } 
+		| DEC_OP { fputs("--", out); } )
 	;
 	
 primary_expression
 	: id
 	| constant
-	| STRING { fprintStringConst(f, yylval.s); }
+	| STRING { escapeString(out, yylval.s); }
 	| '(' { PRCH; } expression ')' { PRCH; }
 	;
 	
@@ -393,12 +391,12 @@ argument_expression_list
 	;
 	
 constant
-	: INTCONST { fprintf(f, "$%u$", yylval.i); }
-	| CHARACTER { fprintStringConst(f, yylval.s); }
-	| FLOATCONST { fprintf(f, "$%f$", yylval.d); }
-	| id /* enumeration-constant..? haax */
+	: INTCONST { fprintf(out, "$%u$", yylval.i); }
+	| CHARACTER { escapeString(out, yylval.s); }
+	| FLOATCONST { fprintf(out, "$%f$", yylval.d); }
+	/* | id enumeration-constant..? Should check against defined enum-constants... Yeah, no */
 	;
 	
 id
-	: IDENTIFIER { fprintIdentifier(f, yylval.s); }
+	: IDENTIFIER { escapeString(out, yylval.s); }
 	;

@@ -1,6 +1,7 @@
 int main(int argc, char * argv[]){
-	printf("Hello world!");
-	return 0;
+	printf("Hello world!\n");
+	
+	return argc > 1 ? atoi(argv[1]) : 5["Hello world!"] + '\v' - !!argc;
 }
 
 float Q_rsqrt( float number ){
