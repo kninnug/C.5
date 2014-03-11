@@ -958,7 +958,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 52 "ass2.flex"
-{ return INCLUDE; }
+{ yylval.s = mystrdup(yytext); return INCLUDE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -1144,7 +1144,7 @@ case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
 #line 92 "ass2.flex"
-{ yylval.c = yytext[0]; return CHARACTER; }
+{ yylval.s = mystrdup(yytext); return CHARACTER; }
 	YY_BREAK
 /* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
 	 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
@@ -1172,7 +1172,7 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 101 "ass2.flex"
-{ yytext[yyleng - 1] = '\0'; yylval.s = mystrdup(yytext + 1); return STRING; }
+{ yylval.s = mystrdup(yytext); return STRING; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
@@ -1182,7 +1182,7 @@ YY_RULE_SETUP
 case 46:
 YY_RULE_SETUP
 #line 105 "ass2.flex"
-{ return '='; }
+{ yylval.c = '='; return '='; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
@@ -1247,22 +1247,22 @@ YY_RULE_SETUP
 case 59:
 YY_RULE_SETUP
 #line 120 "ass2.flex"
-{ return BIT_AND; }
+{ yylval.c = '&'; return BIT_AND; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 121 "ass2.flex"
-{ return BIT_XOR; }
+{ yylval.c = '^'; return BIT_XOR; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 122 "ass2.flex"
-{ return BIT_OR; }
+{ yylval.c = '|'; return BIT_OR; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 123 "ass2.flex"
-{ return BIT_NOT; }
+{ yylval.c = '~'; return BIT_NOT; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
@@ -1322,92 +1322,92 @@ YY_RULE_SETUP
 case 74:
 YY_RULE_SETUP
 #line 140 "ass2.flex"
-{ return ';'; }
+{ yylval.c = ';'; return ';'; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 141 "ass2.flex"
-{ return '{'; } /* Who *doesn't* like di-graphs? -_- */
+{ yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 142 "ass2.flex"
-{ return '}'; }
+{ yylval.c = '}'; return '}'; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 143 "ass2.flex"
-{ return ','; }
+{ yylval.c = ','; return ','; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 144 "ass2.flex"
-{ return ':'; }
+{ yylval.c = ':'; return ':'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 145 "ass2.flex"
-{ return '('; }
+{ yylval.c = '('; return '('; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 146 "ass2.flex"
-{ return ')'; }
+{ yylval.c = ')'; return ')'; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 147 "ass2.flex"
-{ return '['; }
+{ yylval.c = '['; return '['; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 148 "ass2.flex"
-{ return ']'; }
+{ yylval.c = ']'; return ']'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 149 "ass2.flex"
-{ return '.'; }
+{ yylval.c = '.'; return '.'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 150 "ass2.flex"
-{ return '!'; }
+{ yylval.c = '!'; return '!'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 151 "ass2.flex"
-{ return '-'; }
+{ yylval.c = '-'; return '-'; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 152 "ass2.flex"
-{ return '+'; }
+{ yylval.c = '+'; return '+'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 153 "ass2.flex"
-{ return '*'; }
+{ yylval.c = '*'; return '*'; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 154 "ass2.flex"
-{ return '/'; }
+{ yylval.c = '/'; return '/'; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 155 "ass2.flex"
-{ return '%'; }
+{ yylval.c = '%'; return '%'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 156 "ass2.flex"
-{ return '?'; }
+{ yylval.c = '?'; return '?'; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 157 "ass2.flex"
-{ return '#'; }
+{ yylval.c = '#'; return '#'; }
 	YY_BREAK
 case 92:
 /* rule 92 can match eol */

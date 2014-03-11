@@ -89,7 +89,7 @@ int fileno(FILE*);
 0[xX]{H}+{IS}?			{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 0{D}+{IS}?				{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 {D}+{IS}?				{ yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
-L?'(\\.|[^\\'])'		{ yylval.c = yytext[0]; return CHARACTER; }
+L?'(\\.|[^\\'])'		{ yylval.s = mystrdup(yytext); return CHARACTER; }
 	/* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
 	 * "A character constant is a sequence of one or more characters enclosed in single quotes, as in 'x'." */
 L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character constant....abort\n", linenr, column); exit(-1); }
@@ -98,11 +98,11 @@ L?'(\\.|[^\\']){2,}		{ printf("%zu:%zu: Illegal or unterminated character consta
 {D}*"."{D}+({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 {D}+"."{D}*({E})?{FS}?	{ yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 
-L?\"(\\.|[^\\"\n])*\"		{ yytext[yyleng - 1] = '\0'; yylval.s = mystrdup(yytext + 1); return STRING; }
+L?\"(\\.|[^\\"\n])*\"		{ yylval.s = mystrdup(yytext); return STRING; }
 
 "..."			{ return ELLIPSIS; }
 
-"="				{ return '='; }
+"="				{ yylval.c = '='; return '='; }
 ">>="			{ yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
 "<<="			{ yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
 "+="			{ yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
@@ -117,10 +117,10 @@ L?\"(\\.|[^\\"\n])*\"		{ yytext[yyleng - 1] = '\0'; yylval.s = mystrdup(yytext +
 ">>"			{ yylval.subtype = SHIFT_RIGHT; return SHIFT; }
 "<<"			{ yylval.subtype = SHIFT_LEFT; return SHIFT; }
 
-"&"				{ return BIT_AND; }
-"^"				{ return BIT_XOR; }
-"|"				{ return BIT_OR; }
-"~"				{ return BIT_NOT; }
+"&"				{ yylval.c = '&'; return BIT_AND; }
+"^"				{ yylval.c = '^'; return BIT_XOR; }
+"|"				{ yylval.c = '|'; return BIT_OR; }
+"~"				{ yylval.c = '~'; return BIT_NOT; }
 
 "<="			{ yylval.subtype = COMPARE_LEQ; return COMPARE; }
 ">="			{ yylval.subtype = COMPARE_GREQ; return COMPARE; }
@@ -137,24 +137,24 @@ L?\"(\\.|[^\\"\n])*\"		{ yytext[yyleng - 1] = '\0'; yylval.s = mystrdup(yytext +
 
 "->"			{ return PTR_OP; }
 
-";"				{ return ';'; }
-("{"|"<%")		{ return '{'; } /* Who *doesn't* like di-graphs? -_- */
-("}"|"%>")		{ return '}'; }
-","				{ return ','; }
-":"				{ return ':'; }
-"("				{ return '('; }
-")"				{ return ')'; }
-("["|"<:")		{ return '['; }
-("]"|":>")		{ return ']'; }
-"."				{ return '.'; }
-"!"				{ return '!'; }
-"-"				{ return '-'; }
-"+"				{ return '+'; }
-"*"				{ return '*'; }
-"/"				{ return '/'; }
-"%"				{ return '%'; }
-"?"				{ return '?'; }
-"#"				{ return '#'; }
+";"				{ yylval.c = ';'; return ';'; }
+("{"|"<%")		{ yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
+("}"|"%>")		{ yylval.c = '}'; return '}'; }
+","				{ yylval.c = ','; return ','; }
+":"				{ yylval.c = ':'; return ':'; }
+"("				{ yylval.c = '('; return '('; }
+")"				{ yylval.c = ')'; return ')'; }
+("["|"<:")		{ yylval.c = '['; return '['; }
+("]"|":>")		{ yylval.c = ']'; return ']'; }
+"."				{ yylval.c = '.'; return '.'; }
+"!"				{ yylval.c = '!'; return '!'; }
+"-"				{ yylval.c = '-'; return '-'; }
+"+"				{ yylval.c = '+'; return '+'; }
+"*"				{ yylval.c = '*'; return '*'; }
+"/"				{ yylval.c = '/'; return '/'; }
+"%"				{ yylval.c = '%'; return '%'; }
+"?"				{ yylval.c = '?'; return '?'; }
+"#"				{ yylval.c = '#'; return '#'; }
 
 [ \t\v\f\n]		{ count(); }
 

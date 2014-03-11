@@ -1,14 +1,15 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Arch Linux) (format=pdflatex 2013.9.13)  10 MAR 2014 20:37
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.4.9)  11 MAR 2014 10:49
 entering extended mode
- restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
 **pretty.tex
 (./pretty.tex
-LaTeX2e <2011/06/27>
-Babel <3.9f> and hyphenation patterns for 78 languages loaded.
-(/usr/share/texmf-dist/tex/latex/base/article.cls
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, bulgarian, ukrainian, russian, dutch, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/share/texmf-dist/tex/latex/base/size10.clo
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -22,8 +23,7 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
-)
-No file pretty.aux.
+) (./pretty.aux)
 \openout1 = `pretty.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 1.
@@ -44,28 +44,42 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 1.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 1.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 2.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 2.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 2.
 
-LaTeX Warning: No \author given.
+(/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 2.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--39
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--39
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--39
+
+ []
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./pretty.aux) ) 
+] [2] (./pretty.aux) ) 
 Here is how much of TeX's memory you used:
- 221 strings out of 493311
- 2325 string characters out of 6143650
- 52195 words of memory out of 5000000
- 3756 multiletter control sequences out of 15000+600000
- 6675 words of font info for 24 fonts, out of 8000000 for 9000
- 957 hyphenation exceptions out of 8191
- 23i,6n,17p,229b,193s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/shar
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr17.pfb>
-Output written on pretty.pdf (1 page, 26178 bytes).
-PDF statistics:
- 20 PDF objects out of 1000 (max. 8388607)
- 13 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 246 strings out of 494769
+ 2732 string characters out of 1177669
+ 49783 words of memory out of 3000000
+ 3505 multiletter control sequences out of 15000+50000
+ 6983 words of font info for 25 fonts, out of 3000000 for 9000
+ 252 hyphenation exceptions out of 8191
+ 23i,6n,17p,251b,187s stack positions out of 5000i,500n,10000p,200000b,50000s
 
+Output written on pretty.dvi (2 pages, 1700 bytes).
