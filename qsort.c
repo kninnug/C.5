@@ -1,5 +1,7 @@
 /* #include "stdio.h" */
 
+int printf(char * fmt);
+
 void quick_sort(int arr[20], int low, int high) {
 	int pivot, j, temp, i;
 	
@@ -35,6 +37,8 @@ void quick_sort(int arr[20], int low, int high) {
 int main(int argc, char *argv[]) {
 	int i, a[10]={1, 5, 3, 8, 6, 2, 8, 6, 4, 1};
 	
+	register n = (count + 7) / 8;
+	
 	quick_sort(a, 0, 9);
 	
 	for(i = 0; i < 10; i++) {
@@ -42,5 +46,16 @@ int main(int argc, char *argv[]) {
 	}
 	
 	putchar('\n');
+	switch(count % 8){
+		case 0: do{ *to++ = *from++;
+		case 1: *to++ = *from++;
+		case 2: *to++ = *from++;
+		case 3: *to++ = *from++;
+		case 4: *to++ = *from++;
+		case 5: *to++ = *from++;
+		case 6: *to++ = *from++;
+		case 7: *to++ = *from++; } while(--n > 0);
+	}
+	
 	return 0;
 }

@@ -10,6 +10,12 @@
 		while(*s){
 			if(*s == '\\') fputs("\\textbackslash ", f);
 			else if(*s == '%') fputs("\\%", f);
+			else if(*s == '$') fputs("\\$", f);
+			else if(*s == '>') fputs("$>$", f);
+			else if(*s == '<') fputs("$<$", f);
+			else if(*s == '{') fputs("\\{", f);
+			else if(*s == '}') fputs("\\}", f);
+			else if(*s == '&') fputs("\\&", f);
 			else fputc(*s, f);
 			s++;
 		}
@@ -51,11 +57,22 @@
 			case COMPARE_GREQ: fputs("\\ $\\geq$\\ ", f); break;
 			case COMPARE_GREATER: fputs("\\ $>$\\ ", f); break;
 			case COMPARE_LESS: fputs("\\ $<$\\ ", f); break;
+			
+			case ASSIGN_AND: fputs("\\ $\\&=$\\ ", f); break;
+			case ASSIGN_DIVIDE: fputs("\\ $/=$\\ ", f); break;
+			case ASSIGN_MINUS: fputs("\\ $-=$\\ ", f); break;
+			case ASSIGN_MOD: fputs("\\ $\\%=$\\ ", f); break;
+			case ASSIGN_OR: fputs("\\ $|=$\\ ", f); break;
+			case ASSIGN_PLUS: fputs("\\ $+=$\\ ", f); break;
+			case ASSIGN_SHLEFT: fputs("\\ $<<=$\\ ", f); break;
+			case ASSIGN_SHRIGHT: fputs("\\ $>>=$\\ ", f); break;
+			case ASSIGN_XOR: fputs("\\ $\\^=$\\ ", f); break;
 		}
 	}
 	
-	#define PRCHS prCh(f, yylval.c), fprintf(f, "\\ ")
 	#define PRCH prCh(f, yylval.c)
+	#define PRCHS PRCH, fputs("\\ ", f)
+	#define SPRCHS fputs("\\ ", f), PRCHS
 	#define PRS fprintStringConst(f, yylval.s)
 	#define PRKW fprintf(f, "{\\bf %s} ", yylval.s)
 }
@@ -65,7 +82,7 @@
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, 
 	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, 
-	PREPROC, BIT_OR, BIT_AND, BIT_XOR, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
+	PREPROC, BIT_OR, BIT_AND, BIT_XOR, SHIFT, BIT_NOT, INCLUDE, CHARACTER, FLOATCONST, INTCONST;
 
 /* Rules */
 translation_unit
@@ -78,7 +95,7 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? compound_statement { fputs("\\\\\n", f); }
+	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' { fputs(";\\\\\\\n", f); } | compound_statement { fputs("\\\\\n", f); } )
 	;
 	
 declaration
@@ -86,11 +103,11 @@ declaration
 	;
 	
 declaration_list
-	: ( declaration_list )? declaration
+	: declaration ( declaration )*
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
+	: ( storage_class_specifier | type_specifier | type_qualifier )* { fputc(' ', f); }
 	;
 
 storage_class_specifier
@@ -100,7 +117,8 @@ storage_class_specifier
 	| EXTERN
 	| TYPEDEF ) { PRKW; }
 	;
-	/*typedef-name removed*/
+
+/*typedef-name removed*/
 type_specifier
 	: ( VOID
 	| CHAR
@@ -112,6 +130,7 @@ type_specifier
 	| SIGNED
 	| UNSIGNED ) { PRKW; }
 	| struct_or_union_specifier | enum_specifier
+	| id
 	;
 	
 type_qualifier
@@ -137,7 +156,7 @@ init_declarator_list
 	;
 	
 init_declarator
-	: ( declarator '=' { PRCH; } )? initializer
+	: ( declarator '=' { SPRCHS; } )? initializer
 	;
 	
 struct_declaration
@@ -158,8 +177,8 @@ struct_declarator
 	;
 
 enum_specifier
-	: ENUM ( id )? { fputs("\\{\\\\\n", f); } '{' enumerator_list '}' { fputs("\\}\\\\\n", f); }
-	| ENUM id
+	: ENUM { PRKW; } ( id )? { fputs("\\{\\\\\n", f); } '{' enumerator_list '}' { fputs("\\}\\\\\n", f); }
+	| ENUM { PRKW; } id
 	;
 	
 enumerator_list
@@ -167,7 +186,7 @@ enumerator_list
 	;
 	
 enumerator
-	: id ( '=' { PRCH; } constant_expression )?
+	: id ( '=' { SPRCHS; } constant_expression )?
 	;
 	
 declarator
@@ -175,7 +194,7 @@ declarator
 	;
 	
 direct_declarator
-	: id  {printf("Identifier within declarator: %s\n", yylval.s);}
+	: id
 	| '(' { PRCH; } declarator ')' { PRCH; }
 	| direct_declarator ( '[' { PRCH; } ( constant_expression )? ']' { PRCH; } | '(' { PRCH; } parameter_type_list ')' { PRCH; } | '(' { PRCH; } ( identifier_list )? ')' { PRCH; } )
 	;
@@ -266,7 +285,7 @@ selection_statement
 iteration_statement
 	: WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } statement
 	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } ';' { fputs(";\\\\\n", f); }
-	| FOR { PRKW; } '(' { PRCH; } ( expression )? ';' { PRCH; } ( expression )? ';' { PRCH; } ( expression )? ')' { PRCH; } statement
+	| FOR { PRKW; } '(' { PRCH; } ( expression )? ';' { PRCHS; } ( expression )? ';' { PRCHS; } ( expression )? ')' { PRCH; } statement
 	;
 	
 jump_statement
@@ -286,8 +305,8 @@ assignment_expression
 	;
 	
 assignment_operator
-	: ( ASSIGN 
-	| '=' ) { fputc(' ', f); PRCHS; }
+	: ASSIGN { fprintCompare(f, yylval.subtype); }
+	| '=' { PRCHS; }
 	;
 	
 conditional_expression
@@ -299,23 +318,23 @@ constant_expression
 	;
 	
 logical_OR_expression
-	: ( logical_OR_expression LOGICAL_OR )? logical_AND_expression
+	: ( logical_OR_expression LOGICAL_OR { fputs("\\ $\\vee$\\ ", f); } )? logical_AND_expression
 	;
 	
 logical_AND_expression
-	: ( logical_AND_expression LOGICAL_AND )? inclusive_OR_expression
+	: ( logical_AND_expression LOGICAL_AND { fputs("\\ $\\wedge$\\ ", f); } )? inclusive_OR_expression
 	;
 
 inclusive_OR_expression
-	: ( inclusive_OR_expression BIT_OR )? exclusive_OR_expression
+	: ( inclusive_OR_expression BIT_OR { SPRCHS; } )? exclusive_OR_expression
 	;
 	
 exclusive_OR_expression
-	: ( exclusive_OR_expression BIT_XOR )? AND_expression
+	: ( exclusive_OR_expression BIT_XOR { SPRCHS; } )? AND_expression
 	;
 	
 AND_expression
-	: (AND_expression BIT_AND )? equality_expression
+	: (AND_expression BIT_AND { SPRCHS; } )? equality_expression
 	;
 	
 equality_expression
@@ -323,15 +342,15 @@ equality_expression
 	;
 
 shift_expression
-	: (shift_expression SHIFT )? additive_expression
+	: (shift_expression SHIFT { yylval.subtype == SHIFT_LEFT ? fputs("\\ $<<$\\ ", f) : fputs("\\ $>>$\\ ", f); } )? additive_expression
 	;
 	
 additive_expression
-	: ( additive_expression ( '+' | '-' ) { PRCH; } )? multiplicative_expression
+	: ( additive_expression ( '+' | '-' ) { SPRCHS; } )? multiplicative_expression
 	;
 	
 multiplicative_expression
-	: ( multiplicative_expression ( '*' | '/' | '%' ) { PRCH; } )? cast_expression
+	: ( multiplicative_expression ( '*' | '/' | '%' ) { SPRCHS; } )? cast_expression
 	;
 	
 cast_expression
@@ -341,19 +360,19 @@ cast_expression
 	
 unary_expression
 	: postfix_expression
-	| ( INC_OP | DEC_OP ) unary_expression
+	| ( INC_OP { fputs("++", f); } | DEC_OP { fputs("--", f); } ) unary_expression
 	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF '(' { PRCH; } type_name ')' { PRCH; }
+	| SIZEOF { PRKW; } unary_expression
+	| SIZEOF { PRKW; } '(' { PRCH; } type_name ')' { PRCH; }
 	;
 	
 unary_operator
-	: (BIT_AND | '*' | '+' | '-' | '~' | '!') { PRCH; }
+	: (BIT_AND | '*' | '+' | '-' | '~' | '!' | BIT_NOT | BIT_OR | BIT_XOR) { PRCH; }
 	;
 	
 postfix_expression
 	: primary_expression
-	| postfix_expression ( '[' { PRCH; } expression ']' { PRCH; } | '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } | '.' { PRCH; } id | PTR_OP { fputs("->", f); } id | INC_OP { fputs("++", f); } | DEC_OP { fputs("--", f); } )
+	| postfix_expression ( '[' { PRCH; } expression ']' { PRCH; } | '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } | '.' { PRCH; } id | PTR_OP { fputs("$\\rightarrow$", f); } id | INC_OP { fputs("++", f); } | DEC_OP { fputs("--", f); } )
 	;
 	
 primary_expression

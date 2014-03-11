@@ -4,10 +4,11 @@
 extern YYSTYPE yylval;
 extern long yypos;
 
-#define INTCONST 308
-#define FLOATCONST 307
-#define CHARACTER 306
-#define INCLUDE 305
+#define INTCONST 309
+#define FLOATCONST 308
+#define CHARACTER 307
+#define INCLUDE 306
+#define BIT_NOT 305
 #define SHIFT 304
 #define BIT_XOR 303
 #define BIT_AND 302

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.4.15)  11 MAR 2014 11:19
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.4.15)  11 MAR 2014 12:38
 entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
@@ -45,16 +45,16 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 1.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 2.
+(Font)              <7> on input line 3.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 2.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 2.
+(Font)              <5> on input line 3.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 3.
 
 (/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 2.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 3.
  [1
 
 ] [2] (./pretty.aux) ) 
@@ -65,6 +65,6 @@ Here is how much of TeX's memory you used:
  3505 multiletter control sequences out of 15000+50000
  6983 words of font info for 25 fonts, out of 3000000 for 9000
  252 hyphenation exceptions out of 8191
- 23i,6n,17p,253b,211s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 23i,6n,17p,251b,211s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on pretty.dvi (2 pages, 1880 bytes).
+Output written on pretty.dvi (2 pages, 2388 bytes).
