@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char * initString = "\\documentclass{article}\\begin{document}\n"
+const char * initString = /*"\\documentclass{article}\\begin{document}\n"*/
 	"\\begin{tabbing}xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\kill";
-const char * endString = "\\end{tabbing}\\end{document}\n";
+const char * endString = "\\end{tabbing}";
+/*\\end{document}\n";*/
 
 FILE * f;
 
