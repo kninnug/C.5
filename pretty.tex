@@ -1,1 +1,45 @@
 \documentclass{article}\author{The accent compiler compiler}\title{Latex pretty printer}\begin{document}\maketitle
+\begin{tabbing}xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\kill{\bf void} quick\_sort({\bf int} arr[$20$],\ {\bf int} low,\ {\bf int} high)\{\+\\
+{\bf int} pivot,\ j,\ temp,\ i;\\
+{\bf if} (low\ $<$\ high)\{\+\\
+pivot =\ low;\\
+i =\ low;\\
+j =\ high;\\
+{\bf while} (i\ $<$\ j)\{\+\\
+{\bf while} ((arr[i]\ $\leq$\ arr[pivot])(i\ $<$\ high))\{\+\\
+i++;\\
+\<\}\-\\
+{\bf while} (arr[j]\ $>$\ arr[pivot])\{\+\\
+j--;\\
+\<\}\-\\
+{\bf if} (i\ $<$\ j)\{\+\\
+temp =\ arr[i];\\
+arr[i] =\ arr[j];\\
+arr[j] =\ temp;\\
+\<\}\-\\
+{\bf else} {\bf if} (derp)\{\+\\
+bjork();\\
+\<\}\-\\
+{\bf else} \{\+\\
+derp();\\
+\<\}\-\\
+\<\}\-\\
+temp =\ arr[pivot];\\
+arr[pivot] =\ arr[j];\\
+arr[j] =\ temp;\\
+quick\_sort(arr,\ low,\ j-$1$);\\
+quick\_sort(arr,\ j+$1$,\ high);\\
+\<\}\-\\
+\<\}\-\\
+\\
+{\bf int} main({\bf int} argc,\ {\bf char} *argv[])\{\+\\
+{\bf int} i,\ a[$10$]=\{$1$,\ $5$,\ $3$,\ $8$,\ $6$,\ $2$,\ $8$,\ $6$,\ $4$,\ $1$\};\\
+quick\_sort(a,\ $0$,\ $9$);\\
+{\bf for} (i =\ $0$;i\ $<$\ $10$;i++)\{\+\\
+printf(" \%4d",\ a[i]);\\
+\<\}\-\\
+putchar('\textbackslash n');\\
+{\bf return} $0$;\\
+\<\}\-\\
+\\
+\end{tabbing}\end{document}

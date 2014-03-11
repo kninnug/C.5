@@ -1,4 +1,4 @@
-#include "stdio.h"
+/* #include "stdio.h" */
 
 void quick_sort(int arr[20], int low, int high) {
 	int pivot, j, temp, i;
@@ -18,6 +18,10 @@ void quick_sort(int arr[20], int low, int high) {
 				temp = arr[i];
 				arr[i] = arr[j];
 				arr[j] = temp;
+			}else if(derp){
+				bjork();
+			}else{
+				derp();
 			}
 		}
 		temp = arr[pivot];

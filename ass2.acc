@@ -70,11 +70,6 @@
 /* Rules */
 translation_unit
 	: ( external_declaration )*
-	| include_line
-	;
-	
-include_line
-	: '#' { PRCH; } INCLUDE { PRKW; } ( STRING { fprintStringConst(f, yylval.s); }  ) /* Spoort niet */
 	;
 	
 external_declaration
@@ -256,7 +251,7 @@ expression_statement
 	;
 	
 compound_statement
-	: '{' { fputs("\\{\\\\\n", f); } ( declaration_list )? ( statement_list )? '}' { fputs("\\}\\\\\n", f); }
+	: '{' { fputs("\\{\\+\\\\\n", f); } ( declaration_list )? ( statement_list )? '}' { fputs("\\<\\}\\-\\\\\n", f); }
 	;
 	
 statement_list

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.4.9)  11 MAR 2014 10:49
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.4.15)  11 MAR 2014 11:19
 entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
@@ -55,31 +55,16 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 2.
-
-Underfull \hbox (badness 10000) in paragraph at lines 2--39
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2--39
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2--39
-
- []
-
-[1
+ [1
 
 ] [2] (./pretty.aux) ) 
 Here is how much of TeX's memory you used:
  246 strings out of 494769
- 2732 string characters out of 1177669
- 49783 words of memory out of 3000000
+ 2732 string characters out of 1177668
+ 50783 words of memory out of 3000000
  3505 multiletter control sequences out of 15000+50000
  6983 words of font info for 25 fonts, out of 3000000 for 9000
  252 hyphenation exceptions out of 8191
- 23i,6n,17p,251b,187s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 23i,6n,17p,253b,211s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on pretty.dvi (2 pages, 1700 bytes).
+Output written on pretty.dvi (2 pages, 1880 bytes).

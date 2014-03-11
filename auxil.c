@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char * initString = "\\documentclass{article}\\author{The accent compiler compiler}\\title{Latex pretty printer}\\begin{document}\\maketitle\n";
-const char * endString = "\\end{document}\n";
+const char * initString = "\\documentclass{article}\\author{The accent compiler compiler}\\title{Latex pretty printer}\\begin{document}\\maketitle\n"
+	"\\begin{tabbing}xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\kill";
+const char * endString = "\\end{tabbing}\\end{document}\n";
 
 FILE * f;
 
