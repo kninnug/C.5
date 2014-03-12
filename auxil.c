@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 const char * initString = /*"\\documentclass{article}\\begin{document}\n"*/
-	"\\begin{tabbing}xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\kill";
+	"\\begin{tabbing}xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\=xx\\kill\n";
 const char * endString = "\\end{tabbing}";
 /*\\end{document}\n";*/
 

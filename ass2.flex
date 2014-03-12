@@ -33,7 +33,6 @@ char* mystrdup(char* yytext);
 
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
-%}
 
 /* We copy keyword-names into yylval.s to eliminate having 
 to retype them all into the parser for pretty-printing.
@@ -42,6 +41,7 @@ Same for operator-characters into yylval.c.
 Similar for string- and character-literals: we copy the matched text
 into yylval.s (also for characters), so that they can be printed with
 quotes and all directly from yylval. */
+%}
 
 %%
 "/*"			{ comment(); }

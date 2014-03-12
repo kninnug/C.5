@@ -39,3 +39,5 @@ ass2
 *.dvi
 *.log
 *.synctex.gz
+
+.redist/*
