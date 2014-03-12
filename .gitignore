@@ -1,5 +1,6 @@
 # Object files
 *.o
+*/*.o
 *.ko
 
 # Libraries
@@ -19,6 +20,7 @@
 
 # Flex output
 lex.yy.c
+ass2.yy.c
 
 # Accent output
 yygrammar.h
@@ -30,3 +32,10 @@ yygrammar.c
 accent/accent/accent
 ass1
 ass2
+
+# TeX output
+*.aux
+*.pdf
+*.dvi
+*.log
+*.synctex.gz
