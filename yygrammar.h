@@ -4,6 +4,9 @@
 extern YYSTYPE yylval;
 extern long yypos;
 
+#define EXP 311
+#define INPUT 310
+#define PRINT 309
 #define INTCONST 308
 #define FLOATCONST 307
 #define CHARACTER 306

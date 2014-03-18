@@ -13,12 +13,20 @@ lex.yy.c: ass1.flex
 	
 ass2: ass2.acc ass2.yy.c yygrammar.o auxil.o entire.o
 	gcc $(OPTIONS) $(MINGWHACKS) -o ass2 ass2.yy.c yygrammar.o auxil.o entire.o -lfl
+	flex ass1.flex
+	
+ass3: ass3.acc ass3.yy.c yygrammar.o auxil.o entire.o
+	gcc $(OPTIONS) $(MINGWHACKS) -o ass3 ass3.yy.c yygrammar.o auxil.o entire.o -lfl
 	
 ass2.yy.c: ass2.flex yygrammar.c
 	flex -o ass2.yy.c ass2.flex
 	
-yygrammar.c: ass2.acc
+ass3.yy.c: ass3.flex yygrammar.c
+	flex -o ass3.yy.c ass3.flex
+	
+yygrammar.c: ass2.acc ass3.acc
 	$(ACCENTDIR)/accent/accent ass2.acc
+	$(ACCENTDIR)/accent/accent ass3.acc
 
 yygrammar.o: yygrammar.c
 	gcc $(OPTIONS) $(MINGWHACKS) -c yygrammar.c
