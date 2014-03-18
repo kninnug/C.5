@@ -1746,29 +1746,33 @@ postfix_expression ()
 
 primary_expression ()
 {
+   YYSTYPE c;
    switch(yyselect()) {
    case 99: {
       id();
       } break;
    case 100: {
-      constant();
+      constant(&c);
+#line 401 "ass3.acc"
+ fprintf(stderr, "%i\n", c->value.i); 
+# line 1759 "yygrammar.c"
       } break;
    case 101: {
       get_lexval();
 #line 402 "ass3.acc"
  escapeString(out, yylval.s); 
-# line 1761 "yygrammar.c"
+# line 1765 "yygrammar.c"
       } break;
    case 102: {
       get_lexval();
 #line 403 "ass3.acc"
  PRCH; 
-# line 1767 "yygrammar.c"
+# line 1771 "yygrammar.c"
       expression();
       get_lexval();
 #line 403 "ass3.acc"
  PRCH; 
-# line 1772 "yygrammar.c"
+# line 1776 "yygrammar.c"
       } break;
    }
 }
@@ -1783,7 +1787,7 @@ argument_expression_list ()
          get_lexval();
 #line 407 "ass3.acc"
  PRCHS; 
-# line 1787 "yygrammar.c"
+# line 1791 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1792,26 +1796,27 @@ argument_expression_list ()
    }
 }
 
-constant ()
+constant (ret)
+   YYSTYPE *ret;
 {
    switch(yyselect()) {
    case 104: {
       get_lexval();
 #line 411 "ass3.acc"
- fprintf(out, "$%u$", yylval.i); 
-# line 1803 "yygrammar.c"
+ fprintf(out, "$%u$", yylval.i); ret = malloc(sizeof(constant_t)); ret->type = INTCONST; ret->value.i = yylval.i; 
+# line 1808 "yygrammar.c"
       } break;
    case 105: {
       get_lexval();
 #line 412 "ass3.acc"
  escapeString(out, yylval.s); 
-# line 1809 "yygrammar.c"
+# line 1814 "yygrammar.c"
       } break;
    case 106: {
       get_lexval();
 #line 413 "ass3.acc"
  fprintf(out, "$%f$", yylval.d); 
-# line 1815 "yygrammar.c"
+# line 1820 "yygrammar.c"
       } break;
    }
 }
@@ -1823,7 +1828,7 @@ id ()
       get_lexval();
 #line 418 "ass3.acc"
  escapeString(out, yylval.s); 
-# line 1827 "yygrammar.c"
+# line 1832 "yygrammar.c"
       } break;
    }
 }

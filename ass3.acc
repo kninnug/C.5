@@ -398,7 +398,7 @@ postfix_expression
 	
 primary_expression
 	: id
-	| constant
+	| constant<c> { fprintf(stderr, "%i\n", c->value.i); }
 	| STRING { escapeString(out, yylval.s); }
 	| '(' { PRCH; } expression ')' { PRCH; }
 	;
@@ -407,8 +407,8 @@ argument_expression_list
 	: ( argument_expression_list ',' { PRCHS; } )? assignment_expression
 	;
 	
-constant
-	: INTCONST { fprintf(out, "$%u$", yylval.i); }
+constant<ret>
+	: INTCONST { fprintf(out, "$%u$", yylval.i); ret = malloc(sizeof(constant_t)); ret->type = INTCONST; ret->value.i = yylval.i; }
 	| CHARACTER { escapeString(out, yylval.s); }
 	| FLOATCONST { fprintf(out, "$%f$", yylval.d); }
 	/* | id enumeration-constant..? Should check against defined enum-constants... Yeah, no */

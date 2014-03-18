@@ -25,4 +25,23 @@ union lexeme{
 
 #define YYSTYPE union lexeme
 
+typedef struct constant{
+	int type;
+	union{
+		unsigned long int i;
+		double d;
+		char * s;
+	} value;
+}constant_t;
+
+typedef struct expression{
+	int type;
+	size_t length;
+	int operator;
+	union{
+		constant_t * c;
+		struct expression * e;
+	} value;
+} expression_t;
+
 #endif
