@@ -667,9 +667,6 @@ void count();
 /* Eats multi-line comments */
 void comment();
 
-
-char* mystrdup(char* yytext);
-
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
 
@@ -680,7 +677,7 @@ Same for operator-characters into yylval.c.
 Similar for string- and character-literals: we copy the matched text
 into yylval.s (also for characters), so that they can be printed with
 quotes and all directly from yylval. */
-#line 684 "ass3.yy.c"
+#line 681 "ass3.yy.c"
 
 #define INITIAL 0
 
@@ -867,9 +864,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 46 "ass3.flex"
+#line 43 "ass3.flex"
 
-#line 873 "ass3.yy.c"
+#line 870 "ass3.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -954,208 +951,208 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 47 "ass3.flex"
+#line 44 "ass3.flex"
 { comment(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 49 "ass3.flex"
+#line 46 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return INCLUDE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 51 "ass3.flex"
+#line 48 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return AUTO; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 52 "ass3.flex"
+#line 49 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return BREAK; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 53 "ass3.flex"
+#line 50 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return CASE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 54 "ass3.flex"
+#line 51 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return CHAR; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 55 "ass3.flex"
+#line 52 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return CONST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "ass3.flex"
+#line 53 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return CONTINUE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "ass3.flex"
+#line 54 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return DEFAULT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 58 "ass3.flex"
+#line 55 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return DO; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 59 "ass3.flex"
+#line 56 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return DOUBLE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 60 "ass3.flex"
+#line 57 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return ELSE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 61 "ass3.flex"
+#line 58 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return ENUM; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 62 "ass3.flex"
+#line 59 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return EXTERN; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 63 "ass3.flex"
+#line 60 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return FLOAT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 64 "ass3.flex"
+#line 61 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return FOR; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 65 "ass3.flex"
+#line 62 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return GOTO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 66 "ass3.flex"
+#line 63 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return IF; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 67 "ass3.flex"
+#line 64 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return INT; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 68 "ass3.flex"
+#line 65 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return LONG; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "ass3.flex"
+#line 66 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return REGISTER; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 70 "ass3.flex"
+#line 67 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return RETURN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 71 "ass3.flex"
+#line 68 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return SHORT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 72 "ass3.flex"
+#line 69 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return SIGNED; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 73 "ass3.flex"
+#line 70 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return SIZEOF; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 74 "ass3.flex"
+#line 71 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return STATIC; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 75 "ass3.flex"
+#line 72 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return STRUCT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 76 "ass3.flex"
+#line 73 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return SWITCH; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 77 "ass3.flex"
+#line 74 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return TYPEDEF; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 78 "ass3.flex"
+#line 75 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return UNION; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 79 "ass3.flex"
+#line 76 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return UNSIGNED; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 80 "ass3.flex"
+#line 77 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return VOID; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 81 "ass3.flex"
+#line 78 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return VOLATILE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 82 "ass3.flex"
+#line 79 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return WHILE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 83 "ass3.flex"
+#line 80 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return PRINT; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 84 "ass3.flex"
+#line 81 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return INPUT; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 87 "ass3.flex"
+#line 84 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 89 "ass3.flex"
+#line 86 "ass3.flex"
 { count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 90 "ass3.flex"
+#line 87 "ass3.flex"
 { count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 91 "ass3.flex"
+#line 88 "ass3.flex"
 { count(); yylval.i = strtoul(yytext, NULL, 10); return INTCONST; }
 	YY_BREAK
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 93 "ass3.flex"
+#line 90 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return CHARACTER; }
 	YY_BREAK
 /* Note: multi-character constants *are* legal (K&R 2: A2.5.2 (page 193)): 
@@ -1163,283 +1160,283 @@ YY_RULE_SETUP
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 96 "ass3.flex"
+#line 93 "ass3.flex"
 { count(); printf("%zu:%zu: Illegal or unterminated character constant....abort\n", yypos, column); exit(-1); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 98 "ass3.flex"
+#line 95 "ass3.flex"
 { count(); yylval.s = mystrdup(yytext); return STRING; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 100 "ass3.flex"
+#line 97 "ass3.flex"
 { count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 101 "ass3.flex"
+#line 98 "ass3.flex"
 { count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 102 "ass3.flex"
+#line 99 "ass3.flex"
 { count(); yylval.d = strtod(yytext, NULL); return FLOATCONST; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 104 "ass3.flex"
+#line 101 "ass3.flex"
 { count(); return ELLIPSIS; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 106 "ass3.flex"
+#line 103 "ass3.flex"
 { count(); yylval.c = '='; return '='; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 107 "ass3.flex"
+#line 104 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_SHRIGHT; return ASSIGN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 108 "ass3.flex"
+#line 105 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_SHLEFT; return ASSIGN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 109 "ass3.flex"
+#line 106 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_PLUS; return ASSIGN; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 110 "ass3.flex"
+#line 107 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_MINUS; return ASSIGN; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 111 "ass3.flex"
+#line 108 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_TIMES; return ASSIGN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 112 "ass3.flex"
+#line 109 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_DIVIDE; return ASSIGN; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 113 "ass3.flex"
+#line 110 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_MOD; return ASSIGN; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 114 "ass3.flex"
+#line 111 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_AND; return ASSIGN; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 115 "ass3.flex"
+#line 112 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_XOR; return ASSIGN; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 116 "ass3.flex"
+#line 113 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_OR; return ASSIGN; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 117 "ass3.flex"
+#line 114 "ass3.flex"
 { count(); yylval.subtype = ASSIGN_SWAP; return ASSIGN; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 120 "ass3.flex"
+#line 117 "ass3.flex"
 { count(); yylval.subtype = SHIFT_RIGHT; return SHIFT; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 121 "ass3.flex"
+#line 118 "ass3.flex"
 { count(); yylval.subtype = SHIFT_LEFT; return SHIFT; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 123 "ass3.flex"
+#line 120 "ass3.flex"
 { count(); return EXP; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 125 "ass3.flex"
+#line 122 "ass3.flex"
 { count(); yylval.c = '&'; return BIT_AND; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 126 "ass3.flex"
+#line 123 "ass3.flex"
 { count(); yylval.c = '^'; return BIT_XOR; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 127 "ass3.flex"
+#line 124 "ass3.flex"
 { count(); yylval.c = '|'; return BIT_OR; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 128 "ass3.flex"
+#line 125 "ass3.flex"
 { count(); yylval.c = '~'; return BIT_NOT; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 130 "ass3.flex"
+#line 127 "ass3.flex"
 { count(); yylval.subtype = COMPARE_LEQ; return COMPARE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 131 "ass3.flex"
+#line 128 "ass3.flex"
 { count(); yylval.subtype = COMPARE_GREQ; return COMPARE; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 132 "ass3.flex"
+#line 129 "ass3.flex"
 { count(); yylval.subtype = COMPARE_EQUAL; return COMPARE; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 133 "ass3.flex"
+#line 130 "ass3.flex"
 { count(); yylval.subtype = COMPARE_UNEQUAL; return COMPARE; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 134 "ass3.flex"
+#line 131 "ass3.flex"
 { count(); yylval.subtype = COMPARE_LESS; return COMPARE; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 135 "ass3.flex"
+#line 132 "ass3.flex"
 { count(); yylval.subtype = COMPARE_GREATER; return COMPARE; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 137 "ass3.flex"
+#line 134 "ass3.flex"
 { count(); return LOGICAL_AND; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 138 "ass3.flex"
+#line 135 "ass3.flex"
 { count(); return LOGICAL_OR; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 140 "ass3.flex"
+#line 137 "ass3.flex"
 { count(); return INC_OP; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 141 "ass3.flex"
+#line 138 "ass3.flex"
 { count(); return DEC_OP; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 143 "ass3.flex"
+#line 140 "ass3.flex"
 { count(); return PTR_OP; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 145 "ass3.flex"
+#line 142 "ass3.flex"
 { count(); yylval.c = ';'; return ';'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 146 "ass3.flex"
+#line 143 "ass3.flex"
 { count(); yylval.c = '{'; return '{'; } /* Who *doesn't* like di-graphs? -_- */
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 147 "ass3.flex"
+#line 144 "ass3.flex"
 { count(); yylval.c = '}'; return '}'; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 148 "ass3.flex"
+#line 145 "ass3.flex"
 { count(); yylval.c = ','; return ','; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 149 "ass3.flex"
+#line 146 "ass3.flex"
 { count(); yylval.c = ':'; return ':'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 150 "ass3.flex"
+#line 147 "ass3.flex"
 { count(); yylval.c = '('; return '('; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 151 "ass3.flex"
+#line 148 "ass3.flex"
 { count(); yylval.c = ')'; return ')'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 152 "ass3.flex"
+#line 149 "ass3.flex"
 { count(); yylval.c = '['; return '['; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 153 "ass3.flex"
+#line 150 "ass3.flex"
 { count(); yylval.c = ']'; return ']'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 154 "ass3.flex"
+#line 151 "ass3.flex"
 { count(); yylval.c = '.'; return '.'; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 155 "ass3.flex"
+#line 152 "ass3.flex"
 { count(); yylval.c = '!'; return '!'; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 156 "ass3.flex"
+#line 153 "ass3.flex"
 { count(); yylval.c = '-'; return '-'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 157 "ass3.flex"
+#line 154 "ass3.flex"
 { count(); yylval.c = '+'; return '+'; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 158 "ass3.flex"
+#line 155 "ass3.flex"
 { count(); yylval.c = '*'; return '*'; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 159 "ass3.flex"
+#line 156 "ass3.flex"
 { count(); yylval.c = '/'; return '/'; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 160 "ass3.flex"
+#line 157 "ass3.flex"
 { count(); yylval.c = '%'; return '%'; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 161 "ass3.flex"
+#line 158 "ass3.flex"
 { count(); yylval.c = '?'; return '?'; }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 162 "ass3.flex"
+#line 159 "ass3.flex"
 { count(); yylval.c = '#'; return '#'; }
 	YY_BREAK
 case 96:
 /* rule 96 can match eol */
 YY_RULE_SETUP
-#line 164 "ass3.flex"
+#line 161 "ass3.flex"
 { count(); }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 166 "ass3.flex"
+#line 163 "ass3.flex"
 { count();
 		int c = yytext[0]; 
 		printf("%zu:%zu: Illegal character (", yypos, column);
@@ -1453,10 +1450,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 177 "ass3.flex"
+#line 174 "ass3.flex"
 ECHO;
 	YY_BREAK
-#line 1460 "ass3.yy.c"
+#line 1457 "ass3.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2454,7 +2451,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 177 "ass3.flex"
+#line 174 "ass3.flex"
 
 
 
@@ -2480,18 +2477,6 @@ void comment(){
 	}
 	
 	column++;
-}
-
-/**
- * Since strdup is *not* C-standard it isn't always available
- * instead of mucking about with feature-test-macros we simply
- * define our own, with a different name so as to not cause linker-errors
-*/
-char * mystrdup(char * src){
-	size_t len = strlen(src);
-	char * dst = malloc(len + 1);
-	if(dst) strcpy(dst, src);
-	return dst;
 }
 
 /**

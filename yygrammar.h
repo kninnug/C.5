@@ -1,3 +1,6 @@
+#ifndef YYGRAMMAR_H
+#define YYGRAMMAR_H
+
 #ifndef YYSTYPE
 #define YYSTYPE long
 #endif
@@ -60,3 +63,6 @@ extern long yypos;
 #define CASE 258
 #define BREAK 257
 #define AUTO 256
+
+#endif
+

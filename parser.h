@@ -23,25 +23,35 @@ union lexeme{
 	char * text;
 };
 
+enum consttypes { INTCONST, FLOATCONST, STRINGCONST };
+
 #define YYSTYPE union lexeme
 
 typedef struct constant{
-	int type;
+	enum consttypes type;
 	union{
 		unsigned long int i;
 		double d;
 		char * s;
 	} value;
-}constant_t;
+}constant_t, *constant_pt;
 
 typedef struct expression{
 	int type;
 	size_t length;
 	int operator;
 	union{
-		constant_t * c;
-		struct expression * e;
+		constant_t ** c;
+		struct expression ** e;
 	} value;
-} expression_t;
+} expression_t, * expression_pt;
+
+char* mystrdup(const char * yytext);
+
+constant_t * makeIntConst(unsigned long int i);
+constant_t * makeFloatConst(double d);
+constant_t * makeStringConst(const char * s);
+
+expression_t * makeExpression(int type, size_t length, int operator);
 
 #endif

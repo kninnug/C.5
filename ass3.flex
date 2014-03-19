@@ -28,9 +28,6 @@ void count();
 /* Eats multi-line comments */
 void comment();
 
-
-char* mystrdup(char* yytext);
-
 /* Surpress implicit-declarations under MinGW (this function isn't used anyway) */
 int fileno(FILE*);
 
@@ -198,18 +195,6 @@ void comment(){
 	}
 	
 	column++;
-}
-
-/**
- * Since strdup is *not* C-standard it isn't always available
- * instead of mucking about with feature-test-macros we simply
- * define our own, with a different name so as to not cause linker-errors
-*/
-char * mystrdup(char * src){
-	size_t len = strlen(src);
-	char * dst = malloc(len + 1);
-	if(dst) strcpy(dst, src);
-	return dst;
 }
 
 /**

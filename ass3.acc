@@ -194,7 +194,7 @@ declarator
 direct_declarator
 	: id
 	| '(' { PRCH; } declarator ')' { PRCH; }
-	| direct_declarator ( '[' { PRCH; } ( expression )? ']' { PRCH; } 
+	| direct_declarator ( '[' { PRCH; } ( expression<e> )? ']' { PRCH; } 
 		| '(' { PRCH; } parameter_type_list ')' { PRCH; } 
 		| '(' { PRCH; } ( identifier_list )? ')' { PRCH; } )
 	;
@@ -243,7 +243,7 @@ abstract_declarator
 	
 direct_abstract_declarator
 	: '(' { PRCH; } abstract_declarator ')' { PRCH; }
-	| ( direct_abstract_declarator )? ( '[' { PRCH; } ( expression )? ']' { PRCH; } 
+	| ( direct_abstract_declarator )? ( '[' { PRCH; } ( expression<e> )? ']' { PRCH; } 
 		| '(' { PRCH; } ( parameter_type_list )? ')' { PRCH; } )
 	;
 	
@@ -269,7 +269,7 @@ labeled_statement
 	;
 	
 expression_statement
-	: ( expression )? ';' { PRSC; }
+	: ( expression<e> )? ';' { PRSC; }
 	;
 	
 compound_statement
@@ -286,21 +286,21 @@ statement_list
 	;
 	
 selection_statement
-	: IF { PRKW; } '(' { PRCH; } expression ')' { PRCH; } statement ( ELSE { PRKW; } statement )?
-	| SWITCH { PRKW; } '(' { PRCH; } expression ')' { PRCH; } statement
+	: IF { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement ( ELSE { PRKW; } statement )?
+	| SWITCH { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement
 	;
 
 iteration_statement
-	: WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } statement
-	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression ')' { PRCH; } ';' { PRSC; }
-	| FOR { PRKW; } '(' { PRCH; } ( expression )? ';' { PRCHS; } ( expression )? ';' { PRCHS; } ( expression )? ')' { PRCH; } statement
+	: WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement
+	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } ';' { PRSC; }
+	| FOR { PRKW; } '(' { PRCH; } ( expression<e> )? ';' { PRCHS; } ( expression<e> )? ';' { PRCHS; } ( expression<e> )? ')' { PRCH; } statement
 	;
 	
 jump_statement
 	: GOTO { PRKW; } id ';' { PRSC; } /* warning: labels & GOTO's make Dijkstra angry! */
 	| CONTINUE { PRKW; } ';' { PRSC; }
 	| BREAK { PRKW; } ';' { PRSC; }
-	| RETURN { PRKW; } ( expression )? ';' { PRSC; }
+	| RETURN { PRKW; } ( expression<e> )? ';' { PRSC; }
 	;
 
 print_statement
@@ -311,8 +311,8 @@ input_statement
 	: INPUT { PRKW; } ( id ',' { PRCHS; } )* id ';' { PRSC; }
 	;
 	
-expression
-	: ( expression ',' { PRCHS; } )? assignment_expression
+expression<%out expression_pt ret>
+	: ( expression<e> ',' { PRCHS; } )? assignment_expression {}
 	;
 
 assignment_expression
@@ -326,7 +326,7 @@ assignment_operator
 	;
 	
 conditional_expression
-	: logical_OR_expression ( '?' { SPRCHS; } expression ':' { SPRCHS; } conditional_expression )?
+	: logical_OR_expression ( '?' { SPRCHS; } expression<e> ':' { SPRCHS; } conditional_expression )?
 	;
 	
 constant_expression
@@ -375,7 +375,7 @@ cast_expression
 	;
 	
 unary_expression
-	: postfix_expression
+	: postfix_expression<pe>
 	| ( INC_OP { fputs("++", out); } | DEC_OP { fputs("--", out); } ) unary_expression
 	| unary_operator cast_expression
 	| SIZEOF { PRKW; } unary_expression
@@ -386,34 +386,34 @@ unary_operator
 	: (BIT_AND | '*' | '+' | '-' | '~' | '!' | BIT_NOT | BIT_OR | BIT_XOR) { PRCH; }
 	;
 	
-postfix_expression
-	: primary_expression
-	| postfix_expression ( '[' { PRCH; } expression ( ':' { SPRCHS; } expression )? ']' { PRCH; } 
+postfix_expression<%out expression_pt ret>
+	: primary_expression<pe> { *ret = pe; }
+	| postfix_expression<pe> ( '[' { PRCH; } expression<e> ( ':' { SPRCHS; } expression<e> )? ']' { PRCH; }
 		| '(' { PRCH; } ( argument_expression_list )? ')' { PRCH; } 
 		| '.' { PRCH; } id 
-		| PTR_OP { fputs("$\\rightarrow$", out); } id 
+		| PTR_OP { fputs("$\\rightarrow$", out); } id {  }
 		| INC_OP { fputs("++", out); } 
 		| DEC_OP { fputs("--", out); } )
 	;
 	
-primary_expression
+primary_expression<%out expression_pt ret>
 	: id
-	| constant<c> { fprintf(stderr, "%i\n", c->value.i); }
-	| STRING { escapeString(out, yylval.s); }
-	| '(' { PRCH; } expression ')' { PRCH; }
+	| constant<c> { fprintf(stderr, "%u\n", c->type); *ret = makeExpression(0, 1, 0); (*ret)->value.c[0] = c; }
+	| '(' { PRCH; } expression<e> { *ret = e; } ')' { PRCH; }
 	;
 	
 argument_expression_list
-	: ( argument_expression_list ',' { PRCHS; } )? assignment_expression
+	: ( assignment_expression ',' { PRCHS; } )* assignment_expression
 	;
 	
-constant<ret>
-	: INTCONST { fprintf(out, "$%u$", yylval.i); ret = malloc(sizeof(constant_t)); ret->type = INTCONST; ret->value.i = yylval.i; }
-	| CHARACTER { escapeString(out, yylval.s); }
-	| FLOATCONST { fprintf(out, "$%f$", yylval.d); }
+constant<%out constant_pt ret>
+	: INTCONST { fprintf(out, "$%lu$", yylval.i); *ret = makeIntConst(yylval.i); }
+	| CHARACTER { escapeString(out, yylval.s); *ret = makeIntConst(yylval.i); }
+	| FLOATCONST { fprintf(out, "$%f$", yylval.d); *ret = makeFloatConst(yylval.d); }
+	| STRING { escapeString(out, yylval.s); *ret = makeStringConst(yylval.s); }
 	/* | id enumeration-constant..? Should check against defined enum-constants... Yeah, no */
 	;
 	
-id
-	: IDENTIFIER { escapeString(out, yylval.s); }
+id<%out constant_pt ret>
+	: IDENTIFIER { escapeString(out, yylval.s);  }
 	;

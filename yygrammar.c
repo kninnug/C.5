@@ -578,6 +578,7 @@ declarator ()
 
 direct_declarator ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 30: {
       id();
@@ -586,12 +587,12 @@ direct_declarator ()
       get_lexval();
 #line 196 "ass3.acc"
  PRCH; 
-# line 590 "yygrammar.c"
+# line 591 "yygrammar.c"
       declarator();
       get_lexval();
 #line 196 "ass3.acc"
  PRCH; 
-# line 595 "yygrammar.c"
+# line 596 "yygrammar.c"
       } break;
    case 32: {
       direct_declarator();
@@ -600,34 +601,34 @@ direct_declarator ()
          get_lexval();
 #line 197 "ass3.acc"
  PRCH; 
-# line 604 "yygrammar.c"
+# line 605 "yygrammar.c"
          switch (yyselect()) {
          case 150: {
-            expression();
+            expression(&e);
             } break;
          default: ;
          }
          get_lexval();
 #line 197 "ass3.acc"
  PRCH; 
-# line 614 "yygrammar.c"
+# line 615 "yygrammar.c"
          } break;
       case 152: {
          get_lexval();
 #line 198 "ass3.acc"
  PRCH; 
-# line 620 "yygrammar.c"
+# line 621 "yygrammar.c"
          parameter_type_list();
          get_lexval();
 #line 198 "ass3.acc"
  PRCH; 
-# line 625 "yygrammar.c"
+# line 626 "yygrammar.c"
          } break;
       case 154: {
          get_lexval();
 #line 199 "ass3.acc"
  PRCH; 
-# line 631 "yygrammar.c"
+# line 632 "yygrammar.c"
          switch (yyselect()) {
          case 153: {
             identifier_list();
@@ -637,7 +638,7 @@ direct_declarator ()
          get_lexval();
 #line 199 "ass3.acc"
  PRCH; 
-# line 641 "yygrammar.c"
+# line 642 "yygrammar.c"
          } break;
       default: printf("???\n"); exit(1);
       }
@@ -652,7 +653,7 @@ pointer ()
       get_lexval();
 #line 203 "ass3.acc"
  PRCH; 
-# line 656 "yygrammar.c"
+# line 657 "yygrammar.c"
       switch (yyselect()) {
       case 155: {
          type_qualifier_list();
@@ -694,7 +695,7 @@ parameter_type_list ()
          get_lexval();
 #line 211 "ass3.acc"
  PRCHS; 
-# line 698 "yygrammar.c"
+# line 699 "yygrammar.c"
          get_lexval();
          } break;
       default: ;
@@ -713,7 +714,7 @@ parameter_list ()
          get_lexval();
 #line 215 "ass3.acc"
  PRCHS; 
-# line 717 "yygrammar.c"
+# line 718 "yygrammar.c"
          } break;
       default: ;
       }
@@ -755,7 +756,7 @@ identifier_list ()
          get_lexval();
 #line 223 "ass3.acc"
  PRCHS; 
-# line 759 "yygrammar.c"
+# line 760 "yygrammar.c"
          } break;
       default: ;
       }
@@ -774,7 +775,7 @@ initializer ()
       get_lexval();
 #line 228 "ass3.acc"
  fputs("\\{", out); 
-# line 778 "yygrammar.c"
+# line 779 "yygrammar.c"
       initializer_list();
       switch (yyselect()) {
       case 164: {
@@ -785,7 +786,7 @@ initializer ()
       get_lexval();
 #line 228 "ass3.acc"
  fputs("\\}", out); 
-# line 789 "yygrammar.c"
+# line 790 "yygrammar.c"
       } break;
    }
 }
@@ -800,7 +801,7 @@ initializer_list ()
          get_lexval();
 #line 232 "ass3.acc"
  PRCHS; 
-# line 804 "yygrammar.c"
+# line 805 "yygrammar.c"
          } break;
       default: ;
       }
@@ -844,17 +845,18 @@ abstract_declarator ()
 
 direct_abstract_declarator ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 45: {
       get_lexval();
 #line 245 "ass3.acc"
  PRCH; 
-# line 853 "yygrammar.c"
+# line 855 "yygrammar.c"
       abstract_declarator();
       get_lexval();
 #line 245 "ass3.acc"
  PRCH; 
-# line 858 "yygrammar.c"
+# line 860 "yygrammar.c"
       } break;
    case 46: {
       switch (yyselect()) {
@@ -868,23 +870,23 @@ direct_abstract_declarator ()
          get_lexval();
 #line 246 "ass3.acc"
  PRCH; 
-# line 872 "yygrammar.c"
+# line 874 "yygrammar.c"
          switch (yyselect()) {
          case 169: {
-            expression();
+            expression(&e);
             } break;
          default: ;
          }
          get_lexval();
 #line 246 "ass3.acc"
  PRCH; 
-# line 882 "yygrammar.c"
+# line 884 "yygrammar.c"
          } break;
       case 172: {
          get_lexval();
 #line 247 "ass3.acc"
  PRCH; 
-# line 888 "yygrammar.c"
+# line 890 "yygrammar.c"
          switch (yyselect()) {
          case 171: {
             parameter_type_list();
@@ -894,7 +896,7 @@ direct_abstract_declarator ()
          get_lexval();
 #line 247 "ass3.acc"
  PRCH; 
-# line 898 "yygrammar.c"
+# line 900 "yygrammar.c"
          } break;
       default: printf("???\n"); exit(1);
       }
@@ -949,30 +951,30 @@ labeled_statement ()
       get_lexval();
 #line 266 "ass3.acc"
  PRCHS; 
-# line 953 "yygrammar.c"
+# line 955 "yygrammar.c"
       statement();
       } break;
    case 57: {
       get_lexval();
 #line 267 "ass3.acc"
  PRKW; 
-# line 960 "yygrammar.c"
+# line 962 "yygrammar.c"
       constant_expression();
       get_lexval();
 #line 267 "ass3.acc"
  PRCHS; 
-# line 965 "yygrammar.c"
+# line 967 "yygrammar.c"
       statement();
       } break;
    case 58: {
       get_lexval();
 #line 268 "ass3.acc"
  PRKW; 
-# line 972 "yygrammar.c"
+# line 974 "yygrammar.c"
       get_lexval();
 #line 268 "ass3.acc"
  PRCHS; 
-# line 976 "yygrammar.c"
+# line 978 "yygrammar.c"
       statement();
       } break;
    }
@@ -980,18 +982,19 @@ labeled_statement ()
 
 expression_statement ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 59: {
       switch (yyselect()) {
       case 173: {
-         expression();
+         expression(&e);
          } break;
       default: ;
       }
       get_lexval();
 #line 272 "ass3.acc"
  PRSC; 
-# line 995 "yygrammar.c"
+# line 998 "yygrammar.c"
       } break;
    }
 }
@@ -1003,7 +1006,7 @@ compound_statement ()
       get_lexval();
 #line 276 "ass3.acc"
  fputs("\\{\\+\\\\\n", out); 
-# line 1007 "yygrammar.c"
+# line 1010 "yygrammar.c"
       switch (yyselect()) {
       case 174: {
          declaration_list();
@@ -1019,7 +1022,7 @@ compound_statement ()
       get_lexval();
 #line 276 "ass3.acc"
  fputs("\\<\\}\\-\\\\\n", out); 
-# line 1023 "yygrammar.c"
+# line 1026 "yygrammar.c"
       } break;
    }
 }
@@ -1044,28 +1047,29 @@ statement_list ()
 
 selection_statement ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 62: {
       get_lexval();
 #line 289 "ass3.acc"
  PRKW; 
-# line 1053 "yygrammar.c"
-      get_lexval();
-#line 289 "ass3.acc"
- PRCH; 
 # line 1057 "yygrammar.c"
-      expression();
       get_lexval();
 #line 289 "ass3.acc"
  PRCH; 
-# line 1062 "yygrammar.c"
+# line 1061 "yygrammar.c"
+      expression(&e);
+      get_lexval();
+#line 289 "ass3.acc"
+ PRCH; 
+# line 1066 "yygrammar.c"
       statement();
       switch (yyselect()) {
       case 177: {
          get_lexval();
 #line 289 "ass3.acc"
  PRKW; 
-# line 1069 "yygrammar.c"
+# line 1073 "yygrammar.c"
          statement();
          } break;
       default: ;
@@ -1075,16 +1079,16 @@ selection_statement ()
       get_lexval();
 #line 290 "ass3.acc"
  PRKW; 
-# line 1079 "yygrammar.c"
-      get_lexval();
-#line 290 "ass3.acc"
- PRCH; 
 # line 1083 "yygrammar.c"
-      expression();
       get_lexval();
 #line 290 "ass3.acc"
  PRCH; 
-# line 1088 "yygrammar.c"
+# line 1087 "yygrammar.c"
+      expression(&e);
+      get_lexval();
+#line 290 "ass3.acc"
+ PRCH; 
+# line 1092 "yygrammar.c"
       statement();
       } break;
    }
@@ -1092,86 +1096,87 @@ selection_statement ()
 
 iteration_statement ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 64: {
       get_lexval();
 #line 294 "ass3.acc"
  PRKW; 
-# line 1101 "yygrammar.c"
-      get_lexval();
-#line 294 "ass3.acc"
- PRCH; 
-# line 1105 "yygrammar.c"
-      expression();
+# line 1106 "yygrammar.c"
       get_lexval();
 #line 294 "ass3.acc"
  PRCH; 
 # line 1110 "yygrammar.c"
+      expression(&e);
+      get_lexval();
+#line 294 "ass3.acc"
+ PRCH; 
+# line 1115 "yygrammar.c"
       statement();
       } break;
    case 65: {
       get_lexval();
 #line 295 "ass3.acc"
  PRKW; 
-# line 1117 "yygrammar.c"
+# line 1122 "yygrammar.c"
       statement();
       get_lexval();
 #line 295 "ass3.acc"
  PRKW; 
-# line 1122 "yygrammar.c"
-      get_lexval();
-#line 295 "ass3.acc"
- PRCH; 
-# line 1126 "yygrammar.c"
-      expression();
+# line 1127 "yygrammar.c"
       get_lexval();
 #line 295 "ass3.acc"
  PRCH; 
 # line 1131 "yygrammar.c"
+      expression(&e);
+      get_lexval();
+#line 295 "ass3.acc"
+ PRCH; 
+# line 1136 "yygrammar.c"
       get_lexval();
 #line 295 "ass3.acc"
  PRSC; 
-# line 1135 "yygrammar.c"
+# line 1140 "yygrammar.c"
       } break;
    case 66: {
       get_lexval();
 #line 296 "ass3.acc"
  PRKW; 
-# line 1141 "yygrammar.c"
+# line 1146 "yygrammar.c"
       get_lexval();
 #line 296 "ass3.acc"
  PRCH; 
-# line 1145 "yygrammar.c"
+# line 1150 "yygrammar.c"
       switch (yyselect()) {
       case 178: {
-         expression();
+         expression(&e);
          } break;
       default: ;
       }
       get_lexval();
 #line 296 "ass3.acc"
  PRCHS; 
-# line 1155 "yygrammar.c"
+# line 1160 "yygrammar.c"
       switch (yyselect()) {
       case 179: {
-         expression();
+         expression(&e);
          } break;
       default: ;
       }
       get_lexval();
 #line 296 "ass3.acc"
  PRCHS; 
-# line 1165 "yygrammar.c"
+# line 1170 "yygrammar.c"
       switch (yyselect()) {
       case 180: {
-         expression();
+         expression(&e);
          } break;
       default: ;
       }
       get_lexval();
 #line 296 "ass3.acc"
  PRCH; 
-# line 1175 "yygrammar.c"
+# line 1180 "yygrammar.c"
       statement();
       } break;
    }
@@ -1179,53 +1184,54 @@ iteration_statement ()
 
 jump_statement ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 67: {
       get_lexval();
 #line 300 "ass3.acc"
  PRKW; 
-# line 1188 "yygrammar.c"
+# line 1194 "yygrammar.c"
       id();
       get_lexval();
 #line 300 "ass3.acc"
  PRSC; 
-# line 1193 "yygrammar.c"
+# line 1199 "yygrammar.c"
       } break;
    case 68: {
       get_lexval();
 #line 301 "ass3.acc"
  PRKW; 
-# line 1199 "yygrammar.c"
+# line 1205 "yygrammar.c"
       get_lexval();
 #line 301 "ass3.acc"
  PRSC; 
-# line 1203 "yygrammar.c"
+# line 1209 "yygrammar.c"
       } break;
    case 69: {
       get_lexval();
 #line 302 "ass3.acc"
  PRKW; 
-# line 1209 "yygrammar.c"
+# line 1215 "yygrammar.c"
       get_lexval();
 #line 302 "ass3.acc"
  PRSC; 
-# line 1213 "yygrammar.c"
+# line 1219 "yygrammar.c"
       } break;
    case 70: {
       get_lexval();
 #line 303 "ass3.acc"
  PRKW; 
-# line 1219 "yygrammar.c"
+# line 1225 "yygrammar.c"
       switch (yyselect()) {
       case 181: {
-         expression();
+         expression(&e);
          } break;
       default: ;
       }
       get_lexval();
 #line 303 "ass3.acc"
  PRSC; 
-# line 1229 "yygrammar.c"
+# line 1235 "yygrammar.c"
       } break;
    }
 }
@@ -1237,12 +1243,12 @@ print_statement ()
       get_lexval();
 #line 307 "ass3.acc"
  PRKW; 
-# line 1241 "yygrammar.c"
+# line 1247 "yygrammar.c"
       argument_expression_list();
       get_lexval();
 #line 307 "ass3.acc"
  PRSC; 
-# line 1246 "yygrammar.c"
+# line 1252 "yygrammar.c"
       } break;
    }
 }
@@ -1254,7 +1260,7 @@ input_statement ()
       get_lexval();
 #line 311 "ass3.acc"
  PRKW; 
-# line 1258 "yygrammar.c"
+# line 1264 "yygrammar.c"
       while (1) {
          switch (yyselect()) {
          case 182: {
@@ -1262,7 +1268,7 @@ input_statement ()
             get_lexval();
 #line 311 "ass3.acc"
  PRCHS; 
-# line 1266 "yygrammar.c"
+# line 1272 "yygrammar.c"
             } break;
          default: goto yy5;
          }
@@ -1272,26 +1278,31 @@ input_statement ()
       get_lexval();
 #line 311 "ass3.acc"
  PRSC; 
-# line 1276 "yygrammar.c"
+# line 1282 "yygrammar.c"
       } break;
    }
 }
 
-expression ()
+expression (ret)
+   expression_pt *ret;
 {
+   expression_pt e;
    switch(yyselect()) {
    case 73: {
       switch (yyselect()) {
       case 183: {
-         expression();
+         expression(&e);
          get_lexval();
 #line 315 "ass3.acc"
  PRCHS; 
-# line 1291 "yygrammar.c"
+# line 1299 "yygrammar.c"
          } break;
       default: ;
       }
       assignment_expression();
+#line 315 "ass3.acc"
+
+# line 1306 "yygrammar.c"
       } break;
    }
 }
@@ -1317,19 +1328,20 @@ assignment_operator ()
       get_lexval();
 #line 324 "ass3.acc"
  printSubtype(out, yylval.subtype); 
-# line 1321 "yygrammar.c"
+# line 1332 "yygrammar.c"
       } break;
    case 77: {
       get_lexval();
 #line 325 "ass3.acc"
  SPRCHS; 
-# line 1327 "yygrammar.c"
+# line 1338 "yygrammar.c"
       } break;
    }
 }
 
 conditional_expression ()
 {
+   expression_pt e;
    switch(yyselect()) {
    case 78: {
       logical_OR_expression();
@@ -1338,12 +1350,12 @@ conditional_expression ()
          get_lexval();
 #line 329 "ass3.acc"
  SPRCHS; 
-# line 1342 "yygrammar.c"
-         expression();
+# line 1354 "yygrammar.c"
+         expression(&e);
          get_lexval();
 #line 329 "ass3.acc"
  SPRCHS; 
-# line 1347 "yygrammar.c"
+# line 1359 "yygrammar.c"
          conditional_expression();
          } break;
       default: ;
@@ -1371,7 +1383,7 @@ logical_OR_expression ()
          get_lexval();
 #line 337 "ass3.acc"
  fputs("\\ $\\vee$\\ ", out); 
-# line 1375 "yygrammar.c"
+# line 1387 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1390,7 +1402,7 @@ logical_AND_expression ()
          get_lexval();
 #line 341 "ass3.acc"
  fputs("\\ $\\wedge$\\ ", out); 
-# line 1394 "yygrammar.c"
+# line 1406 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1409,7 +1421,7 @@ inclusive_OR_expression ()
          get_lexval();
 #line 345 "ass3.acc"
  SPRCHS; 
-# line 1413 "yygrammar.c"
+# line 1425 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1428,7 +1440,7 @@ exclusive_OR_expression ()
          get_lexval();
 #line 349 "ass3.acc"
  SPRCHS; 
-# line 1432 "yygrammar.c"
+# line 1444 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1447,7 +1459,7 @@ AND_expression ()
          get_lexval();
 #line 353 "ass3.acc"
  SPRCHS; 
-# line 1451 "yygrammar.c"
+# line 1463 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1466,7 +1478,7 @@ equality_expression ()
          get_lexval();
 #line 357 "ass3.acc"
  printSubtype(out, yylval.subtype); 
-# line 1470 "yygrammar.c"
+# line 1482 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1485,7 +1497,7 @@ shift_expression ()
          get_lexval();
 #line 361 "ass3.acc"
  yylval.subtype == SHIFT_LEFT ? fputs("\\ $<<$\\ ", out) : fputs("\\ $>>$\\ ", out); 
-# line 1489 "yygrammar.c"
+# line 1501 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1512,7 +1524,7 @@ additive_expression ()
          }
 #line 365 "ass3.acc"
  SPRCHS; 
-# line 1516 "yygrammar.c"
+# line 1528 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1542,7 +1554,7 @@ multiplicative_expression ()
          }
 #line 369 "ass3.acc"
  SPRCHS; 
-# line 1546 "yygrammar.c"
+# line 1558 "yygrammar.c"
          } break;
       default: ;
       }
@@ -1561,12 +1573,12 @@ cast_expression ()
       get_lexval();
 #line 374 "ass3.acc"
  PRCH; 
-# line 1565 "yygrammar.c"
+# line 1577 "yygrammar.c"
       type_name();
       get_lexval();
 #line 374 "ass3.acc"
  PRCH; 
-# line 1570 "yygrammar.c"
+# line 1582 "yygrammar.c"
       cast_expression();
       } break;
    }
@@ -1574,9 +1586,10 @@ cast_expression ()
 
 unary_expression ()
 {
+   expression_pt pe;
    switch(yyselect()) {
    case 91: {
-      postfix_expression();
+      postfix_expression(&pe);
       } break;
    case 92: {
       switch (yyselect()) {
@@ -1584,13 +1597,13 @@ unary_expression ()
          get_lexval();
 #line 379 "ass3.acc"
  fputs("++", out); 
-# line 1588 "yygrammar.c"
+# line 1601 "yygrammar.c"
          } break;
       case 200: {
          get_lexval();
 #line 379 "ass3.acc"
  fputs("--", out); 
-# line 1594 "yygrammar.c"
+# line 1607 "yygrammar.c"
          } break;
       default: printf("???\n"); exit(1);
       }
@@ -1604,23 +1617,23 @@ unary_expression ()
       get_lexval();
 #line 381 "ass3.acc"
  PRKW; 
-# line 1608 "yygrammar.c"
+# line 1621 "yygrammar.c"
       unary_expression();
       } break;
    case 95: {
       get_lexval();
 #line 382 "ass3.acc"
  PRKW; 
-# line 1615 "yygrammar.c"
+# line 1628 "yygrammar.c"
       get_lexval();
 #line 382 "ass3.acc"
  PRCH; 
-# line 1619 "yygrammar.c"
+# line 1632 "yygrammar.c"
       type_name();
       get_lexval();
 #line 382 "ass3.acc"
  PRCH; 
-# line 1624 "yygrammar.c"
+# line 1637 "yygrammar.c"
       } break;
    }
 }
@@ -1661,46 +1674,52 @@ unary_operator ()
       }
 #line 386 "ass3.acc"
  PRCH; 
-# line 1665 "yygrammar.c"
+# line 1678 "yygrammar.c"
       } break;
    }
 }
 
-postfix_expression ()
+postfix_expression (ret)
+   expression_pt *ret;
 {
+   expression_pt pe;
+   expression_pt e;
    switch(yyselect()) {
    case 97: {
-      primary_expression();
+      primary_expression(&pe);
+#line 390 "ass3.acc"
+ *ret = pe; 
+# line 1693 "yygrammar.c"
       } break;
    case 98: {
-      postfix_expression();
+      postfix_expression(&pe);
       switch (yyselect()) {
       case 211: {
          get_lexval();
 #line 391 "ass3.acc"
  PRCH; 
-# line 1683 "yygrammar.c"
-         expression();
+# line 1702 "yygrammar.c"
+         expression(&e);
          switch (yyselect()) {
          case 210: {
             get_lexval();
 #line 391 "ass3.acc"
  SPRCHS; 
-# line 1690 "yygrammar.c"
-            expression();
+# line 1709 "yygrammar.c"
+            expression(&e);
             } break;
          default: ;
          }
          get_lexval();
 #line 391 "ass3.acc"
  PRCH; 
-# line 1698 "yygrammar.c"
+# line 1717 "yygrammar.c"
          } break;
       case 213: {
          get_lexval();
 #line 392 "ass3.acc"
  PRCH; 
-# line 1704 "yygrammar.c"
+# line 1723 "yygrammar.c"
          switch (yyselect()) {
          case 212: {
             argument_expression_list();
@@ -1710,33 +1729,33 @@ postfix_expression ()
          get_lexval();
 #line 392 "ass3.acc"
  PRCH; 
-# line 1714 "yygrammar.c"
+# line 1733 "yygrammar.c"
          } break;
       case 214: {
          get_lexval();
 #line 393 "ass3.acc"
  PRCH; 
-# line 1720 "yygrammar.c"
+# line 1739 "yygrammar.c"
          id();
          } break;
       case 215: {
          get_lexval();
 #line 394 "ass3.acc"
  fputs("$\\rightarrow$", out); 
-# line 1727 "yygrammar.c"
+# line 1746 "yygrammar.c"
          id();
          } break;
       case 216: {
          get_lexval();
 #line 395 "ass3.acc"
  fputs("++", out); 
-# line 1734 "yygrammar.c"
+# line 1753 "yygrammar.c"
          } break;
       case 217: {
          get_lexval();
 #line 396 "ass3.acc"
  fputs("--", out); 
-# line 1740 "yygrammar.c"
+# line 1759 "yygrammar.c"
          } break;
       default: printf("???\n"); exit(1);
       }
@@ -1744,9 +1763,11 @@ postfix_expression ()
    }
 }
 
-primary_expression ()
+primary_expression (ret)
+   expression_pt *ret;
 {
-   YYSTYPE c;
+   constant_pt c;
+   expression_pt e;
    switch(yyselect()) {
    case 99: {
       id();
@@ -1754,25 +1775,22 @@ primary_expression ()
    case 100: {
       constant(&c);
 #line 401 "ass3.acc"
- fprintf(stderr, "%i\n", c->value.i); 
-# line 1759 "yygrammar.c"
+ fprintf(stderr, "%u\n", c->type); *ret = makeExpression(0, 1, 0); (*ret)->value.c[0] = c; 
+# line 1780 "yygrammar.c"
       } break;
    case 101: {
       get_lexval();
 #line 402 "ass3.acc"
- escapeString(out, yylval.s); 
-# line 1765 "yygrammar.c"
-      } break;
-   case 102: {
-      get_lexval();
-#line 403 "ass3.acc"
  PRCH; 
-# line 1771 "yygrammar.c"
-      expression();
+# line 1786 "yygrammar.c"
+      expression(&e);
+#line 402 "ass3.acc"
+ *ret = e; 
+# line 1790 "yygrammar.c"
       get_lexval();
-#line 403 "ass3.acc"
+#line 402 "ass3.acc"
  PRCH; 
-# line 1776 "yygrammar.c"
+# line 1794 "yygrammar.c"
       } break;
    }
 }
@@ -1780,43 +1798,52 @@ primary_expression ()
 argument_expression_list ()
 {
    switch(yyselect()) {
-   case 103: {
-      switch (yyselect()) {
-      case 218: {
-         argument_expression_list();
-         get_lexval();
-#line 407 "ass3.acc"
+   case 102: {
+      while (1) {
+         switch (yyselect()) {
+         case 218: {
+            assignment_expression();
+            get_lexval();
+#line 406 "ass3.acc"
  PRCHS; 
-# line 1791 "yygrammar.c"
-         } break;
-      default: ;
+# line 1810 "yygrammar.c"
+            } break;
+         default: goto yy6;
+         }
       }
+      yy6: ;
       assignment_expression();
       } break;
    }
 }
 
 constant (ret)
-   YYSTYPE *ret;
+   constant_pt *ret;
 {
    switch(yyselect()) {
+   case 103: {
+      get_lexval();
+#line 410 "ass3.acc"
+ fprintf(out, "$%lu$", yylval.i); *ret = makeIntConst(yylval.i); 
+# line 1829 "yygrammar.c"
+      } break;
    case 104: {
       get_lexval();
 #line 411 "ass3.acc"
- fprintf(out, "$%u$", yylval.i); ret = malloc(sizeof(constant_t)); ret->type = INTCONST; ret->value.i = yylval.i; 
-# line 1808 "yygrammar.c"
+ escapeString(out, yylval.s); *ret = makeIntConst(yylval.i); 
+# line 1835 "yygrammar.c"
       } break;
    case 105: {
       get_lexval();
 #line 412 "ass3.acc"
- escapeString(out, yylval.s); 
-# line 1814 "yygrammar.c"
+ fprintf(out, "$%f$", yylval.d); *ret = makeFloatConst(yylval.d); 
+# line 1841 "yygrammar.c"
       } break;
    case 106: {
       get_lexval();
 #line 413 "ass3.acc"
- fprintf(out, "$%f$", yylval.d); 
-# line 1820 "yygrammar.c"
+ escapeString(out, yylval.s); *ret = makeStringConst(yylval.s); 
+# line 1847 "yygrammar.c"
       } break;
    }
 }
@@ -1828,7 +1855,7 @@ id ()
       get_lexval();
 #line 418 "ass3.acc"
  escapeString(out, yylval.s); 
-# line 1832 "yygrammar.c"
+# line 1859 "yygrammar.c"
       } break;
    }
 }
@@ -1887,7 +1914,7 @@ get_lexval() {
 }
 
 extern int c_length;
-int c_length = 1217;
+int c_length = 1218;
 extern int yygrammar[];
 int yygrammar[] = {
 0,
@@ -2030,7 +2057,7 @@ int yygrammar[] = {
 /* 137 */ -127,
 /* 138 */ 11,
 /* 139 */ 0,
-/* 140 */ 1214,
+/* 140 */ 1215,
 /* 141 */ -127,
 /* 142 */ 12,
 /* 143 */ 147,
@@ -2091,11 +2118,11 @@ int yygrammar[] = {
 /* 198 */ 14,
 /* 199 */ 0,
 /* 200 */ 211,
-/* 201 */ 1214,
+/* 201 */ 1215,
 /* 202 */ -191,
 /* 203 */ 15,
 /* 204 */ 208,
-/* 205 */ 1214,
+/* 205 */ 1215,
 /* 206 */ -204,
 /* 207 */ 135,
 /* 208 */ 0,
@@ -2217,11 +2244,11 @@ int yygrammar[] = {
 /* 324 */ 25,
 /* 325 */ 0,
 /* 326 */ 50266,
-/* 327 */ 1214,
+/* 327 */ 1215,
 /* 328 */ -317,
 /* 329 */ 26,
 /* 330 */ 334,
-/* 331 */ 1214,
+/* 331 */ 1215,
 /* 332 */ -330,
 /* 333 */ 146,
 /* 334 */ 0,
@@ -2241,7 +2268,7 @@ int yygrammar[] = {
 /* 348 */ -342,
 /* 349 */ 233,
 /* 350 */ 0,
-/* 351 */ 1214,
+/* 351 */ 1215,
 /* 352 */ 355,
 /* 353 */ -350,
 /* 354 */ 28,
@@ -2266,7 +2293,7 @@ int yygrammar[] = {
 /* 373 */ -368,
 /* 374 */ 235,
 /* 375 */ 379,
-/* 376 */ 1214,
+/* 376 */ 1215,
 /* 377 */ -375,
 /* 378 */ 30,
 /* 379 */ 385,
@@ -2392,7 +2419,7 @@ int yygrammar[] = {
 /* 499 */ 243,
 /* 500 */ 0,
 /* 501 */ 505,
-/* 502 */ 1214,
+/* 502 */ 1215,
 /* 503 */ -500,
 /* 504 */ 38,
 /* 505 */ 510,
@@ -2507,7 +2534,7 @@ int yygrammar[] = {
 /* 614 */ -609,
 /* 615 */ 251,
 /* 616 */ 0,
-/* 617 */ 1214,
+/* 617 */ 1215,
 /* 618 */ -616,
 /* 619 */ 47,
 /* 620 */ 624,
@@ -2543,7 +2570,7 @@ int yygrammar[] = {
 /* 650 */ -620,
 /* 651 */ 55,
 /* 652 */ 658,
-/* 653 */ 1214,
+/* 653 */ 1215,
 /* 654 */ 50058,
 /* 655 */ 620,
 /* 656 */ -652,
@@ -2685,7 +2712,7 @@ int yygrammar[] = {
 /* 792 */ 259,
 /* 793 */ 799,
 /* 794 */ 50270,
-/* 795 */ 1214,
+/* 795 */ 1215,
 /* 796 */ 50059,
 /* 797 */ -793,
 /* 798 */ 67,
@@ -2714,19 +2741,19 @@ int yygrammar[] = {
 /* 821 */ 260,
 /* 822 */ 0,
 /* 823 */ 50309,
-/* 824 */ 1189,
+/* 824 */ 1185,
 /* 825 */ 50059,
 /* 826 */ -822,
 /* 827 */ 71,
 /* 828 */ 0,
 /* 829 */ 50310,
 /* 830 */ 835,
-/* 831 */ 1214,
+/* 831 */ 1215,
 /* 832 */ 50059,
 /* 833 */ -828,
 /* 834 */ 72,
 /* 835 */ 841,
-/* 836 */ 1214,
+/* 836 */ 1215,
 /* 837 */ 50044,
 /* 838 */ 835,
 /* 839 */ -835,
@@ -3030,12 +3057,12 @@ int yygrammar[] = {
 /* 1137 */ 213,
 /* 1138 */ 1143,
 /* 1139 */ 50046,
-/* 1140 */ 1214,
+/* 1140 */ 1215,
 /* 1141 */ -1125,
 /* 1142 */ 214,
 /* 1143 */ 1148,
 /* 1144 */ 50296,
-/* 1145 */ 1214,
+/* 1145 */ 1215,
 /* 1146 */ -1125,
 /* 1147 */ 215,
 /* 1148 */ 1152,
@@ -3055,59 +3082,60 @@ int yygrammar[] = {
 /* 1162 */ -1156,
 /* 1163 */ 273,
 /* 1164 */ 1168,
-/* 1165 */ 1189,
+/* 1165 */ 1185,
 /* 1166 */ -1164,
 /* 1167 */ 212,
 /* 1168 */ 0,
 /* 1169 */ -1164,
 /* 1170 */ 274,
 /* 1171 */ 1175,
-/* 1172 */ 1214,
+/* 1172 */ 1215,
 /* 1173 */ -1171,
 /* 1174 */ 99,
 /* 1175 */ 1179,
-/* 1176 */ 1202,
+/* 1176 */ 1199,
 /* 1177 */ -1171,
 /* 1178 */ 100,
-/* 1179 */ 1183,
-/* 1180 */ 50289,
-/* 1181 */ -1171,
-/* 1182 */ 101,
-/* 1183 */ 0,
-/* 1184 */ 50040,
-/* 1185 */ 844,
-/* 1186 */ 50041,
-/* 1187 */ -1171,
-/* 1188 */ 102,
-/* 1189 */ 0,
-/* 1190 */ 1194,
+/* 1179 */ 0,
+/* 1180 */ 50040,
+/* 1181 */ 844,
+/* 1182 */ 50041,
+/* 1183 */ -1171,
+/* 1184 */ 101,
+/* 1185 */ 0,
+/* 1186 */ 1190,
+/* 1187 */ 857,
+/* 1188 */ -1185,
+/* 1189 */ 102,
+/* 1190 */ 1196,
 /* 1191 */ 857,
-/* 1192 */ -1189,
-/* 1193 */ 103,
-/* 1194 */ 1199,
-/* 1195 */ 1189,
-/* 1196 */ 50044,
-/* 1197 */ -1194,
-/* 1198 */ 218,
-/* 1199 */ 0,
-/* 1200 */ -1194,
-/* 1201 */ 275,
-/* 1202 */ 1206,
-/* 1203 */ 50308,
-/* 1204 */ -1202,
-/* 1205 */ 104,
-/* 1206 */ 1210,
-/* 1207 */ 50306,
-/* 1208 */ -1202,
-/* 1209 */ 105,
-/* 1210 */ 0,
-/* 1211 */ 50307,
-/* 1212 */ -1202,
-/* 1213 */ 106,
-/* 1214 */ 0,
-/* 1215 */ 50299,
-/* 1216 */ -1214,
-/* 1217 */ 107,
+/* 1192 */ 50044,
+/* 1193 */ 1190,
+/* 1194 */ -1190,
+/* 1195 */ 218,
+/* 1196 */ 0,
+/* 1197 */ -1190,
+/* 1198 */ 275,
+/* 1199 */ 1203,
+/* 1200 */ 50308,
+/* 1201 */ -1199,
+/* 1202 */ 103,
+/* 1203 */ 1207,
+/* 1204 */ 50306,
+/* 1205 */ -1199,
+/* 1206 */ 104,
+/* 1207 */ 1211,
+/* 1208 */ 50307,
+/* 1209 */ -1199,
+/* 1210 */ 105,
+/* 1211 */ 0,
+/* 1212 */ 50289,
+/* 1213 */ -1199,
+/* 1214 */ 106,
+/* 1215 */ 0,
+/* 1216 */ 50299,
+/* 1217 */ -1215,
+/* 1218 */ 107,
 0
 };
 extern int yyannotation[];
@@ -4291,45 +4319,46 @@ int yyannotation[] = {
 /* 1176 */ 1,
 /* 1177 */ -1171,
 /* 1178 */ 2,
-/* 1179 */ 1183,
-/* 1180 */ 50289,
-/* 1181 */ -1171,
-/* 1182 */ 3,
-/* 1183 */ 0,
-/* 1184 */ 50040,
-/* 1185 */ 1,
-/* 1186 */ 50041,
-/* 1187 */ -1171,
-/* 1188 */ 4,
-/* 1189 */ 0,
-/* 1190 */ 1,
+/* 1179 */ 0,
+/* 1180 */ 50040,
+/* 1181 */ 1,
+/* 1182 */ 50041,
+/* 1183 */ -1171,
+/* 1184 */ 3,
+/* 1185 */ 0,
+/* 1186 */ 1,
+/* 1187 */ 1,
+/* 1188 */ -1185,
+/* 1189 */ 1,
+/* 1190 */ 1196,
 /* 1191 */ 1,
-/* 1192 */ -1189,
+/* 1192 */ 50044,
 /* 1193 */ 1,
-/* 1194 */ 1199,
+/* 1194 */ -1190,
 /* 1195 */ 1,
-/* 1196 */ 50044,
-/* 1197 */ -1194,
-/* 1198 */ 1,
-/* 1199 */ 0,
-/* 1200 */ -1194,
-/* 1201 */ 2,
-/* 1202 */ 1206,
-/* 1203 */ 50308,
-/* 1204 */ -1202,
-/* 1205 */ 1,
-/* 1206 */ 1210,
-/* 1207 */ 50306,
-/* 1208 */ -1202,
-/* 1209 */ 2,
-/* 1210 */ 0,
-/* 1211 */ 50307,
-/* 1212 */ -1202,
-/* 1213 */ 3,
-/* 1214 */ 0,
-/* 1215 */ 50299,
-/* 1216 */ -1214,
-/* 1217 */ 1,
+/* 1196 */ 0,
+/* 1197 */ -1190,
+/* 1198 */ 2,
+/* 1199 */ 1203,
+/* 1200 */ 50308,
+/* 1201 */ -1199,
+/* 1202 */ 1,
+/* 1203 */ 1207,
+/* 1204 */ 50306,
+/* 1205 */ -1199,
+/* 1206 */ 2,
+/* 1207 */ 1211,
+/* 1208 */ 50307,
+/* 1209 */ -1199,
+/* 1210 */ 3,
+/* 1211 */ 0,
+/* 1212 */ 50289,
+/* 1213 */ -1199,
+/* 1214 */ 4,
+/* 1215 */ 0,
+/* 1216 */ 50299,
+/* 1217 */ -1215,
+/* 1218 */ 1,
 0
 };
 extern int yycoordinate[];
@@ -5056,8 +5085,8 @@ int yycoordinate[] = {
 /* 719 */ 9999,
 /* 720 */ 289031,
 /* 721 */ 9999,
-/* 722 */ 289056,
-/* 723 */ 289066,
+/* 722 */ 289059,
+/* 723 */ 289069,
 /* 724 */ 9999,
 /* 725 */ 289005,
 /* 726 */ 9999,
@@ -5065,23 +5094,23 @@ int yycoordinate[] = {
 /* 728 */ 9999,
 /* 729 */ 290035,
 /* 730 */ 9999,
-/* 731 */ 290060,
+/* 731 */ 290063,
 /* 732 */ 9999,
 /* 733 */ 290009,
 /* 734 */ 9999,
 /* 735 */ 9999,
-/* 736 */ 289083,
+/* 736 */ 289086,
 /* 737 */ 9999,
-/* 738 */ 289071,
+/* 738 */ 289074,
 /* 739 */ 9999,
 /* 740 */ 9999,
-/* 741 */ 289071,
+/* 741 */ 289074,
 /* 742 */ 9999,
 /* 743 */ 9999,
 /* 744 */ 9999,
 /* 745 */ 294034,
 /* 746 */ 9999,
-/* 747 */ 294059,
+/* 747 */ 294062,
 /* 748 */ 9999,
 /* 749 */ 294008,
 /* 750 */ 9999,
@@ -5099,11 +5128,11 @@ int yycoordinate[] = {
 /* 762 */ 9999,
 /* 763 */ 296032,
 /* 764 */ 9999,
-/* 765 */ 296063,
+/* 765 */ 296066,
 /* 766 */ 9999,
-/* 767 */ 296094,
+/* 767 */ 296100,
 /* 768 */ 9999,
-/* 769 */ 296124,
+/* 769 */ 296133,
 /* 770 */ 9999,
 /* 771 */ 296006,
 /* 772 */ 9999,
@@ -5114,19 +5143,19 @@ int yycoordinate[] = {
 /* 777 */ 9999,
 /* 778 */ 296043,
 /* 779 */ 9999,
-/* 780 */ 296065,
+/* 780 */ 296068,
 /* 781 */ 9999,
-/* 782 */ 296074,
+/* 782 */ 296077,
 /* 783 */ 9999,
 /* 784 */ 9999,
-/* 785 */ 296074,
+/* 785 */ 296077,
 /* 786 */ 9999,
-/* 787 */ 296096,
+/* 787 */ 296102,
 /* 788 */ 9999,
-/* 789 */ 296105,
+/* 789 */ 296111,
 /* 790 */ 9999,
 /* 791 */ 9999,
-/* 792 */ 296105,
+/* 792 */ 296111,
 /* 793 */ 9999,
 /* 794 */ 9999,
 /* 795 */ 300019,
@@ -5180,7 +5209,7 @@ int yycoordinate[] = {
 /* 843 */ 311023,
 /* 844 */ 9999,
 /* 845 */ 315004,
-/* 846 */ 315035,
+/* 846 */ 315038,
 /* 847 */ 9999,
 /* 848 */ 315004,
 /* 849 */ 9999,
@@ -5218,7 +5247,7 @@ int yycoordinate[] = {
 /* 881 */ 9999,
 /* 882 */ 329044,
 /* 883 */ 9999,
-/* 884 */ 329071,
+/* 884 */ 329074,
 /* 885 */ 9999,
 /* 886 */ 329028,
 /* 887 */ 9999,
@@ -5456,16 +5485,16 @@ int yycoordinate[] = {
 /* 1119 */ 390021,
 /* 1120 */ 9999,
 /* 1121 */ 391004,
-/* 1122 */ 391023,
+/* 1122 */ 391027,
 /* 1123 */ 9999,
 /* 1124 */ 391021,
 /* 1125 */ 9999,
 /* 1126 */ 9999,
-/* 1127 */ 391039,
-/* 1128 */ 391050,
+/* 1127 */ 391043,
+/* 1128 */ 391057,
 /* 1129 */ 9999,
 /* 1130 */ 9999,
-/* 1131 */ 391025,
+/* 1131 */ 391029,
 /* 1132 */ 9999,
 /* 1133 */ 9999,
 /* 1134 */ 392019,
@@ -5492,12 +5521,12 @@ int yycoordinate[] = {
 /* 1155 */ 396010,
 /* 1156 */ 9999,
 /* 1157 */ 9999,
-/* 1158 */ 391068,
+/* 1158 */ 391075,
 /* 1159 */ 9999,
-/* 1160 */ 391052,
+/* 1160 */ 391059,
 /* 1161 */ 9999,
 /* 1162 */ 9999,
-/* 1163 */ 391052,
+/* 1163 */ 391059,
 /* 1164 */ 9999,
 /* 1165 */ 392021,
 /* 1166 */ 9999,
@@ -5515,48 +5544,49 @@ int yycoordinate[] = {
 /* 1178 */ 401011,
 /* 1179 */ 9999,
 /* 1180 */ 9999,
-/* 1181 */ 9999,
-/* 1182 */ 402009,
+/* 1181 */ 402018,
+/* 1182 */ 9999,
 /* 1183 */ 9999,
-/* 1184 */ 9999,
-/* 1185 */ 403018,
-/* 1186 */ 9999,
-/* 1187 */ 9999,
-/* 1188 */ 403004,
-/* 1189 */ 9999,
-/* 1190 */ 407004,
-/* 1191 */ 407049,
+/* 1184 */ 402004,
+/* 1185 */ 9999,
+/* 1186 */ 406004,
+/* 1187 */ 406046,
+/* 1188 */ 9999,
+/* 1189 */ 406004,
+/* 1190 */ 9999,
+/* 1191 */ 406006,
 /* 1192 */ 9999,
-/* 1193 */ 407004,
+/* 1193 */ 406026,
 /* 1194 */ 9999,
-/* 1195 */ 407006,
+/* 1195 */ 406026,
 /* 1196 */ 9999,
 /* 1197 */ 9999,
-/* 1198 */ 407029,
+/* 1198 */ 406026,
 /* 1199 */ 9999,
 /* 1200 */ 9999,
-/* 1201 */ 407029,
-/* 1202 */ 9999,
+/* 1201 */ 9999,
+/* 1202 */ 410011,
 /* 1203 */ 9999,
 /* 1204 */ 9999,
-/* 1205 */ 411011,
-/* 1206 */ 9999,
+/* 1205 */ 9999,
+/* 1206 */ 411012,
 /* 1207 */ 9999,
 /* 1208 */ 9999,
-/* 1209 */ 412012,
-/* 1210 */ 9999,
+/* 1209 */ 9999,
+/* 1210 */ 412013,
 /* 1211 */ 9999,
 /* 1212 */ 9999,
-/* 1213 */ 413013,
-/* 1214 */ 9999,
+/* 1213 */ 9999,
+/* 1214 */ 413009,
 /* 1215 */ 9999,
 /* 1216 */ 9999,
-/* 1217 */ 418013,
+/* 1217 */ 9999,
+/* 1218 */ 418013,
 0
 };
 /* only for BIGHASH (see art.c)
 extern int DHITS[];
-int DHITS[1219];
+int DHITS[1220];
 */
 int TABLE[276][312];
 init_dirsets() {
@@ -5600,11 +5630,11 @@ TABLE[108][126] = 1;
 TABLE[108][45] = 1;
 TABLE[108][43] = 1;
 TABLE[108][301] = 1;
-TABLE[108][289] = 1;
 TABLE[108][298] = 1;
 TABLE[108][308] = 1;
 TABLE[108][306] = 1;
 TABLE[108][307] = 1;
+TABLE[108][289] = 1;
 TABLE[108][292] = 1;
 TABLE[108][304] = 1;
 TABLE[108][47] = 1;
@@ -5640,7 +5670,6 @@ TABLE[1][278] = 1;
 TABLE[1][295] = 1;
 TABLE[1][294] = 1;
 TABLE[1][63] = 1;
-TABLE[1][289] = 1;
 TABLE[1][301] = 1;
 TABLE[1][43] = 1;
 TABLE[1][45] = 1;
@@ -5650,6 +5679,7 @@ TABLE[1][303] = 1;
 TABLE[1][300] = 1;
 TABLE[1][302] = 1;
 TABLE[1][297] = 1;
+TABLE[1][289] = 1;
 TABLE[1][307] = 1;
 TABLE[1][306] = 1;
 TABLE[1][308] = 1;
@@ -5698,11 +5728,11 @@ TABLE[109][126] = 1;
 TABLE[109][45] = 1;
 TABLE[109][43] = 1;
 TABLE[109][301] = 1;
-TABLE[109][289] = 1;
 TABLE[109][298] = 1;
 TABLE[109][308] = 1;
 TABLE[109][306] = 1;
 TABLE[109][307] = 1;
+TABLE[109][289] = 1;
 TABLE[109][292] = 1;
 TABLE[109][304] = 1;
 TABLE[109][47] = 1;
@@ -5748,11 +5778,11 @@ TABLE[2][126] = 1;
 TABLE[2][45] = 1;
 TABLE[2][43] = 1;
 TABLE[2][301] = 1;
-TABLE[2][289] = 1;
 TABLE[2][298] = 1;
 TABLE[2][308] = 1;
 TABLE[2][306] = 1;
 TABLE[2][307] = 1;
+TABLE[2][289] = 1;
 TABLE[2][292] = 1;
 TABLE[2][304] = 1;
 TABLE[2][47] = 1;
@@ -5788,7 +5818,6 @@ TABLE[3][295] = 1;
 TABLE[3][294] = 1;
 TABLE[3][63] = 1;
 TABLE[3][42] = 1;
-TABLE[3][289] = 1;
 TABLE[3][301] = 1;
 TABLE[3][43] = 1;
 TABLE[3][45] = 1;
@@ -5798,6 +5827,7 @@ TABLE[3][303] = 1;
 TABLE[3][300] = 1;
 TABLE[3][302] = 1;
 TABLE[3][297] = 1;
+TABLE[3][289] = 1;
 TABLE[3][307] = 1;
 TABLE[3][306] = 1;
 TABLE[3][308] = 1;
@@ -5814,7 +5844,6 @@ TABLE[4][278] = 1;
 TABLE[4][295] = 1;
 TABLE[4][294] = 1;
 TABLE[4][63] = 1;
-TABLE[4][289] = 1;
 TABLE[4][301] = 1;
 TABLE[4][43] = 1;
 TABLE[4][45] = 1;
@@ -5824,6 +5853,7 @@ TABLE[4][303] = 1;
 TABLE[4][300] = 1;
 TABLE[4][302] = 1;
 TABLE[4][297] = 1;
+TABLE[4][289] = 1;
 TABLE[4][307] = 1;
 TABLE[4][306] = 1;
 TABLE[4][308] = 1;
@@ -5862,7 +5892,6 @@ TABLE[110][295] = 1;
 TABLE[110][294] = 1;
 TABLE[110][63] = 1;
 TABLE[110][42] = 1;
-TABLE[110][289] = 1;
 TABLE[110][301] = 1;
 TABLE[110][43] = 1;
 TABLE[110][45] = 1;
@@ -5872,6 +5901,7 @@ TABLE[110][303] = 1;
 TABLE[110][300] = 1;
 TABLE[110][302] = 1;
 TABLE[110][297] = 1;
+TABLE[110][289] = 1;
 TABLE[110][307] = 1;
 TABLE[110][306] = 1;
 TABLE[110][308] = 1;
@@ -5930,7 +5960,6 @@ TABLE[220][295] = 1;
 TABLE[220][294] = 1;
 TABLE[220][63] = 1;
 TABLE[220][42] = 1;
-TABLE[220][289] = 1;
 TABLE[220][301] = 1;
 TABLE[220][43] = 1;
 TABLE[220][45] = 1;
@@ -5940,6 +5969,7 @@ TABLE[220][303] = 1;
 TABLE[220][300] = 1;
 TABLE[220][302] = 1;
 TABLE[220][297] = 1;
+TABLE[220][289] = 1;
 TABLE[220][307] = 1;
 TABLE[220][306] = 1;
 TABLE[220][308] = 1;
@@ -5989,11 +6019,11 @@ TABLE[111][126] = 1;
 TABLE[111][45] = 1;
 TABLE[111][43] = 1;
 TABLE[111][301] = 1;
-TABLE[111][289] = 1;
 TABLE[111][298] = 1;
 TABLE[111][308] = 1;
 TABLE[111][306] = 1;
 TABLE[111][307] = 1;
+TABLE[111][289] = 1;
 TABLE[111][292] = 1;
 TABLE[111][304] = 1;
 TABLE[111][47] = 1;
@@ -6021,11 +6051,11 @@ TABLE[5][126] = 1;
 TABLE[5][45] = 1;
 TABLE[5][43] = 1;
 TABLE[5][301] = 1;
-TABLE[5][289] = 1;
 TABLE[5][298] = 1;
 TABLE[5][308] = 1;
 TABLE[5][306] = 1;
 TABLE[5][307] = 1;
+TABLE[5][289] = 1;
 TABLE[5][292] = 1;
 TABLE[5][304] = 1;
 TABLE[5][47] = 1;
@@ -6061,7 +6091,6 @@ TABLE[114][294] = 1;
 TABLE[114][63] = 1;
 TABLE[114][299] = 1;
 TABLE[114][42] = 1;
-TABLE[114][289] = 1;
 TABLE[114][301] = 1;
 TABLE[114][43] = 1;
 TABLE[114][45] = 1;
@@ -6071,6 +6100,7 @@ TABLE[114][303] = 1;
 TABLE[114][300] = 1;
 TABLE[114][302] = 1;
 TABLE[114][297] = 1;
+TABLE[114][289] = 1;
 TABLE[114][307] = 1;
 TABLE[114][306] = 1;
 TABLE[114][308] = 1;
@@ -6124,7 +6154,6 @@ TABLE[6][295] = 1;
 TABLE[6][294] = 1;
 TABLE[6][63] = 1;
 TABLE[6][42] = 1;
-TABLE[6][289] = 1;
 TABLE[6][301] = 1;
 TABLE[6][43] = 1;
 TABLE[6][45] = 1;
@@ -6134,6 +6163,7 @@ TABLE[6][303] = 1;
 TABLE[6][300] = 1;
 TABLE[6][302] = 1;
 TABLE[6][297] = 1;
+TABLE[6][289] = 1;
 TABLE[6][307] = 1;
 TABLE[6][306] = 1;
 TABLE[6][308] = 1;
@@ -6186,7 +6216,6 @@ TABLE[115][295] = 1;
 TABLE[115][294] = 1;
 TABLE[115][63] = 1;
 TABLE[115][42] = 1;
-TABLE[115][289] = 1;
 TABLE[115][301] = 1;
 TABLE[115][43] = 1;
 TABLE[115][45] = 1;
@@ -6196,6 +6225,7 @@ TABLE[115][303] = 1;
 TABLE[115][300] = 1;
 TABLE[115][302] = 1;
 TABLE[115][297] = 1;
+TABLE[115][289] = 1;
 TABLE[115][307] = 1;
 TABLE[115][306] = 1;
 TABLE[115][308] = 1;
@@ -6236,11 +6266,11 @@ TABLE[223][43] = 1;
 TABLE[223][42] = 1;
 TABLE[223][301] = 1;
 TABLE[223][40] = 1;
-TABLE[223][289] = 1;
 TABLE[223][298] = 1;
 TABLE[223][308] = 1;
 TABLE[223][306] = 1;
 TABLE[223][307] = 1;
+TABLE[223][289] = 1;
 TABLE[223][292] = 1;
 TABLE[223][304] = 1;
 TABLE[223][47] = 1;
@@ -6254,7 +6284,6 @@ TABLE[7][295] = 1;
 TABLE[7][294] = 1;
 TABLE[7][63] = 1;
 TABLE[7][42] = 1;
-TABLE[7][289] = 1;
 TABLE[7][301] = 1;
 TABLE[7][43] = 1;
 TABLE[7][45] = 1;
@@ -6264,6 +6293,7 @@ TABLE[7][303] = 1;
 TABLE[7][300] = 1;
 TABLE[7][302] = 1;
 TABLE[7][297] = 1;
+TABLE[7][289] = 1;
 TABLE[7][307] = 1;
 TABLE[7][306] = 1;
 TABLE[7][308] = 1;
@@ -6344,7 +6374,6 @@ TABLE[224][295] = 1;
 TABLE[224][294] = 1;
 TABLE[224][63] = 1;
 TABLE[224][42] = 1;
-TABLE[224][289] = 1;
 TABLE[224][301] = 1;
 TABLE[224][43] = 1;
 TABLE[224][45] = 1;
@@ -6354,6 +6383,7 @@ TABLE[224][303] = 1;
 TABLE[224][300] = 1;
 TABLE[224][302] = 1;
 TABLE[224][297] = 1;
+TABLE[224][289] = 1;
 TABLE[224][307] = 1;
 TABLE[224][306] = 1;
 TABLE[224][308] = 1;
@@ -6477,11 +6507,11 @@ TABLE[18][126] = 1;
 TABLE[18][45] = 1;
 TABLE[18][43] = 1;
 TABLE[18][301] = 1;
-TABLE[18][289] = 1;
 TABLE[18][298] = 1;
 TABLE[18][308] = 1;
 TABLE[18][306] = 1;
 TABLE[18][307] = 1;
+TABLE[18][289] = 1;
 TABLE[18][292] = 1;
 TABLE[18][304] = 1;
 TABLE[18][47] = 1;
@@ -6496,7 +6526,6 @@ TABLE[139][294] = 1;
 TABLE[139][63] = 1;
 TABLE[139][299] = 1;
 TABLE[139][42] = 1;
-TABLE[139][289] = 1;
 TABLE[139][301] = 1;
 TABLE[139][43] = 1;
 TABLE[139][45] = 1;
@@ -6506,6 +6535,7 @@ TABLE[139][303] = 1;
 TABLE[139][300] = 1;
 TABLE[139][302] = 1;
 TABLE[139][297] = 1;
+TABLE[139][289] = 1;
 TABLE[139][307] = 1;
 TABLE[139][306] = 1;
 TABLE[139][308] = 1;
@@ -6532,11 +6562,11 @@ TABLE[227][126] = 1;
 TABLE[227][45] = 1;
 TABLE[227][43] = 1;
 TABLE[227][301] = 1;
-TABLE[227][289] = 1;
 TABLE[227][298] = 1;
 TABLE[227][308] = 1;
 TABLE[227][306] = 1;
 TABLE[227][307] = 1;
+TABLE[227][289] = 1;
 TABLE[227][292] = 1;
 TABLE[227][304] = 1;
 TABLE[227][47] = 1;
@@ -6550,7 +6580,6 @@ TABLE[19][278] = 1;
 TABLE[19][295] = 1;
 TABLE[19][294] = 1;
 TABLE[19][63] = 1;
-TABLE[19][289] = 1;
 TABLE[19][301] = 1;
 TABLE[19][43] = 1;
 TABLE[19][45] = 1;
@@ -6560,6 +6589,7 @@ TABLE[19][303] = 1;
 TABLE[19][300] = 1;
 TABLE[19][302] = 1;
 TABLE[19][297] = 1;
+TABLE[19][289] = 1;
 TABLE[19][307] = 1;
 TABLE[19][306] = 1;
 TABLE[19][308] = 1;
@@ -6581,7 +6611,6 @@ TABLE[228][278] = 1;
 TABLE[228][295] = 1;
 TABLE[228][294] = 1;
 TABLE[228][63] = 1;
-TABLE[228][289] = 1;
 TABLE[228][40] = 1;
 TABLE[228][301] = 1;
 TABLE[228][42] = 1;
@@ -6594,6 +6623,7 @@ TABLE[228][300] = 1;
 TABLE[228][302] = 1;
 TABLE[228][297] = 1;
 TABLE[228][299] = 1;
+TABLE[228][289] = 1;
 TABLE[228][307] = 1;
 TABLE[228][306] = 1;
 TABLE[228][308] = 1;
@@ -6735,7 +6765,6 @@ TABLE[150][278] = 1;
 TABLE[150][295] = 1;
 TABLE[150][294] = 1;
 TABLE[150][63] = 1;
-TABLE[150][289] = 1;
 TABLE[150][40] = 1;
 TABLE[150][301] = 1;
 TABLE[150][42] = 1;
@@ -6748,6 +6777,7 @@ TABLE[150][300] = 1;
 TABLE[150][302] = 1;
 TABLE[150][297] = 1;
 TABLE[150][299] = 1;
+TABLE[150][289] = 1;
 TABLE[150][307] = 1;
 TABLE[150][306] = 1;
 TABLE[150][308] = 1;
@@ -6954,11 +6984,11 @@ TABLE[39][43] = 1;
 TABLE[39][42] = 1;
 TABLE[39][301] = 1;
 TABLE[39][40] = 1;
-TABLE[39][289] = 1;
 TABLE[39][298] = 1;
 TABLE[39][308] = 1;
 TABLE[39][306] = 1;
 TABLE[39][307] = 1;
+TABLE[39][289] = 1;
 TABLE[39][299] = 1;
 TABLE[39][292] = 1;
 TABLE[39][304] = 1;
@@ -6974,7 +7004,6 @@ TABLE[41][278] = 1;
 TABLE[41][295] = 1;
 TABLE[41][294] = 1;
 TABLE[41][63] = 1;
-TABLE[41][289] = 1;
 TABLE[41][40] = 1;
 TABLE[41][301] = 1;
 TABLE[41][42] = 1;
@@ -6987,6 +7016,7 @@ TABLE[41][300] = 1;
 TABLE[41][302] = 1;
 TABLE[41][297] = 1;
 TABLE[41][299] = 1;
+TABLE[41][289] = 1;
 TABLE[41][307] = 1;
 TABLE[41][306] = 1;
 TABLE[41][308] = 1;
@@ -7012,11 +7042,11 @@ TABLE[165][43] = 1;
 TABLE[165][42] = 1;
 TABLE[165][301] = 1;
 TABLE[165][40] = 1;
-TABLE[165][289] = 1;
 TABLE[165][298] = 1;
 TABLE[165][308] = 1;
 TABLE[165][306] = 1;
 TABLE[165][307] = 1;
+TABLE[165][289] = 1;
 TABLE[165][299] = 1;
 TABLE[165][292] = 1;
 TABLE[165][304] = 1;
@@ -7027,7 +7057,6 @@ TABLE[246][278] = 1;
 TABLE[246][295] = 1;
 TABLE[246][294] = 1;
 TABLE[246][63] = 1;
-TABLE[246][289] = 1;
 TABLE[246][40] = 1;
 TABLE[246][301] = 1;
 TABLE[246][42] = 1;
@@ -7040,6 +7069,7 @@ TABLE[246][300] = 1;
 TABLE[246][302] = 1;
 TABLE[246][297] = 1;
 TABLE[246][299] = 1;
+TABLE[246][289] = 1;
 TABLE[246][307] = 1;
 TABLE[246][306] = 1;
 TABLE[246][308] = 1;
@@ -7096,7 +7126,6 @@ TABLE[169][278] = 1;
 TABLE[169][295] = 1;
 TABLE[169][294] = 1;
 TABLE[169][63] = 1;
-TABLE[169][289] = 1;
 TABLE[169][40] = 1;
 TABLE[169][301] = 1;
 TABLE[169][42] = 1;
@@ -7109,6 +7138,7 @@ TABLE[169][300] = 1;
 TABLE[169][302] = 1;
 TABLE[169][297] = 1;
 TABLE[169][299] = 1;
+TABLE[169][289] = 1;
 TABLE[169][307] = 1;
 TABLE[169][306] = 1;
 TABLE[169][308] = 1;
@@ -7170,7 +7200,6 @@ TABLE[49][278] = 1;
 TABLE[49][295] = 1;
 TABLE[49][294] = 1;
 TABLE[49][63] = 1;
-TABLE[49][289] = 1;
 TABLE[49][40] = 1;
 TABLE[49][301] = 1;
 TABLE[49][42] = 1;
@@ -7183,6 +7212,7 @@ TABLE[49][300] = 1;
 TABLE[49][302] = 1;
 TABLE[49][297] = 1;
 TABLE[49][299] = 1;
+TABLE[49][289] = 1;
 TABLE[49][307] = 1;
 TABLE[49][306] = 1;
 TABLE[49][308] = 1;
@@ -7223,11 +7253,11 @@ TABLE[59][43] = 1;
 TABLE[59][42] = 1;
 TABLE[59][301] = 1;
 TABLE[59][40] = 1;
-TABLE[59][289] = 1;
 TABLE[59][298] = 1;
 TABLE[59][308] = 1;
 TABLE[59][306] = 1;
 TABLE[59][307] = 1;
+TABLE[59][289] = 1;
 TABLE[59][299] = 1;
 TABLE[59][292] = 1;
 TABLE[59][304] = 1;
@@ -7239,7 +7269,6 @@ TABLE[173][278] = 1;
 TABLE[173][295] = 1;
 TABLE[173][294] = 1;
 TABLE[173][63] = 1;
-TABLE[173][289] = 1;
 TABLE[173][40] = 1;
 TABLE[173][301] = 1;
 TABLE[173][42] = 1;
@@ -7252,6 +7281,7 @@ TABLE[173][300] = 1;
 TABLE[173][302] = 1;
 TABLE[173][297] = 1;
 TABLE[173][299] = 1;
+TABLE[173][289] = 1;
 TABLE[173][307] = 1;
 TABLE[173][306] = 1;
 TABLE[173][308] = 1;
@@ -7315,11 +7345,11 @@ TABLE[174][126] = 1;
 TABLE[174][45] = 1;
 TABLE[174][43] = 1;
 TABLE[174][301] = 1;
-TABLE[174][289] = 1;
 TABLE[174][298] = 1;
 TABLE[174][308] = 1;
 TABLE[174][306] = 1;
 TABLE[174][307] = 1;
+TABLE[174][289] = 1;
 TABLE[174][292] = 1;
 TABLE[174][304] = 1;
 TABLE[174][47] = 1;
@@ -7356,11 +7386,11 @@ TABLE[253][43] = 1;
 TABLE[253][42] = 1;
 TABLE[253][301] = 1;
 TABLE[253][40] = 1;
-TABLE[253][289] = 1;
 TABLE[253][298] = 1;
 TABLE[253][308] = 1;
 TABLE[253][306] = 1;
 TABLE[253][307] = 1;
+TABLE[253][289] = 1;
 TABLE[253][292] = 1;
 TABLE[253][304] = 1;
 TABLE[253][47] = 1;
@@ -7388,7 +7418,6 @@ TABLE[175][278] = 1;
 TABLE[175][295] = 1;
 TABLE[175][294] = 1;
 TABLE[175][63] = 1;
-TABLE[175][289] = 1;
 TABLE[175][40] = 1;
 TABLE[175][301] = 1;
 TABLE[175][42] = 1;
@@ -7400,6 +7429,7 @@ TABLE[175][303] = 1;
 TABLE[175][300] = 1;
 TABLE[175][302] = 1;
 TABLE[175][297] = 1;
+TABLE[175][289] = 1;
 TABLE[175][307] = 1;
 TABLE[175][306] = 1;
 TABLE[175][308] = 1;
@@ -7431,7 +7461,6 @@ TABLE[61][278] = 1;
 TABLE[61][295] = 1;
 TABLE[61][294] = 1;
 TABLE[61][63] = 1;
-TABLE[61][289] = 1;
 TABLE[61][40] = 1;
 TABLE[61][301] = 1;
 TABLE[61][42] = 1;
@@ -7443,6 +7472,7 @@ TABLE[61][303] = 1;
 TABLE[61][300] = 1;
 TABLE[61][302] = 1;
 TABLE[61][297] = 1;
+TABLE[61][289] = 1;
 TABLE[61][307] = 1;
 TABLE[61][306] = 1;
 TABLE[61][308] = 1;
@@ -7484,11 +7514,11 @@ TABLE[176][43] = 1;
 TABLE[176][42] = 1;
 TABLE[176][301] = 1;
 TABLE[176][40] = 1;
-TABLE[176][289] = 1;
 TABLE[176][298] = 1;
 TABLE[176][308] = 1;
 TABLE[176][306] = 1;
 TABLE[176][307] = 1;
+TABLE[176][289] = 1;
 TABLE[176][292] = 1;
 TABLE[176][304] = 1;
 TABLE[176][47] = 1;
@@ -7525,11 +7555,11 @@ TABLE[255][43] = 1;
 TABLE[255][42] = 1;
 TABLE[255][301] = 1;
 TABLE[255][40] = 1;
-TABLE[255][289] = 1;
 TABLE[255][298] = 1;
 TABLE[255][308] = 1;
 TABLE[255][306] = 1;
 TABLE[255][307] = 1;
+TABLE[255][289] = 1;
 TABLE[255][292] = 1;
 TABLE[255][304] = 1;
 TABLE[255][47] = 1;
@@ -7571,11 +7601,11 @@ TABLE[256][43] = 1;
 TABLE[256][42] = 1;
 TABLE[256][301] = 1;
 TABLE[256][40] = 1;
-TABLE[256][289] = 1;
 TABLE[256][298] = 1;
 TABLE[256][308] = 1;
 TABLE[256][306] = 1;
 TABLE[256][307] = 1;
+TABLE[256][289] = 1;
 TABLE[256][292] = 1;
 TABLE[256][304] = 1;
 TABLE[256][47] = 1;
@@ -7590,7 +7620,6 @@ TABLE[178][278] = 1;
 TABLE[178][295] = 1;
 TABLE[178][294] = 1;
 TABLE[178][63] = 1;
-TABLE[178][289] = 1;
 TABLE[178][40] = 1;
 TABLE[178][301] = 1;
 TABLE[178][42] = 1;
@@ -7603,6 +7632,7 @@ TABLE[178][300] = 1;
 TABLE[178][302] = 1;
 TABLE[178][297] = 1;
 TABLE[178][299] = 1;
+TABLE[178][289] = 1;
 TABLE[178][307] = 1;
 TABLE[178][306] = 1;
 TABLE[178][308] = 1;
@@ -7618,7 +7648,6 @@ TABLE[179][278] = 1;
 TABLE[179][295] = 1;
 TABLE[179][294] = 1;
 TABLE[179][63] = 1;
-TABLE[179][289] = 1;
 TABLE[179][40] = 1;
 TABLE[179][301] = 1;
 TABLE[179][42] = 1;
@@ -7631,6 +7660,7 @@ TABLE[179][300] = 1;
 TABLE[179][302] = 1;
 TABLE[179][297] = 1;
 TABLE[179][299] = 1;
+TABLE[179][289] = 1;
 TABLE[179][307] = 1;
 TABLE[179][306] = 1;
 TABLE[179][308] = 1;
@@ -7646,7 +7676,6 @@ TABLE[180][278] = 1;
 TABLE[180][295] = 1;
 TABLE[180][294] = 1;
 TABLE[180][63] = 1;
-TABLE[180][289] = 1;
 TABLE[180][40] = 1;
 TABLE[180][301] = 1;
 TABLE[180][42] = 1;
@@ -7659,6 +7688,7 @@ TABLE[180][300] = 1;
 TABLE[180][302] = 1;
 TABLE[180][297] = 1;
 TABLE[180][299] = 1;
+TABLE[180][289] = 1;
 TABLE[180][307] = 1;
 TABLE[180][306] = 1;
 TABLE[180][308] = 1;
@@ -7678,7 +7708,6 @@ TABLE[181][278] = 1;
 TABLE[181][295] = 1;
 TABLE[181][294] = 1;
 TABLE[181][63] = 1;
-TABLE[181][289] = 1;
 TABLE[181][40] = 1;
 TABLE[181][301] = 1;
 TABLE[181][42] = 1;
@@ -7691,6 +7720,7 @@ TABLE[181][300] = 1;
 TABLE[181][302] = 1;
 TABLE[181][297] = 1;
 TABLE[181][299] = 1;
+TABLE[181][289] = 1;
 TABLE[181][307] = 1;
 TABLE[181][306] = 1;
 TABLE[181][308] = 1;
@@ -7724,11 +7754,11 @@ TABLE[73][43] = 1;
 TABLE[73][42] = 1;
 TABLE[73][301] = 1;
 TABLE[73][40] = 1;
-TABLE[73][289] = 1;
 TABLE[73][298] = 1;
 TABLE[73][308] = 1;
 TABLE[73][306] = 1;
 TABLE[73][307] = 1;
+TABLE[73][289] = 1;
 TABLE[73][299] = 1;
 TABLE[73][292] = 1;
 TABLE[73][304] = 1;
@@ -7739,7 +7769,6 @@ TABLE[183][278] = 1;
 TABLE[183][295] = 1;
 TABLE[183][294] = 1;
 TABLE[183][63] = 1;
-TABLE[183][289] = 1;
 TABLE[183][40] = 1;
 TABLE[183][301] = 1;
 TABLE[183][42] = 1;
@@ -7752,6 +7781,7 @@ TABLE[183][300] = 1;
 TABLE[183][302] = 1;
 TABLE[183][297] = 1;
 TABLE[183][299] = 1;
+TABLE[183][289] = 1;
 TABLE[183][307] = 1;
 TABLE[183][306] = 1;
 TABLE[183][308] = 1;
@@ -7775,11 +7805,11 @@ TABLE[262][43] = 1;
 TABLE[262][42] = 1;
 TABLE[262][301] = 1;
 TABLE[262][40] = 1;
-TABLE[262][289] = 1;
 TABLE[262][298] = 1;
 TABLE[262][308] = 1;
 TABLE[262][306] = 1;
 TABLE[262][307] = 1;
+TABLE[262][289] = 1;
 TABLE[262][299] = 1;
 TABLE[262][292] = 1;
 TABLE[262][304] = 1;
@@ -7816,15 +7846,14 @@ TABLE[74][295] = 1;
 TABLE[74][303] = 1;
 TABLE[74][33] = 1;
 TABLE[74][126] = 1;
-TABLE[74][289] = 1;
 TABLE[74][308] = 1;
 TABLE[74][306] = 1;
 TABLE[74][307] = 1;
+TABLE[74][289] = 1;
 TABLE[74][299] = 1;
 TABLE[75][278] = 1;
 TABLE[75][295] = 1;
 TABLE[75][294] = 1;
-TABLE[75][289] = 1;
 TABLE[75][40] = 1;
 TABLE[75][301] = 1;
 TABLE[75][42] = 1;
@@ -7836,6 +7865,7 @@ TABLE[75][303] = 1;
 TABLE[75][300] = 1;
 TABLE[75][302] = 1;
 TABLE[75][299] = 1;
+TABLE[75][289] = 1;
 TABLE[75][307] = 1;
 TABLE[75][306] = 1;
 TABLE[75][308] = 1;
@@ -7864,11 +7894,11 @@ TABLE[78][37] = 1;
 TABLE[78][278] = 1;
 TABLE[78][295] = 1;
 TABLE[78][294] = 1;
-TABLE[78][289] = 1;
 TABLE[78][126] = 1;
 TABLE[78][33] = 1;
 TABLE[78][303] = 1;
 TABLE[78][299] = 1;
+TABLE[78][289] = 1;
 TABLE[78][307] = 1;
 TABLE[78][306] = 1;
 TABLE[78][308] = 1;
@@ -7903,10 +7933,10 @@ TABLE[79][295] = 1;
 TABLE[79][303] = 1;
 TABLE[79][33] = 1;
 TABLE[79][126] = 1;
-TABLE[79][289] = 1;
 TABLE[79][308] = 1;
 TABLE[79][306] = 1;
 TABLE[79][307] = 1;
+TABLE[79][289] = 1;
 TABLE[79][299] = 1;
 TABLE[80][63] = 1;
 TABLE[80][59] = 1;
@@ -7934,10 +7964,10 @@ TABLE[80][295] = 1;
 TABLE[80][303] = 1;
 TABLE[80][33] = 1;
 TABLE[80][126] = 1;
-TABLE[80][289] = 1;
 TABLE[80][308] = 1;
 TABLE[80][306] = 1;
 TABLE[80][307] = 1;
+TABLE[80][289] = 1;
 TABLE[80][299] = 1;
 TABLE[185][297] = 1;
 TABLE[185][298] = 1;
@@ -7955,11 +7985,11 @@ TABLE[185][37] = 1;
 TABLE[185][278] = 1;
 TABLE[185][295] = 1;
 TABLE[185][294] = 1;
-TABLE[185][289] = 1;
 TABLE[185][126] = 1;
 TABLE[185][33] = 1;
 TABLE[185][303] = 1;
 TABLE[185][299] = 1;
+TABLE[185][289] = 1;
 TABLE[185][307] = 1;
 TABLE[185][306] = 1;
 TABLE[185][308] = 1;
@@ -7981,10 +8011,10 @@ TABLE[264][295] = 1;
 TABLE[264][303] = 1;
 TABLE[264][33] = 1;
 TABLE[264][126] = 1;
-TABLE[264][289] = 1;
 TABLE[264][308] = 1;
 TABLE[264][306] = 1;
 TABLE[264][307] = 1;
+TABLE[264][289] = 1;
 TABLE[264][299] = 1;
 TABLE[264][63] = 1;
 TABLE[264][59] = 1;
@@ -8017,11 +8047,11 @@ TABLE[81][37] = 1;
 TABLE[81][278] = 1;
 TABLE[81][295] = 1;
 TABLE[81][294] = 1;
-TABLE[81][289] = 1;
 TABLE[81][126] = 1;
 TABLE[81][33] = 1;
 TABLE[81][303] = 1;
 TABLE[81][299] = 1;
+TABLE[81][289] = 1;
 TABLE[81][307] = 1;
 TABLE[81][306] = 1;
 TABLE[81][308] = 1;
@@ -8043,10 +8073,10 @@ TABLE[186][295] = 1;
 TABLE[186][303] = 1;
 TABLE[186][33] = 1;
 TABLE[186][126] = 1;
-TABLE[186][289] = 1;
 TABLE[186][308] = 1;
 TABLE[186][306] = 1;
 TABLE[186][307] = 1;
+TABLE[186][289] = 1;
 TABLE[186][299] = 1;
 TABLE[265][300] = 1;
 TABLE[265][302] = 1;
@@ -8062,11 +8092,11 @@ TABLE[265][37] = 1;
 TABLE[265][278] = 1;
 TABLE[265][295] = 1;
 TABLE[265][294] = 1;
-TABLE[265][289] = 1;
 TABLE[265][126] = 1;
 TABLE[265][33] = 1;
 TABLE[265][303] = 1;
 TABLE[265][299] = 1;
+TABLE[265][289] = 1;
 TABLE[265][307] = 1;
 TABLE[265][306] = 1;
 TABLE[265][308] = 1;
@@ -8105,10 +8135,10 @@ TABLE[82][295] = 1;
 TABLE[82][303] = 1;
 TABLE[82][33] = 1;
 TABLE[82][126] = 1;
-TABLE[82][289] = 1;
 TABLE[82][308] = 1;
 TABLE[82][306] = 1;
 TABLE[82][307] = 1;
+TABLE[82][289] = 1;
 TABLE[82][299] = 1;
 TABLE[187][300] = 1;
 TABLE[187][302] = 1;
@@ -8124,11 +8154,11 @@ TABLE[187][37] = 1;
 TABLE[187][278] = 1;
 TABLE[187][295] = 1;
 TABLE[187][294] = 1;
-TABLE[187][289] = 1;
 TABLE[187][126] = 1;
 TABLE[187][33] = 1;
 TABLE[187][303] = 1;
 TABLE[187][299] = 1;
+TABLE[187][289] = 1;
 TABLE[187][307] = 1;
 TABLE[187][306] = 1;
 TABLE[187][308] = 1;
@@ -8149,10 +8179,10 @@ TABLE[266][300] = 1;
 TABLE[266][303] = 1;
 TABLE[266][33] = 1;
 TABLE[266][126] = 1;
-TABLE[266][289] = 1;
 TABLE[266][308] = 1;
 TABLE[266][306] = 1;
 TABLE[266][307] = 1;
+TABLE[266][289] = 1;
 TABLE[266][299] = 1;
 TABLE[266][63] = 1;
 TABLE[266][59] = 1;
@@ -8185,12 +8215,12 @@ TABLE[83][37] = 1;
 TABLE[83][278] = 1;
 TABLE[83][295] = 1;
 TABLE[83][294] = 1;
-TABLE[83][289] = 1;
 TABLE[83][126] = 1;
 TABLE[83][33] = 1;
 TABLE[83][303] = 1;
 TABLE[83][300] = 1;
 TABLE[83][299] = 1;
+TABLE[83][289] = 1;
 TABLE[83][307] = 1;
 TABLE[83][306] = 1;
 TABLE[83][308] = 1;
@@ -8211,10 +8241,10 @@ TABLE[188][300] = 1;
 TABLE[188][303] = 1;
 TABLE[188][33] = 1;
 TABLE[188][126] = 1;
-TABLE[188][289] = 1;
 TABLE[188][308] = 1;
 TABLE[188][306] = 1;
 TABLE[188][307] = 1;
+TABLE[188][289] = 1;
 TABLE[188][299] = 1;
 TABLE[267][301] = 1;
 TABLE[267][292] = 1;
@@ -8228,13 +8258,13 @@ TABLE[267][37] = 1;
 TABLE[267][278] = 1;
 TABLE[267][295] = 1;
 TABLE[267][294] = 1;
-TABLE[267][289] = 1;
 TABLE[267][126] = 1;
 TABLE[267][33] = 1;
 TABLE[267][303] = 1;
 TABLE[267][300] = 1;
 TABLE[267][302] = 1;
 TABLE[267][299] = 1;
+TABLE[267][289] = 1;
 TABLE[267][307] = 1;
 TABLE[267][306] = 1;
 TABLE[267][308] = 1;
@@ -8273,10 +8303,10 @@ TABLE[84][300] = 1;
 TABLE[84][303] = 1;
 TABLE[84][33] = 1;
 TABLE[84][126] = 1;
-TABLE[84][289] = 1;
 TABLE[84][308] = 1;
 TABLE[84][306] = 1;
 TABLE[84][307] = 1;
+TABLE[84][289] = 1;
 TABLE[84][299] = 1;
 TABLE[189][301] = 1;
 TABLE[189][292] = 1;
@@ -8290,13 +8320,13 @@ TABLE[189][37] = 1;
 TABLE[189][278] = 1;
 TABLE[189][295] = 1;
 TABLE[189][294] = 1;
-TABLE[189][289] = 1;
 TABLE[189][126] = 1;
 TABLE[189][33] = 1;
 TABLE[189][303] = 1;
 TABLE[189][300] = 1;
 TABLE[189][302] = 1;
 TABLE[189][299] = 1;
+TABLE[189][289] = 1;
 TABLE[189][307] = 1;
 TABLE[189][306] = 1;
 TABLE[189][308] = 1;
@@ -8317,10 +8347,10 @@ TABLE[268][303] = 1;
 TABLE[268][33] = 1;
 TABLE[268][126] = 1;
 TABLE[268][301] = 1;
-TABLE[268][289] = 1;
 TABLE[268][308] = 1;
 TABLE[268][306] = 1;
 TABLE[268][307] = 1;
+TABLE[268][289] = 1;
 TABLE[268][299] = 1;
 TABLE[268][63] = 1;
 TABLE[268][59] = 1;
@@ -8351,7 +8381,6 @@ TABLE[85][37] = 1;
 TABLE[85][278] = 1;
 TABLE[85][295] = 1;
 TABLE[85][294] = 1;
-TABLE[85][289] = 1;
 TABLE[85][301] = 1;
 TABLE[85][126] = 1;
 TABLE[85][33] = 1;
@@ -8359,6 +8388,7 @@ TABLE[85][303] = 1;
 TABLE[85][300] = 1;
 TABLE[85][302] = 1;
 TABLE[85][299] = 1;
+TABLE[85][289] = 1;
 TABLE[85][307] = 1;
 TABLE[85][306] = 1;
 TABLE[85][308] = 1;
@@ -8379,10 +8409,10 @@ TABLE[190][303] = 1;
 TABLE[190][33] = 1;
 TABLE[190][126] = 1;
 TABLE[190][301] = 1;
-TABLE[190][289] = 1;
 TABLE[190][308] = 1;
 TABLE[190][306] = 1;
 TABLE[190][307] = 1;
+TABLE[190][289] = 1;
 TABLE[190][299] = 1;
 TABLE[269][304] = 1;
 TABLE[269][40] = 1;
@@ -8394,7 +8424,6 @@ TABLE[269][37] = 1;
 TABLE[269][278] = 1;
 TABLE[269][295] = 1;
 TABLE[269][294] = 1;
-TABLE[269][289] = 1;
 TABLE[269][301] = 1;
 TABLE[269][126] = 1;
 TABLE[269][33] = 1;
@@ -8402,6 +8431,7 @@ TABLE[269][303] = 1;
 TABLE[269][300] = 1;
 TABLE[269][302] = 1;
 TABLE[269][299] = 1;
+TABLE[269][289] = 1;
 TABLE[269][307] = 1;
 TABLE[269][306] = 1;
 TABLE[269][308] = 1;
@@ -8441,10 +8471,10 @@ TABLE[86][303] = 1;
 TABLE[86][33] = 1;
 TABLE[86][126] = 1;
 TABLE[86][301] = 1;
-TABLE[86][289] = 1;
 TABLE[86][308] = 1;
 TABLE[86][306] = 1;
 TABLE[86][307] = 1;
+TABLE[86][289] = 1;
 TABLE[86][299] = 1;
 TABLE[191][304] = 1;
 TABLE[191][40] = 1;
@@ -8456,7 +8486,6 @@ TABLE[191][37] = 1;
 TABLE[191][278] = 1;
 TABLE[191][295] = 1;
 TABLE[191][294] = 1;
-TABLE[191][289] = 1;
 TABLE[191][301] = 1;
 TABLE[191][126] = 1;
 TABLE[191][33] = 1;
@@ -8464,6 +8493,7 @@ TABLE[191][303] = 1;
 TABLE[191][300] = 1;
 TABLE[191][302] = 1;
 TABLE[191][299] = 1;
+TABLE[191][289] = 1;
 TABLE[191][307] = 1;
 TABLE[191][306] = 1;
 TABLE[191][308] = 1;
@@ -8482,10 +8512,10 @@ TABLE[270][303] = 1;
 TABLE[270][33] = 1;
 TABLE[270][126] = 1;
 TABLE[270][301] = 1;
-TABLE[270][289] = 1;
 TABLE[270][308] = 1;
 TABLE[270][306] = 1;
 TABLE[270][307] = 1;
+TABLE[270][289] = 1;
 TABLE[270][299] = 1;
 TABLE[270][63] = 1;
 TABLE[270][59] = 1;
@@ -8518,7 +8548,6 @@ TABLE[87][37] = 1;
 TABLE[87][278] = 1;
 TABLE[87][295] = 1;
 TABLE[87][294] = 1;
-TABLE[87][289] = 1;
 TABLE[87][301] = 1;
 TABLE[87][126] = 1;
 TABLE[87][33] = 1;
@@ -8526,6 +8555,7 @@ TABLE[87][303] = 1;
 TABLE[87][300] = 1;
 TABLE[87][302] = 1;
 TABLE[87][299] = 1;
+TABLE[87][289] = 1;
 TABLE[87][307] = 1;
 TABLE[87][306] = 1;
 TABLE[87][308] = 1;
@@ -8544,10 +8574,10 @@ TABLE[194][303] = 1;
 TABLE[194][33] = 1;
 TABLE[194][126] = 1;
 TABLE[194][301] = 1;
-TABLE[194][289] = 1;
 TABLE[194][308] = 1;
 TABLE[194][306] = 1;
 TABLE[194][307] = 1;
+TABLE[194][289] = 1;
 TABLE[194][299] = 1;
 TABLE[271][40] = 1;
 TABLE[271][42] = 1;
@@ -8556,7 +8586,6 @@ TABLE[271][37] = 1;
 TABLE[271][278] = 1;
 TABLE[271][295] = 1;
 TABLE[271][294] = 1;
-TABLE[271][289] = 1;
 TABLE[271][301] = 1;
 TABLE[271][43] = 1;
 TABLE[271][45] = 1;
@@ -8566,6 +8595,7 @@ TABLE[271][303] = 1;
 TABLE[271][300] = 1;
 TABLE[271][302] = 1;
 TABLE[271][299] = 1;
+TABLE[271][289] = 1;
 TABLE[271][307] = 1;
 TABLE[271][306] = 1;
 TABLE[271][308] = 1;
@@ -8597,10 +8627,10 @@ TABLE[88][126] = 1;
 TABLE[88][45] = 1;
 TABLE[88][43] = 1;
 TABLE[88][301] = 1;
-TABLE[88][289] = 1;
 TABLE[88][308] = 1;
 TABLE[88][306] = 1;
 TABLE[88][307] = 1;
+TABLE[88][289] = 1;
 TABLE[88][299] = 1;
 TABLE[198][40] = 1;
 TABLE[198][42] = 1;
@@ -8609,7 +8639,6 @@ TABLE[198][37] = 1;
 TABLE[198][278] = 1;
 TABLE[198][295] = 1;
 TABLE[198][294] = 1;
-TABLE[198][289] = 1;
 TABLE[198][301] = 1;
 TABLE[198][43] = 1;
 TABLE[198][45] = 1;
@@ -8619,6 +8648,7 @@ TABLE[198][303] = 1;
 TABLE[198][300] = 1;
 TABLE[198][302] = 1;
 TABLE[198][299] = 1;
+TABLE[198][289] = 1;
 TABLE[198][307] = 1;
 TABLE[198][306] = 1;
 TABLE[198][308] = 1;
@@ -8635,10 +8665,10 @@ TABLE[272][45] = 1;
 TABLE[272][43] = 1;
 TABLE[272][42] = 1;
 TABLE[272][301] = 1;
-TABLE[272][289] = 1;
 TABLE[272][308] = 1;
 TABLE[272][306] = 1;
 TABLE[272][307] = 1;
+TABLE[272][289] = 1;
 TABLE[272][299] = 1;
 TABLE[195][42] = 1;
 TABLE[196][47] = 1;
@@ -8646,7 +8676,6 @@ TABLE[197][37] = 1;
 TABLE[89][278] = 1;
 TABLE[89][295] = 1;
 TABLE[89][294] = 1;
-TABLE[89][289] = 1;
 TABLE[89][40] = 1;
 TABLE[89][301] = 1;
 TABLE[89][42] = 1;
@@ -8658,15 +8687,16 @@ TABLE[89][303] = 1;
 TABLE[89][300] = 1;
 TABLE[89][302] = 1;
 TABLE[89][299] = 1;
+TABLE[89][289] = 1;
 TABLE[89][307] = 1;
 TABLE[89][306] = 1;
 TABLE[89][308] = 1;
 TABLE[90][40] = 1;
 TABLE[91][40] = 1;
-TABLE[91][289] = 1;
 TABLE[91][308] = 1;
 TABLE[91][306] = 1;
 TABLE[91][307] = 1;
+TABLE[91][289] = 1;
 TABLE[91][299] = 1;
 TABLE[92][294] = 1;
 TABLE[92][295] = 1;
@@ -8701,17 +8731,17 @@ TABLE[206][33] = 1;
 TABLE[207][303] = 1;
 TABLE[208][300] = 1;
 TABLE[209][302] = 1;
-TABLE[97][289] = 1;
 TABLE[97][40] = 1;
 TABLE[97][299] = 1;
+TABLE[97][289] = 1;
 TABLE[97][307] = 1;
 TABLE[97][306] = 1;
 TABLE[97][308] = 1;
 TABLE[98][40] = 1;
-TABLE[98][289] = 1;
 TABLE[98][308] = 1;
 TABLE[98][306] = 1;
 TABLE[98][307] = 1;
+TABLE[98][289] = 1;
 TABLE[98][299] = 1;
 TABLE[211][91] = 1;
 TABLE[213][40] = 1;
@@ -8727,7 +8757,6 @@ TABLE[212][278] = 1;
 TABLE[212][295] = 1;
 TABLE[212][294] = 1;
 TABLE[212][63] = 1;
-TABLE[212][289] = 1;
 TABLE[212][40] = 1;
 TABLE[212][301] = 1;
 TABLE[212][42] = 1;
@@ -8740,6 +8769,7 @@ TABLE[212][300] = 1;
 TABLE[212][302] = 1;
 TABLE[212][297] = 1;
 TABLE[212][299] = 1;
+TABLE[212][289] = 1;
 TABLE[212][307] = 1;
 TABLE[212][306] = 1;
 TABLE[212][308] = 1;
@@ -8753,62 +8783,62 @@ TABLE[99][299] = 1;
 TABLE[100][308] = 1;
 TABLE[100][306] = 1;
 TABLE[100][307] = 1;
-TABLE[101][289] = 1;
+TABLE[100][289] = 1;
+TABLE[101][40] = 1;
+TABLE[102][59] = 1;
+TABLE[102][41] = 1;
+TABLE[102][44] = 1;
+TABLE[102][278] = 1;
+TABLE[102][295] = 1;
+TABLE[102][294] = 1;
+TABLE[102][63] = 1;
 TABLE[102][40] = 1;
-TABLE[103][59] = 1;
-TABLE[103][41] = 1;
-TABLE[103][44] = 1;
-TABLE[103][278] = 1;
-TABLE[103][63] = 1;
-TABLE[103][294] = 1;
-TABLE[103][295] = 1;
-TABLE[103][297] = 1;
-TABLE[103][302] = 1;
-TABLE[103][300] = 1;
-TABLE[103][303] = 1;
-TABLE[103][33] = 1;
-TABLE[103][126] = 1;
-TABLE[103][45] = 1;
-TABLE[103][43] = 1;
-TABLE[103][42] = 1;
-TABLE[103][301] = 1;
-TABLE[103][40] = 1;
-TABLE[103][289] = 1;
-TABLE[103][298] = 1;
-TABLE[103][308] = 1;
-TABLE[103][306] = 1;
-TABLE[103][307] = 1;
-TABLE[103][299] = 1;
-TABLE[103][292] = 1;
-TABLE[103][304] = 1;
-TABLE[103][47] = 1;
-TABLE[103][37] = 1;
+TABLE[102][301] = 1;
+TABLE[102][42] = 1;
+TABLE[102][43] = 1;
+TABLE[102][45] = 1;
+TABLE[102][126] = 1;
+TABLE[102][33] = 1;
+TABLE[102][303] = 1;
+TABLE[102][300] = 1;
+TABLE[102][302] = 1;
+TABLE[102][297] = 1;
+TABLE[102][299] = 1;
+TABLE[102][289] = 1;
+TABLE[102][307] = 1;
+TABLE[102][306] = 1;
+TABLE[102][308] = 1;
+TABLE[102][298] = 1;
+TABLE[102][292] = 1;
+TABLE[102][304] = 1;
+TABLE[102][37] = 1;
+TABLE[102][47] = 1;
 TABLE[218][44] = 1;
 TABLE[218][278] = 1;
-TABLE[218][295] = 1;
-TABLE[218][294] = 1;
 TABLE[218][63] = 1;
-TABLE[218][289] = 1;
-TABLE[218][40] = 1;
-TABLE[218][301] = 1;
-TABLE[218][42] = 1;
-TABLE[218][43] = 1;
-TABLE[218][45] = 1;
-TABLE[218][126] = 1;
-TABLE[218][33] = 1;
-TABLE[218][303] = 1;
-TABLE[218][300] = 1;
-TABLE[218][302] = 1;
+TABLE[218][294] = 1;
+TABLE[218][295] = 1;
 TABLE[218][297] = 1;
-TABLE[218][299] = 1;
-TABLE[218][307] = 1;
-TABLE[218][306] = 1;
-TABLE[218][308] = 1;
+TABLE[218][302] = 1;
+TABLE[218][300] = 1;
+TABLE[218][303] = 1;
+TABLE[218][33] = 1;
+TABLE[218][126] = 1;
+TABLE[218][45] = 1;
+TABLE[218][43] = 1;
+TABLE[218][42] = 1;
+TABLE[218][301] = 1;
+TABLE[218][40] = 1;
 TABLE[218][298] = 1;
+TABLE[218][308] = 1;
+TABLE[218][306] = 1;
+TABLE[218][307] = 1;
+TABLE[218][289] = 1;
+TABLE[218][299] = 1;
 TABLE[218][292] = 1;
 TABLE[218][304] = 1;
-TABLE[218][37] = 1;
 TABLE[218][47] = 1;
+TABLE[218][37] = 1;
 TABLE[275][278] = 1;
 TABLE[275][63] = 1;
 TABLE[275][294] = 1;
@@ -8824,11 +8854,11 @@ TABLE[275][43] = 1;
 TABLE[275][42] = 1;
 TABLE[275][301] = 1;
 TABLE[275][40] = 1;
-TABLE[275][289] = 1;
 TABLE[275][298] = 1;
 TABLE[275][308] = 1;
 TABLE[275][306] = 1;
 TABLE[275][307] = 1;
+TABLE[275][289] = 1;
 TABLE[275][299] = 1;
 TABLE[275][292] = 1;
 TABLE[275][304] = 1;
@@ -8836,10 +8866,10 @@ TABLE[275][47] = 1;
 TABLE[275][37] = 1;
 TABLE[275][59] = 1;
 TABLE[275][41] = 1;
-TABLE[275][44] = 1;
-TABLE[104][308] = 1;
-TABLE[105][306] = 1;
-TABLE[106][307] = 1;
+TABLE[103][308] = 1;
+TABLE[104][306] = 1;
+TABLE[105][307] = 1;
+TABLE[106][289] = 1;
 TABLE[107][299] = 1;
 }
 
@@ -8988,10 +9018,10 @@ int yytransparent(n)
       case 1156: return 1; break;
       case 1164: return 1; break;
       case 1171: return 0; break;
-      case 1189: return 1; break;
-      case 1194: return 1; break;
-      case 1202: return 0; break;
-      case 1214: return 0; break;
+      case 1185: return 1; break;
+      case 1190: return 1; break;
+      case 1199: return 0; break;
+      case 1215: return 0; break;
    }
 }
 char * yyprintname(n)
@@ -9134,10 +9164,10 @@ char * yyprintname(n)
          case 1156: return "Subphrase"; break;
          case 1164: return "Subphrase"; break;
          case 1171: return "primary_expression"; break;
-         case 1189: return "argument_expression_list"; break;
-         case 1194: return "Subphrase"; break;
-         case 1202: return "constant"; break;
-         case 1214: return "id"; break;
+         case 1185: return "argument_expression_list"; break;
+         case 1190: return "Subphrase"; break;
+         case 1199: return "constant"; break;
+         case 1215: return "id"; break;
    }
    else 
       switch(n-50000) {
