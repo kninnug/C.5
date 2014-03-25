@@ -1,5 +1,8 @@
 #include "parser.h"
 
+#include <stdio.h>
+#include <stdarg.h>
+
 /**
  * Since strdup is *not* C-standard it isn't always available
  * instead of mucking about with feature-test-macros we simply
@@ -33,17 +36,55 @@ constant_t * makeStringConst(const char * s){
 	return ret;
 }
 
-expression_t * makeExpression(int type, size_t length, int operator){
+expression_t * makeExpression(int type, size_t length, int operator, ...){
 	expression_t * ret = malloc(sizeof *ret);
+	size_t i;
+	
 	ret->length = length;
 	ret->type = type;
 	ret->operator = operator;
-	if(type){ /* expression */
-		ret->value.c = calloc(length, sizeof *ret->value.c);
-	}else{ /* constant */
-		ret->value.e = calloc(length, sizeof *ret->value.e);
+	ret->value = calloc(length, sizeof *ret->value);
+	
+	va_list ap;
+	va_start(ap, operator);
+	for(i = 0; i < length; i++){
+		if(type) ret->value[i].e = va_arg(ap, expression_t*);
+		else ret->value[i].c = va_arg(ap, constant_t*);
 	}
+	va_end(ap);
+	
 	return ret;
+}
+
+void growExpression(expression_t * ret){
+	ret->length++;
+	ret->value = realloc(ret->value, ret->length * sizeof *ret->value);
+}
+
+void printExpression(const expression_t * exp){
+	size_t i;
+	if(!exp) return;
+	putchar('(');
+	printf("%i:%i", exp->type, exp->operator);
+	for(i = 0; i < exp->length; i++){
+		printf(" %u = ", i);
+		
+		if(!exp->type) printConstant(exp->value[i].c);
+		else printExpression(exp->value[i].e);
+		
+		if(i < exp->length-1) printf(",");
+	}
+	putchar(')');
+}
+
+void printConstant(const constant_t * c){
+	if(!c) return;
+	switch(c->type){
+		case INTCONST: printf("%lu", c->value.i); break;
+		case FLOATCONST: printf("%lf", c->value.d); break;
+		case IDCONST:
+		case STRINGCONST: printf("%s", c->value.s); break;
+	}
 }
 
 /*
