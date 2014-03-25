@@ -1,21 +1,20 @@
+#ifndef YYGRAMMAR_H
+#define YYGRAMMAR_H
+
 #ifndef YYSTYPE
 #define YYSTYPE long
 #endif
 extern YYSTYPE yylval;
 extern long yypos;
 
-#define EXP 311
-#define INPUT 310
-#define PRINT 309
-#define INTCONST 308
-#define FLOATCONST 307
-#define CHARACTER 306
-#define INCLUDE 305
-#define SHIFT 304
-#define BIT_NOT 303
-#define BIT_XOR 302
-#define BIT_AND 301
-#define BIT_OR 300
+#define EXP 307
+#define INPUT 306
+#define PRINT 305
+#define INTCONST 304
+#define FLOATCONST 303
+#define CHARACTER 302
+#define INCLUDE 301
+#define SHIFT 300
 #define IDENTIFIER 299
 #define LOGICAL_AND 298
 #define LOGICAL_OR 297
@@ -60,3 +59,6 @@ extern long yypos;
 #define CASE 258
 #define BREAK 257
 #define AUTO 256
+
+#endif
+

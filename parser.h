@@ -40,9 +40,9 @@ typedef struct expression{
 	int type;
 	size_t length;
 	int operator;
-	union{
+	union expressionChildren{
 		constant_t * c;
-		expression_t * e;
+		struct expression * e;
 	} * value;
 } expression_t, * expression_pt;
 

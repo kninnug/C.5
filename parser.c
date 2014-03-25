@@ -61,11 +61,21 @@ void growExpression(expression_t * ret){
 	ret->value = realloc(ret->value, ret->length * sizeof *ret->value);
 }
 
+void appendExpression(expression_t * exp, expression_t * child){
+	growExpression(exp);
+	exp->value[exp->length-1].e = child;
+}
+
+void appendConstant(expression_t * exp, constant_t * child){
+	growExpression(exp);
+	exp->value[exp->length-1].c = child;
+}
+
 void printExpression(const expression_t * exp){
 	size_t i;
 	if(!exp) return;
 	putchar('(');
-	printf("%i:%i", exp->type, exp->operator);
+	printf("%i:`%c`[%i]", exp->type, exp->operator, exp->operator);
 	for(i = 0; i < exp->length; i++){
 		printf(" %u = ", i);
 		

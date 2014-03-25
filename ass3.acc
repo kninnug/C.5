@@ -79,8 +79,7 @@
 	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
 	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
 	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, 
-	BIT_OR, BIT_AND, BIT_XOR, BIT_NOT, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST, PRINT, INPUT, EXP;
+	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST, PRINT, INPUT, EXP;
 
 /* Rules: heavily modified, based on the official grammar as found in K&R ANSI-C second edition (§A13). */
 translation_unit
@@ -93,11 +92,11 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' { fputs(";\\\\\\\n", out); } | compound_statement { fputs("\\\\\n", out); } )
+	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' | compound_statement )
 	;
 	
 declaration
-	: declaration_specifiers ( init_declarator_list )? ';' { PRSC; }
+	: declaration_specifiers ( init_declarator_list )? ';'
 	;
 	
 declaration_list
@@ -105,7 +104,7 @@ declaration_list
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier )* { fputc(' ', out); }
+	: ( storage_class_specifier | type_specifier | type_qualifier )*
 	;
 
 storage_class_specifier
@@ -113,7 +112,7 @@ storage_class_specifier
 	| REGISTER
 	| STATIC
 	| EXTERN
-	| TYPEDEF ) { PRKW; }
+	| TYPEDEF )
 	;
 
 /*typedef-name replaced with 'id' */
@@ -126,23 +125,23 @@ type_specifier
 	| FLOAT
 	| DOUBLE
 	| SIGNED
-	| UNSIGNED ) { PRKW; }
+	| UNSIGNED )
 	| struct_or_union_specifier | enum_specifier
 	| id<i> {}
 	;
 	
 type_qualifier
 	: ( CONST
-	| VOLATILE ) { PRKW; }
+	| VOLATILE )
 	;
 
 struct_or_union_specifier
-	: struct_or_union ( id<i> )? '{' { fputs("\\{\\\\\n", out); } struct_declaration_list '}' { fputs("\\}\\\\\n", out); }
+	: struct_or_union ( id<i> )? '{' struct_declaration_list '}'
 	| struct_or_union id<i> {}
 	;
 	
 struct_or_union
-	: ( STRUCT | UNION ) { PRKW; }
+	: ( STRUCT | UNION )
 	;
 	
 struct_declaration_list
@@ -150,15 +149,15 @@ struct_declaration_list
 	;
 	
 init_declarator_list
-	: ( init_declarator_list ',' { PRCHS; } )? init_declarator
+	: ( init_declarator_list ',' )? init_declarator
 	;
 	
 init_declarator
-	: ( declarator '=' { SPRCHS; } )? initializer
+	: ( declarator '=' )? initializer
 	;
 	
 struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';' { PRSC; }
+	: specifier_qualifier_list struct_declarator_list ';'
 	;
 
 specifier_qualifier_list
@@ -166,25 +165,25 @@ specifier_qualifier_list
 	;
 
 struct_declarator_list
-	: ( struct_declarator_list ',' { PRCHS; } )? struct_declarator
+	: ( struct_declarator_list ',' )? struct_declarator
 	;
 	
 struct_declarator
 	: declarator
-	| ( declarator )? ':' { PRCHS; } constant_expression
+	| ( declarator )? ':' constant_expression<ce>
 	;
 
 enum_specifier
-	: ENUM { PRKW; } ( id<i> )? { fputs("\\{\\\\\n", out); } '{' enumerator_list '}' { fputs("\\}\\\\\n", out); }
-	| ENUM { PRKW; } id<i>
+	: ENUM ( id<i> )? '{' enumerator_list '}'
+	| ENUM id<i>
 	;
 	
 enumerator_list
-	: ( enumerator_list ',' { PRCHS; } )? enumerator
+	: ( enumerator_list ',' )? enumerator
 	;
 	
 enumerator
-	: id<i> ( '=' { SPRCHS; } constant_expression )?
+	: id<i> ( '=' constant_expression<ce> )?
 	;
 	
 declarator
@@ -193,14 +192,14 @@ declarator
 	
 direct_declarator
 	: id<i>
-	| '(' { PRCH; } declarator ')' { PRCH; }
-	| direct_declarator ( '[' { PRCH; } ( expression<e> )? ']' { PRCH; } 
-		| '(' { PRCH; } parameter_type_list ')' { PRCH; } 
-		| '(' { PRCH; } ( identifier_list )? ')' { PRCH; } )
+	| '(' declarator ')'
+	| direct_declarator ( '[' ( expression<e> )? ']'
+		| '(' parameter_type_list ')'
+		| '(' ( identifier_list )? ')' )
 	;
 	
 pointer
-	: '*' { PRCH; } ( type_qualifier_list )? ( pointer )?
+	: '*' ( type_qualifier_list )? ( pointer )?
 	;
 	
 type_qualifier_list
@@ -208,11 +207,11 @@ type_qualifier_list
 	;
 	
 parameter_type_list
-	: parameter_list ( ',' { PRCHS; } ELLIPSIS )?
+	: parameter_list ( ',' ELLIPSIS )?
 	;
 
 parameter_list
-	: ( parameter_list ',' { PRCHS; } )? parameter_declaration
+	: ( parameter_list ',' )? parameter_declaration
 	;
 	
 parameter_declaration
@@ -220,16 +219,16 @@ parameter_declaration
 	;
 	
 identifier_list
-	: ( identifier_list ',' { PRCHS; } )? id<i>
+	: ( identifier_list ',' )? id<i>
 	;
 	
 initializer
 	: assignment_expression<ae>
-	| '{' { fputs("\\{", out); } initializer_list ( ',' )? '}' { fputs("\\}", out); }
+	| '{' initializer_list ( ',' )? '}'
 	;
 	
 initializer_list
-	: ( initializer_list ',' { PRCHS; } )? initializer
+	: ( initializer_list ',' )? initializer
 	;
 	
 type_name
@@ -242,9 +241,9 @@ abstract_declarator
 	;
 	
 direct_abstract_declarator
-	: '(' { PRCH; } abstract_declarator ')' { PRCH; }
-	| ( direct_abstract_declarator )? ( '[' { PRCH; } ( expression<e> )? ']' { PRCH; } 
-		| '(' { PRCH; } ( parameter_type_list )? ')' { PRCH; } )
+	: '(' abstract_declarator ')'
+	| ( direct_abstract_declarator )? ( '[' ( expression<e> )? ']'
+		| '(' ( parameter_type_list )? ')' )
 	;
 	
 typedef_name
@@ -263,17 +262,17 @@ statement
 	;
 	
 labeled_statement
-	: id<i> ':' { PRCHS; } statement	/* warning: labels & GOTO's make Dijkstra angry! */
-	| CASE { PRKW; } constant_expression ':' { PRCHS; } statement
-	| DEFAULT { PRKW; } ':' { PRCHS; } statement
+	: id<i> ':' statement	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CASE constant_expression<ce> ':' statement
+	| DEFAULT ':' statement
 	;
 	
 expression_statement
-	: ( expression<e> )? ';' { PRSC; }
+	: ( expression<e> )? ';'
 	;
 	
 compound_statement
-	: '{' { fputs("\\{\\+\\\\\n", out); } ( declaration_list )? ( statement_list )? '}' { fputs("\\<\\}\\-\\\\\n", out); }
+	: '{' ( declaration_list )? ( statement_list )? '}'
 	;
 	
  /* statement_or_declaration
@@ -286,122 +285,123 @@ statement_list
 	;
 	
 selection_statement
-	: IF { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement ( ELSE { PRKW; } statement )?
-	| SWITCH { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement
+	: IF '(' expression<e> ')' statement ( ELSE statement )?
+	| SWITCH '(' expression<e> ')' statement
 	;
 
 iteration_statement
-	: WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } statement
-	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } ';' { PRSC; }
-	| FOR { PRKW; } '(' { PRCH; } ( expression<e> )? ';' { PRCHS; } ( expression<e> )? ';' { PRCHS; } ( expression<e> )? ')' { PRCH; } statement
+	: WHILE '(' { PRCH; } expression<e> ')' { PRCH; } statement
+	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } ';'
+	| FOR { PRKW; } '(' { PRCH; } ( expression<e> )? ';' ( expression<e> )? ';' ( expression<e> )? ')' { PRCH; } statement
 	;
 	
 jump_statement
-	: GOTO { PRKW; } id<i> ';' { PRSC; } /* warning: labels & GOTO's make Dijkstra angry! */
-	| CONTINUE { PRKW; } ';' { PRSC; }
-	| BREAK { PRKW; } ';' { PRSC; }
-	| RETURN { PRKW; } ( expression<e> )? ';' { PRSC; }
+	: GOTO { PRKW; } id<i> ';' /* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE { PRKW; } ';'
+	| BREAK { PRKW; } ';'
+	| RETURN { PRKW; } ( expression<e> )? ';'
 	;
 
 print_statement
-	: PRINT { PRKW; } argument_expression_list<ae> ';' { PRSC; }
+	: PRINT { PRKW; } argument_expression_list<ae> ';'
 	;
 	
 input_statement
-	: INPUT { PRKW; } ( id<i> ',' { PRCHS; } )* id<i> ';' { PRSC; }
+	: INPUT { PRKW; } ( id<i> ',' )* id<i> ';'
 	;
 	
 expression<%out expression_pt ret>
-	: ( expression<e> ',' { PRCHS; } )? assignment_expression<ae> {}
+	: { *ret = makeExpression(1, 0, ','); } ( expression<e> { appendExpression(*ret, e); } ',' )? assignment_expression<ae> { appendExpression(*ret, ae); printExpression(*ret); }
 	;
 
 assignment_expression<%out expression_pt ret>
-	: conditional_expression
-	| unary_expression assignment_operator assignment_expression<ae>
+	: conditional_expression<ce> { *ret = ce; }
+	| { *ret = makeExpression(1, 0, '='); } unary_expression<ue> { appendExpression(*ret, ue); } assignment_operator assignment_expression<ae> { appendExpression(*ret, ae); }
 	;
 	
 assignment_operator
-	: ASSIGN { printSubtype(out, yylval.subtype); }
-	| '=' { SPRCHS; }
+	: ASSIGN
+	| '='
 	;
 	
-conditional_expression
-	: logical_OR_expression ( '?' { SPRCHS; } expression<e> ':' { SPRCHS; } conditional_expression )?
+conditional_expression<%out expression_pt ret>
+	: logical_OR_expression<loe> { *ret = loe; }
+	| logical_OR_expression<loe> '?' expression<e> ':' conditional_expression<ce> { *ret = makeExpression(1, 3, '?', loe, e, ce); }
 	;
 	
-constant_expression
-	: conditional_expression
+constant_expression<%out expression_pt ret>
+	: conditional_expression<ce> { *ret = ce; }
 	;
 	
-logical_OR_expression
-	: ( logical_OR_expression LOGICAL_OR { fputs("\\ $\\vee$\\ ", out); } )? logical_AND_expression
+logical_OR_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, '||'); } ( logical_OR_expression<loe> { appendExpression(*ret, loe); } LOGICAL_OR )? logical_AND_expression<lae> { appendExpression(*ret, lae); }
 	;
 	
-logical_AND_expression
-	: ( logical_AND_expression LOGICAL_AND { fputs("\\ $\\wedge$\\ ", out); } )? inclusive_OR_expression
+logical_AND_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, '&&'); } ( logical_AND_expression<lae> { appendExpression(*ret, lae); } LOGICAL_AND )? inclusive_OR_expression<ioe> { appendExpression(*ret, ioe); }
 	;
 
-inclusive_OR_expression
-	: ( inclusive_OR_expression BIT_OR { SPRCHS; } )? exclusive_OR_expression
+inclusive_OR_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, '|'); } ( inclusive_OR_expression<ioe> { appendExpression(*ret, ioe); } '|' )? exclusive_OR_expression<eoe> { appendExpression(*ret, eoe); }
 	;
 	
-exclusive_OR_expression
-	: ( exclusive_OR_expression BIT_XOR { SPRCHS; } )? AND_expression
+exclusive_OR_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, '^'); } ( exclusive_OR_expression<eoe> { appendExpression(*ret, eoe); } '^' )? AND_expression<ae> { appendExpression(*ret, ae); }
 	;
 	
-AND_expression
-	: (AND_expression BIT_AND { SPRCHS; } )? equality_expression
+AND_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, '&'); } (AND_expression<ae> { appendExpression(*ret, ae); } '&' )? equality_expression<ee> { appendExpression(*ret, ee); }
 	;
 	
-equality_expression
-	: ( equality_expression COMPARE { printSubtype(out, yylval.subtype); } )? shift_expression
+equality_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, 0); } ( equality_expression<ee> { appendExpression(*ret, ee); } COMPARE )? shift_expression<se> { appendExpression(*ret, se); }
 	;
 
-shift_expression
-	: (shift_expression SHIFT { yylval.subtype == SHIFT_LEFT ? fputs("\\ $<<$\\ ", out) : fputs("\\ $>>$\\ ", out); } )? additive_expression
+shift_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, 0); } (shift_expression<se> { appendExpression(*ret, se); } SHIFT )? additive_expression<ae> { appendExpression(*ret, ae); }
 	;
 	
-additive_expression
-	: ( additive_expression ( '+' | '-' ) { SPRCHS; } )? multiplicative_expression
+additive_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, 0); } ( additive_expression<ae> { appendExpression(*ret, ae); } ( '+' | '-' ) )? multiplicative_expression<me> { appendExpression(*ret, me); }
 	;
 	
-multiplicative_expression
-	: ( multiplicative_expression ( '*' | '/' | '%' ) { SPRCHS; } )? cast_expression
+multiplicative_expression<%out expression_pt ret>
+	: { *ret = makeExpression(1, 0, 0); } ( multiplicative_expression<me> { appendExpression(*ret, me); } ( '*' | '/' | '%' ) )? cast_expression<ce> { appendExpression(*ret, ce); }
 	;
 	
-cast_expression
-	: unary_expression
-	| '(' { PRCH; } type_name ')' { PRCH; } cast_expression
+cast_expression<%out expression_pt ret>
+	: unary_expression<ue> { *ret =  ue; }
+	| '(' type_name ')' cast_expression<ce> { *ret = ce; }
 	;
 	
-unary_expression
-	: postfix_expression<pe>
-	| ( INC_OP { fputs("++", out); } | DEC_OP { fputs("--", out); } ) unary_expression
-	| unary_operator cast_expression
-	| SIZEOF { PRKW; } unary_expression
-	| SIZEOF { PRKW; } '(' { PRCH; } type_name ')' { PRCH; }
+unary_expression<%out expression_pt ret>
+	: postfix_expression<pe> { *ret = pe; }
+	| { int t; } ( INC_OP {t = '++x';} | DEC_OP {t = '--x'; } ) unary_expression<ue> { *ret = makeExpression(1, 1, t, ue); }
+	| unary_operator cast_expression<ce>
+	| SIZEOF unary_expression<ue>
+	| SIZEOF '(' type_name ')'
 	;
 	
 unary_operator
-	: (BIT_AND | '*' | '+' | '-' | '~' | '!' | BIT_NOT | BIT_OR | BIT_XOR) { PRCH; }
+	: ('&' | '*' | '+' | '-' | '~' | '!' | '~' | '|' | '^')
 	;
 	
 postfix_expression<%out expression_pt ret>
 	: primary_expression<pe> { *ret = pe; }
 	| postfix_expression<pe> { *ret = makeExpression(1, 1, 0, pe); }
-		( '[' expression<e> { growExpression(*ret); (*ret)->value[1].e = e; } ( ':' expression<e> { growExpression(*ret); (*ret)->value[2].e = e; } )? ']'
-		| '(' ( argument_expression_list<ae> { growExpression(*ret); (*ret)->value[1].e = ae; } )? ')' { (*ret)->operator = '()'; }
-		| '.' id<i> { growExpression(*ret); (*ret)->value[1].e = makeExpression(0, 1, 0, i); (*ret)->operator = '.'; }
-		| PTR_OP id<i> { growExpression(*ret); (*ret)->value[1].e = makeExpression(0, 1, 0, i); (*ret)->operator = '->'; }
+		( '[' expression<e> { appendExpression(*ret, e); } ( ':' expression<e> { appendExpression(*ret, e); } )? ']'
+		| '(' ( argument_expression_list<ae> { appendExpression(*ret, ae); } )? ')' { (*ret)->operator = '()'; }
+		| '.' id<i> { appendExpression(*ret, makeExpression(0, 1, 0, i)); (*ret)->operator = '.'; }
+		| PTR_OP id<i> { appendExpression(*ret, makeExpression(0, 1, 0, i)); (*ret)->operator = '->'; }
 		| INC_OP { (*ret)->operator = 'x++'; } 
 		| DEC_OP { (*ret)->operator = 'x--'; } 
-		) { printExpression(*ret); putchar('\n'); }
+		)
 	;
 	
 primary_expression<%out expression_pt ret>
 	: id<i> { *ret = makeExpression(0, 1, 0, i); printExpression(*ret); putchar('\n'); }
-	| constant<c> { *ret = makeExpression(0, 1, 0, c); printExpression(*ret); putchar('\n'); }
-	| '(' { PRCH; } expression<e> { *ret = e; } ')'
+	| constant<c> { *ret = makeExpression(0, 1, 0, c); }
+	| '(' expression<e> { *ret = e; } ')'
 	;
 	
 argument_expression_list<%out expression_pt ret>

@@ -1,5 +1,4 @@
 int main() {
-	hello->olleh;
-	aleph[3:9];
+	a = 3+3;
 	return 42;
 }

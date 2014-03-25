@@ -1266,22 +1266,22 @@ YY_RULE_SETUP
 case 63:
 YY_RULE_SETUP
 #line 122 "ass3.flex"
-{ count(); yylval.c = '&'; return BIT_AND; }
+{ count(); yylval.c = '&'; return '&'; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 123 "ass3.flex"
-{ count(); yylval.c = '^'; return BIT_XOR; }
+{ count(); yylval.c = '^'; return '^'; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 124 "ass3.flex"
-{ count(); yylval.c = '|'; return BIT_OR; }
+{ count(); yylval.c = '|'; return '|'; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 125 "ass3.flex"
-{ count(); yylval.c = '~'; return BIT_NOT; }
+{ count(); yylval.c = '~'; return '~'; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP

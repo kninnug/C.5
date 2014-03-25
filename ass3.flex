@@ -119,10 +119,10 @@ L?\"(\\.|[^\\"\n])*\"		{ count(); yylval.s = mystrdup(yytext); return STRING; }
 
 "**"			{ count(); return EXP; }
 
-"&"				{ count(); yylval.c = '&'; return BIT_AND; }
-"^"				{ count(); yylval.c = '^'; return BIT_XOR; }
-"|"				{ count(); yylval.c = '|'; return BIT_OR; }
-"~"				{ count(); yylval.c = '~'; return BIT_NOT; }
+"&"				{ count(); yylval.c = '&'; return '&'; }
+"^"				{ count(); yylval.c = '^'; return '^'; }
+"|"				{ count(); yylval.c = '|'; return '|'; }
+"~"				{ count(); yylval.c = '~'; return '~'; }
 
 "<="			{ count(); yylval.subtype = COMPARE_LEQ; return COMPARE; }
 ">="			{ count(); yylval.subtype = COMPARE_GREQ; return COMPARE; }
