@@ -71,20 +71,25 @@ void appendConstant(expression_t * exp, constant_t * child){
 	exp->value[exp->length-1].c = child;
 }
 
-void printExpression(const expression_t * exp){
-	size_t i;
+void printExpression(const expression_t * exp, size_t level){
+	size_t i, j;
 	if(!exp) return;
+	
+	level++;
+	
 	putchar('(');
-	printf("%i:`%c`[%i]", exp->type, exp->operator, exp->operator);
+	printf("%c:`%c`[%i]\n", (exp->type ? 'e' : 'c'), exp->operator, exp->operator);
 	for(i = 0; i < exp->length; i++){
-		printf(" %u = ", i);
+		for(j = 0; j < level; j++) printf("    ");
+		printf("%u = ", i);
 		
-		if(!exp->type) printConstant(exp->value[i].c);
-		else printExpression(exp->value[i].e);
-		
-		if(i < exp->length-1) printf(",");
+		if(!exp->type){
+			printConstant(exp->value[i].c);
+		}
+		else printExpression(exp->value[i].e, level);
 	}
 	putchar(')');
+	putchar('\n');
 }
 
 void printConstant(const constant_t * c){

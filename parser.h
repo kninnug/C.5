@@ -54,7 +54,7 @@ constant_t * makeStringConst(const char * s);
 
 expression_t * makeExpression(int type, size_t length, int operator, ...);
 
-void printExpression(const expression_t * exp);
+void printExpression(const expression_t * exp, size_t level);
 void printConstant(const constant_t * c);
 
 #endif

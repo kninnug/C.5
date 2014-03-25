@@ -8,71 +8,6 @@
 	#include <stdlib.h>
 	
 	#include "parser.h"
-	
-	extern FILE * out;
-	
-	void escapeChar(FILE * out, int c){
-		switch(c){
-			case '\\':
-				fputs("\\textbackslash ", out);
-			break;
-			
-			case '<':
-			case '>':
-				fputc('$', out);
-				fputc(c, out);
-				fputc('$', out);
-			break;
-			
-			case '&':
-			case '%':
-			case '{':
-			case '}':
-			case '_':
-				fputc('\\', out);
-			/* fall-through: w00t! */
-			default:
-				fputc(c, out);
-		}
-	}
-	
-	void escapeString(FILE * out, char * s){
-		while(*s) escapeChar(out, *s++);
-	}
-	
-	void printSubtype(FILE * out, int st){
-		fputs("\\ $", out);
-		switch(st){
-			case COMPARE_EQUAL: fputs("==", out); break;
-			case COMPARE_UNEQUAL: fputs("\\neq", out); break;
-			case COMPARE_LEQ: fputs("\\leq", out); break;
-			case COMPARE_GREQ: fputs("\\geq", out); break;
-			case COMPARE_GREATER: fputs(">", out); break;
-			case COMPARE_LESS: fputs("<", out); break;
-			
-			case ASSIGN_AND: fputs("\\&=", out); break;
-			case ASSIGN_DIVIDE: fputs("/=", out); break;
-			case ASSIGN_MINUS: fputs("-=", out); break;
-			case ASSIGN_MOD: fputs("\\%=", out); break;
-			case ASSIGN_OR: fputs("|=", out); break;
-			case ASSIGN_PLUS: fputs("+=", out); break;
-			case ASSIGN_SHLEFT: fputs("<<=", out); break;
-			case ASSIGN_SHRIGHT: fputs(">>=", out); break;
-			case ASSIGN_XOR: fputs("\\^=", out); break;
-			
-			case ASSIGN_SWAP: fputs("\\leftrightarrow", out); break;
-		}
-		fputs("$\\ ", out);
-	}
-	
-	/* Nice cryptic macros for shortening semantic-action blocks */
-	#define PRCH escapeChar(out, yylval.c)
-	#define PRCHS PRCH, fputs("\\ ", out)
-	/* long live the comma-operator! */
-	#define SPRCHS fputs("\\ ", out), PRCHS
-	#define PRS escapeString(out, yylval.s)
-	#define PRKW fprintf(out, "{\\bf %s} ", yylval.s)
-	#define PRSC fputs(";\\\\\n", out)
 }
 
 %token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
@@ -268,7 +203,7 @@ labeled_statement
 	;
 	
 expression_statement
-	: ( expression<e> )? ';'
+	: ( expression<e> { printExpression(e, 0); } )? ';'
 	;
 	
 compound_statement
@@ -290,38 +225,39 @@ selection_statement
 	;
 
 iteration_statement
-	: WHILE '(' { PRCH; } expression<e> ')' { PRCH; } statement
-	| DO { PRKW; } statement WHILE { PRKW; } '(' { PRCH; } expression<e> ')' { PRCH; } ';'
-	| FOR { PRKW; } '(' { PRCH; } ( expression<e> )? ';' ( expression<e> )? ';' ( expression<e> )? ')' { PRCH; } statement
+	: WHILE '(' expression<e> ')' statement
+	| DO statement WHILE '(' expression<e> ')' ';'
+	| FOR '(' ( expression<e> )? ';' ( expression<e> )? ';' ( expression<e> )? ')' statement
 	;
 	
 jump_statement
-	: GOTO { PRKW; } id<i> ';' /* warning: labels & GOTO's make Dijkstra angry! */
-	| CONTINUE { PRKW; } ';'
-	| BREAK { PRKW; } ';'
-	| RETURN { PRKW; } ( expression<e> )? ';'
+	: GOTO id<i> ';' /* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE ';'
+	| BREAK ';'
+	| RETURN ( expression<e> { printExpression(e, 0); } )? ';'
 	;
 
 print_statement
-	: PRINT { PRKW; } argument_expression_list<ae> ';'
+	: PRINT argument_expression_list<ae> ';'
 	;
 	
 input_statement
-	: INPUT { PRKW; } ( id<i> ',' )* id<i> ';'
+	: INPUT ( id<i> ',' )* id<i> ';'
 	;
 	
 expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, ','); } ( expression<e> { appendExpression(*ret, e); } ',' )? assignment_expression<ae> { appendExpression(*ret, ae); printExpression(*ret); }
+	: assignment_expression<ae> { *ret = ae; }
+	| expression<e> ',' assignment_expression<ae> { *ret = makeExpression(1, 2, ',', e, ae); }
 	;
 
 assignment_expression<%out expression_pt ret>
 	: conditional_expression<ce> { *ret = ce; }
-	| { *ret = makeExpression(1, 0, '='); } unary_expression<ue> { appendExpression(*ret, ue); } assignment_operator assignment_expression<ae> { appendExpression(*ret, ae); }
+	| unary_expression<ue> assignment_operator<ao> assignment_expression<ae> { *ret = makeExpression(1, 2, ao, ue, ae); }
 	;
 	
-assignment_operator
-	: ASSIGN
-	| '='
+assignment_operator<%out int ret>
+	: ASSIGN { *ret = yylval.subtype; }
+	| '=' { *ret = '='; }
 	;
 	
 conditional_expression<%out expression_pt ret>
@@ -334,39 +270,48 @@ constant_expression<%out expression_pt ret>
 	;
 	
 logical_OR_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, '||'); } ( logical_OR_expression<loe> { appendExpression(*ret, loe); } LOGICAL_OR )? logical_AND_expression<lae> { appendExpression(*ret, lae); }
+	: logical_AND_expression<lae> { *ret = lae; }
+	| logical_OR_expression<loe> LOGICAL_OR logical_AND_expression<lae> { *ret = makeExpression(1, 2, '||', loe, lae); }
 	;
 	
 logical_AND_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, '&&'); } ( logical_AND_expression<lae> { appendExpression(*ret, lae); } LOGICAL_AND )? inclusive_OR_expression<ioe> { appendExpression(*ret, ioe); }
+	: inclusive_OR_expression<ioe> { *ret = ioe; }
+	| logical_AND_expression<lae> LOGICAL_AND inclusive_OR_expression<ioe> { *ret = makeExpression(1, 2, '&&', lae, ioe); }
 	;
 
 inclusive_OR_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, '|'); } ( inclusive_OR_expression<ioe> { appendExpression(*ret, ioe); } '|' )? exclusive_OR_expression<eoe> { appendExpression(*ret, eoe); }
+	: exclusive_OR_expression<eoe> { *ret = eoe; }
+	| inclusive_OR_expression<ioe> '|' exclusive_OR_expression<eoe> { *ret = makeExpression(1, 2, '|', ioe, eoe); }
 	;
 	
 exclusive_OR_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, '^'); } ( exclusive_OR_expression<eoe> { appendExpression(*ret, eoe); } '^' )? AND_expression<ae> { appendExpression(*ret, ae); }
+	: AND_expression<ae> { *ret = ae; }
+	| exclusive_OR_expression<eoe> '^' AND_expression<ae> { *ret = makeExpression(1, 2, '^', eoe, ae); }
 	;
 	
 AND_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, '&'); } (AND_expression<ae> { appendExpression(*ret, ae); } '&' )? equality_expression<ee> { appendExpression(*ret, ee); }
+	: equality_expression<ee> { *ret = ee; }
+	| AND_expression<ae> '&' equality_expression<ee> { *ret = makeExpression(1, 2, '&', ae, ee); }
 	;
 	
 equality_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, 0); } ( equality_expression<ee> { appendExpression(*ret, ee); } COMPARE )? shift_expression<se> { appendExpression(*ret, se); }
+	: shift_expression<se> { *ret = se; }
+	| equality_expression<ee> COMPARE<c> shift_expression<se> { *ret = makeExpression(1, 2, c.subtype, ee, se); }
 	;
 
 shift_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, 0); } (shift_expression<se> { appendExpression(*ret, se); } SHIFT )? additive_expression<ae> { appendExpression(*ret, ae); }
+	: additive_expression<ae> { *ret = ae; }
+	| shift_expression<se> SHIFT<s> additive_expression<ae> { *ret = makeExpression(1, 2, s.subtype, se, ae); }
 	;
 	
 additive_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, 0); } ( additive_expression<ae> { appendExpression(*ret, ae); } ( '+' | '-' ) )? multiplicative_expression<me> { appendExpression(*ret, me); }
+	: multiplicative_expression<me> { *ret = me; }
+	| { int op = '+'; } additive_expression<ae> ( '+' | '-' { op = '-'; } ) multiplicative_expression<me> { *ret = makeExpression(1, 2, op, ae, me); }
 	;
 	
 multiplicative_expression<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, 0); } ( multiplicative_expression<me> { appendExpression(*ret, me); } ( '*' | '/' | '%' ) )? cast_expression<ce> { appendExpression(*ret, ce); }
+	: cast_expression<ce> { *ret = ce; }
+	| { int op = '*'; } multiplicative_expression<me> ( '*' | '/' { op = '/'; } | '%' { op = '%'; }) cast_expression<ce> { *ret = makeExpression(1, 2, op, me, ce); }
 	;
 	
 cast_expression<%out expression_pt ret>
@@ -377,19 +322,24 @@ cast_expression<%out expression_pt ret>
 unary_expression<%out expression_pt ret>
 	: postfix_expression<pe> { *ret = pe; }
 	| { int t; } ( INC_OP {t = '++x';} | DEC_OP {t = '--x'; } ) unary_expression<ue> { *ret = makeExpression(1, 1, t, ue); }
-	| unary_operator cast_expression<ce>
-	| SIZEOF unary_expression<ue>
+	| unary_operator<op> cast_expression<ce> { *ret = makeExpression(1, 1, op, ce); }
+	| SIZEOF unary_expression<ue> { *ret = ue; }
 	| SIZEOF '(' type_name ')'
 	;
 	
-unary_operator
-	: ('&' | '*' | '+' | '-' | '~' | '!' | '~' | '|' | '^')
+unary_operator<%out int op>
+	: '&' { *op = '&'; } 
+	| '*' { *op = '*'; } 
+	| '+' { *op = '+'; } 
+	| '-' { *op = '-'; } 
+	| '~' { *op = '~'; } 
+	| '!' { *op = '!'; }
 	;
 	
 postfix_expression<%out expression_pt ret>
 	: primary_expression<pe> { *ret = pe; }
-	| postfix_expression<pe> { *ret = makeExpression(1, 1, 0, pe); }
-		( '[' expression<e> { appendExpression(*ret, e); } ( ':' expression<e> { appendExpression(*ret, e); } )? ']'
+	| postfix_expression<pe> { *ret = makeExpression(1, 1, 0, pe); fprintf(stderr, "@ PE: "); printExpression(*ret, 0); }
+		( '[' expression<e> { appendExpression(*ret, e); } ( ':' expression<e> { appendExpression(*ret, e); } )? ']' { (*ret)->operator = '[]'; }
 		| '(' ( argument_expression_list<ae> { appendExpression(*ret, ae); } )? ')' { (*ret)->operator = '()'; }
 		| '.' id<i> { appendExpression(*ret, makeExpression(0, 1, 0, i)); (*ret)->operator = '.'; }
 		| PTR_OP id<i> { appendExpression(*ret, makeExpression(0, 1, 0, i)); (*ret)->operator = '->'; }
@@ -399,19 +349,19 @@ postfix_expression<%out expression_pt ret>
 	;
 	
 primary_expression<%out expression_pt ret>
-	: id<i> { *ret = makeExpression(0, 1, 0, i); printExpression(*ret); putchar('\n'); }
+	: id<i> { *ret = makeExpression(0, 1, 0, i); }
 	| constant<c> { *ret = makeExpression(0, 1, 0, c); }
 	| '(' expression<e> { *ret = e; } ')'
 	;
 	
 argument_expression_list<%out expression_pt ret>
-	: { *ret = makeExpression(1, 0, 0); }( assignment_expression<ae> { growExpression(*ret); (*ret)->value[(*ret)->length-1].e = ae; } ',' )* assignment_expression<ae2> { growExpression(*ret); (*ret)->value[(*ret)->length-1].e = ae2; }
+	: { *ret = makeExpression(1, 0, '(,)'); } ( assignment_expression<ae> { appendExpression(*ret, ae); } ',' )* assignment_expression<ae2> { appendExpression(*ret, ae2); }
 	;
 	
 constant<%out constant_pt ret>
-	: INTCONST { fprintf(out, "$%lu$", yylval.i); *ret = makeIntConst(yylval.i); }
+	: INTCONST { *ret = makeIntConst(yylval.i); }
 	| CHARACTER { *ret = makeIntConst(yylval.i); }
-	| FLOATCONST { fprintf(out, "$%f$", yylval.d); *ret = makeFloatConst(yylval.d); }
+	| FLOATCONST { *ret = makeFloatConst(yylval.d); }
 	| STRING { *ret = makeStringConst(yylval.s); }
 	/* | id enumeration-constant..? Should check against defined enum-constants... Yeah, no */
 	;
