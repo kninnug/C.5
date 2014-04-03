@@ -28,7 +28,7 @@ external_declaration
 	;
 	
 function_definition
-	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' | compound_statement )
+	: ( declaration_specifiers )? declarator ( declaration_list )? ( ';' | compound_statement<cs> )
 	;
 	
 declaration
@@ -48,28 +48,27 @@ storage_class_specifier
 	| REGISTER
 	| STATIC
 	| EXTERN
-	| TYPEDEF
 	;
 
 /*typedef-name replaced with 'id' */
 type_specifier
 	: VOID
-	| CHAR
-	| SHORT
-	| INT
-	| LONG
-	| FLOAT
-	| DOUBLE
 	| SIGNED
 	| UNSIGNED
+	| SHORT
+	| LONG
+	| INT
+	| CHAR
+	| FLOAT
+	| DOUBLE
 	| struct_or_union_specifier 
 	| enum_specifier
 /*	| id<i> { fprintf(stderr, "Type-specifier/id: "); printConstant(i); fputc('\n', stderr); } */
 	;
 	
 type_qualifier
-	: ( CONST
-	| VOLATILE )
+	: CONST
+	| VOLATILE
 	;
 
 struct_or_union_specifier
@@ -78,7 +77,8 @@ struct_or_union_specifier
 	;
 	
 struct_or_union
-	: ( STRUCT | UNION )
+	: STRUCT 
+	| UNION
 	;
 	
 struct_declaration_list
@@ -130,9 +130,11 @@ declarator
 direct_declarator
 	: id<i>
 	| '(' declarator ')'
-	| direct_declarator ( '[' ( expression<e> )? ']'
+	| direct_declarator 
+		( '[' ( expression<e> )? ']'
 		| '(' parameter_type_list ')'
-		| '(' ( identifier_list )? ')' )
+		| '(' ( identifier_list )? ')' 
+		)
 	;
 	
 pointer
@@ -187,29 +189,31 @@ typedef_name
 	: id<i>
 	;
 	
-statement
-	: labeled_statement { fprintf(stderr, "Label!\n"); }
-	| expression_statement { fprintf(stderr, "Express!\n"); }
-	| compound_statement { fprintf(stderr, "Confound!\n"); }
-	| selection_statement { fprintf(stderr, "Select!\n"); }
-	| iteration_statement { fprintf(stderr, "Iterate!\n"); }
+statement<%out statement_pt ret>
+	: { *ret = makeStatement(); (*ret)->type = 0; }
+	( labeled_statement { fprintf(stderr, "Label!\n"); }
+	| expression_statement<es> { fprintf(stderr, "Express!\n"); (*ret)->type = 'e'; (*ret)->exps = es; }
+	| compound_statement<cs> { fprintf(stderr, "Confound!\n"); (*ret)->type = 'c'; (*ret)->comps = cs; printStatement(*ret); }
+	| selection_statement<s> { fprintf(stderr, "Select!\n"); *ret = s; printStatement(*ret); }
+	| iteration_statement<s> { fprintf(stderr, "Iterate!\n"); *ret = s; printStatement(*ret); }
 	| jump_statement { fprintf(stderr, "Jump!\n"); }
 	| print_statement { fprintf(stderr, "Print!\n"); }
 	| input_statement { fprintf(stderr, "Input!\n"); }
+	)
 	;
 	
 labeled_statement
-	: id<i> ':' statement	/* warning: labels & GOTO's make Dijkstra angry! */
-	| CASE constant_expression<ce> ':' statement
-	| DEFAULT ':' statement
+	: id<i> ':' statement<s>	/* warning: labels & GOTO's make Dijkstra angry! */
+	| CASE constant_expression<ce> ':' statement<s>
+	| DEFAULT ':' statement<s>
 	;
 	
-expression_statement
-	: ( expression<e> { printExpression(e, 0); } )? ';'
+expression_statement<%out expstatement_pt ret>
+	: { *ret = NULL; } ( expression<e> { printExpression(e, 0); *ret = makeExpStmt(e); } )? ';'
 	;
 	
-compound_statement
-	: '{' ( declaration_list )? ( statement_list )? '}'
+compound_statement<%out compstatement_pt cs>
+	: { *cs = makeCompStmt(); }'{' ( declaration_list )? ( statement_list<cs> )? '}'
 	;
 	
  /* statement_or_declaration
@@ -217,20 +221,22 @@ compound_statement
 	| declaration
 	; */
 	
-statement_list
-	: ( statement )* statement
+statement_list<%in compstatement_pt cs>
+	: ( statement<s> { growCompStmt(cs, s); } )* statement<s> { growCompStmt(cs, s); }
 	;
 	
-selection_statement
-	: IF '(' expression<e> ')' statement ( ELSE statement )?
-	| SWITCH '(' expression<e> ')' statement
+selection_statement<%out statement_pt ss>
+	: IF '(' expression<e> ')' statement<s> { *ss = makeStatement(); (*ss)->type = 'i'; (*ss)->ifs = makeIfStmt(e, s); } 
+		( ELSE statement<se> { (*ss)->ifs->otherwise = se; } )?
+	| SWITCH '(' expression<e> ')' statement<s> { *ss = makeStatement(); (*ss)->type = 's'; (*ss)->switchs = makeSwitchStmt(e, s); }
 	;
 
-iteration_statement
-	: WHILE '(' expression<e> ')' statement
-	| DO statement WHILE '(' expression<e> ')' ';'
-	| FOR '(' ( expression<e> )? ';' ( expression<e> )? ';' ( expression<e> )? ')' statement
-	;
+iteration_statement<%out statement_pt is>
+	: { *is = makeStatement(); }
+	( WHILE '(' expression<e> ')' statement<s> { (*is)->type = 'w'; (*is)->whiles = makeWhileStmt(e, s); }
+	| DO statement<s> WHILE '(' expression<e> ')' ';' { (*is)->type = 'w'; (*is)->whiles = makeWhileStmt(e, s); (*is)->whiles->dowhile = 1; }
+	| FOR { (*is)->type = 'f'; (*is)->fors = makeForStmt(); } '(' ( expression<e> { (*is)->fors->exp1= e; } )? ';' ( expression<e> { (*is)->fors->exp2= e; } )? ';' ( expression<e> { (*is)->fors->exp3= e; } )? ')' statement<s> {  { (*is)->fors->body= s; } }
+	) ;
 	
 jump_statement
 	: GOTO id<i> ';' /* warning: labels & GOTO's make Dijkstra angry! */

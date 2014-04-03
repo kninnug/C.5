@@ -27,6 +27,24 @@ enum consttypes { INTCONST, FLOATCONST, STRINGCONST, IDCONST };
 
 #define YYSTYPE union lexeme
 
+struct statement;
+typedef struct statement statement_t;
+
+typedef struct type{
+	/* storage class */
+	unsigned storeAuto : 1;
+	unsigned storeStatic : 1;
+	unsigned storeRegister : 1;
+	unsigned storeExtern : 1;
+	/* qualifiers */
+	unsigned qualConst : 1;
+	unsigned qualVolatile : 1;
+	/* specifiers */
+	unsigned signedness : 1;
+	unsigned longness : 2; /* 0: unspecified / normal, 1: short, 2: long, 3: undefined */
+	unsigned type : 3; /* 0: int, 1: char, 2: float (double is a long float), 3: struct, 4: union, 5: enum */
+} type_t;
+
 typedef struct constant{
 	enum consttypes type;
 	union{
@@ -46,6 +64,71 @@ typedef struct expression{
 	} * value;
 } expression_t, * expression_pt;
 
+typedef struct ifstatement{
+	expression_t * cond;
+	statement_t * body;
+	statement_t * otherwise;
+} ifstatement_t, * ifstatement_pt;
+
+typedef struct whilestatement{
+	int dowhile;
+	expression_t * cond;
+	statement_t * body;
+} whilestatement_t, * whilestatement_pt;
+
+typedef struct forstatement{
+	expression_t * exp1, * exp2, * exp3;
+	statement_t * body;
+} forstatement_t, * forstatement_pt;
+
+typedef struct gotostatement{
+	char * label;
+} gotostatement_t, * gotostatement_pt;
+
+typedef struct returnstatement{
+	expression_t * value;
+} returnstatement_t, * returnstatement_pt;
+
+typedef struct switchstatement{
+	expression_t * cond;
+	statement_t * body;
+} switchstatement_t, * switchstatement_pt;
+
+typedef struct labelstatement{
+	char * id;
+} labelstatement_t, * labelstatement_pt;
+
+typedef struct expstatement{
+	expression_t * exp;
+} expstatement_t, * expstatement_pt;
+
+typedef struct declaration{
+	char * name;
+	type_t type;
+	expression_t * value;
+} declaration_t, * declaration_pt;
+
+typedef struct compstatement{
+	size_t length;
+	statement_t ** stmts;
+	declaration_t ** decls;
+} compstatement_t, * compstatement_pt;
+
+typedef struct statement{
+	int type;
+	union{
+		ifstatement_t * ifs;
+		whilestatement_t * whiles;
+		forstatement_t * fors;
+		gotostatement_t * gotos;
+		returnstatement_t * returns;
+		switchstatement_t * switchs;
+		labelstatement_t * labels;
+		expstatement_t * exps;
+		compstatement_t * comps;
+	};
+} * statement_pt;
+
 char* mystrdup(const char * yytext);
 
 constant_t * makeIntConst(unsigned long int i);
@@ -54,7 +137,19 @@ constant_t * makeStringConst(const char * s);
 
 expression_t * makeExpression(int type, size_t length, int operator, ...);
 
+statement_t * makeStatement();
+expstatement_t * makeExpStmt(expression_t * exp);
+compstatement_t * makeCompStmt();
+ifstatement_t * makeIfStmt(expression_t * cond, statement_t * body);
+switchstatement_t * makeSwitchStmt(expression_t * cond, statement_t * body);
+whilestatement_t * makeWhileStmt(expression_t * cond, statement_t * body);
+forstatement_t * makeForStmt();
+
+size_t growCompStmt(compstatement_t * cs, statement_t * s);
+
 void printExpression(const expression_t * exp, size_t level);
 void printConstant(const constant_t * c);
+
+void printStatement(const statement_t * s);
 
 #endif

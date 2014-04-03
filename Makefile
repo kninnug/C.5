@@ -1,4 +1,4 @@
-OPTIONS = -ansi -ggdb
+OPTIONS = -ansi -ggdb -Wall -Wno-multichar -Wno-implicit-int -Wno-return-type -Wno-implicit-function-declaration
 # Needed because flex and it's library is installed in MSYS, not MinGW
 MINGWHACKS = -L/usr/lib -DYY_NO_UNISTD_H
 ACCENTDIR = accent/

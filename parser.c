@@ -71,6 +71,66 @@ void appendConstant(expression_t * exp, constant_t * child){
 	exp->value[exp->length-1].c = child;
 }
 
+statement_t * makeStatement(){
+	statement_t * ret = malloc(sizeof *ret);
+	return ret;
+}
+
+expstatement_t * makeExpStmt(expression_t * exp){
+	expstatement_t * ret = malloc(sizeof *ret);
+	ret->exp = exp;
+	return ret;
+}
+
+compstatement_t * makeCompStmt(){
+	compstatement_t * ret = malloc(sizeof *ret);
+	ret->length = 0;
+	ret->stmts = NULL;
+	return ret;
+}
+
+size_t growCompStmt(compstatement_t * cs, statement_t * s){
+	cs->length++;
+	cs->stmts = realloc(cs->stmts, cs->length * sizeof *cs->stmts);
+	cs->stmts[cs->length - 1] = s;
+	
+	return cs->length;
+}
+
+ifstatement_t * makeIfStmt(expression_t * cond, statement_t * body){
+	ifstatement_t * ret = malloc(sizeof *ret);
+	ret->cond = cond;
+	ret->body = body;
+	ret->otherwise = NULL;
+	
+	return ret;
+}
+
+switchstatement_t * makeSwitchStmt(expression_t * cond, statement_t * body){
+	switchstatement_t * ret = malloc(sizeof *ret);
+	ret->cond = cond;
+	ret->body = body;
+	
+	return ret;
+}
+
+whilestatement_t * makeWhileStmt(expression_t * cond, statement_t * body){
+	whilestatement_t * ret = malloc(sizeof *ret);
+	ret->cond = cond;
+	ret->body = body;
+	ret->dowhile = 0;
+	
+	return ret;
+}
+
+forstatement_t * makeForStmt(){
+	forstatement_t * ret = malloc(sizeof *ret);
+	ret->exp1 = ret->exp2 = ret->exp3 = NULL;
+	ret->body = NULL;
+	
+	return ret;
+}
+
 void printExpression(const expression_t * exp, size_t level){
 	size_t i, j;
 	if(!exp) return;
@@ -99,6 +159,56 @@ void printConstant(const constant_t * c){
 		case FLOATCONST: printf("%lf", c->value.d); break;
 		case IDCONST:
 		case STRINGCONST: printf("%s", c->value.s); break;
+	}
+}
+
+void printCompStmt(const compstatement_t * cs){
+	size_t i;
+	puts("{\n");
+	for(i = 0; i < cs->length; i++){
+		printStatement(cs->stmts[i]);
+	}
+	puts("}\n");
+}
+
+void printStatement(const statement_t * s){
+	switch(s->type){
+		case 'c': printCompStmt(s->comps); break;
+		case 'e': printExpression(s->exps->exp, 0); break;
+		case 'i': 
+			puts("if");
+			printExpression(s->ifs->cond, 0);
+			printStatement(s->ifs->body);
+			if(s->ifs->otherwise){
+				puts("else");
+				printStatement(s->ifs->otherwise);
+			}
+		break;
+		case 's':
+			puts("switch");
+			printExpression(s->switchs->cond, 0);
+			printStatement(s->switchs->body);
+		break;
+		case 'w':
+			if(s->whiles->dowhile){
+				puts("do");
+				printStatement(s->whiles->body);
+			}
+			puts("while");
+			printExpression(s->whiles->cond, 0);
+			if(s->whiles->dowhile) puts(";\n");
+			else printStatement(s->whiles->body);
+		break;
+		case 'f':
+			puts("for(");
+			if(s->fors->exp1) printExpression(s->fors->exp1, 0);
+			puts("; ");
+			if(s->fors->exp1) printExpression(s->fors->exp2, 0);
+			puts("; ");
+			if(s->fors->exp1) printExpression(s->fors->exp3, 0);
+			puts(")");
+			printStatement(s->fors->body);
+		break;
 	}
 }
 
