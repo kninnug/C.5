@@ -39,50 +39,33 @@ declaration_list
 	: ( declaration )* declaration
 	;
 	
-declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
+declaration_specifiers<%out type_pt t>
+	: { *t = malloc(sizeof *t); }( storage_class_specifier<t> | type_specifier<t> | type_qualifier<t> ) ( declaration_specifiers<tt> { mergeTypeTs(*t, tt); } )?
 	;
 
-storage_class_specifier
-	: AUTO
-	| REGISTER
-	| STATIC
-	| EXTERN
+storage_class_specifier<%in type_pt t>
+	: AUTO { t->storeAuto = 1; }
+	| REGISTER { t->storeRegister = 1; }
+	| STATIC { t->storeStatic = 1; }
+	| EXTERN { t->storeExtern = 1; }
 	;
 
 /*typedef-name replaced with 'id' */
-type_specifier
-	: VOID
-	| SIGNED
-	| UNSIGNED
-	| SHORT
-	| LONG
-	| INT
-	| CHAR
-	| FLOAT
-	| DOUBLE
-	| struct_or_union_specifier 
-	| enum_specifier
-/*	| id<i> { fprintf(stderr, "Type-specifier/id: "); printConstant(i); fputc('\n', stderr); } */
+type_specifier<%in type_pt t>
+	: VOID { t->type = 3; }
+	| SIGNED { t->signedness = 1; }
+	| UNSIGNED { t->signedness = 0; }
+	| SHORT { t->longness = 1; }
+	| LONG { t->longness = 2; }
+	| INT { t->type = 0; }
+	| CHAR { t->type = 1; }
+	| FLOAT { t->type = 2; }
+	| DOUBLE { t->type = 2; t->longness = 2; }
 	;
 	
-type_qualifier
-	: CONST
-	| VOLATILE
-	;
-
-struct_or_union_specifier
-	: struct_or_union ( id<i> )? '{' struct_declaration_list '}'
-	| struct_or_union id<i> {}
-	;
-	
-struct_or_union
-	: STRUCT 
-	| UNION
-	;
-	
-struct_declaration_list
-	: ( struct_declaration_list )? struct_declaration 
+type_qualifier<%in type_pt t>
+	: CONST { t->qualConst = 1; }
+	| VOLATILE { t->qualVolatile = 1; }
 	;
 	
 init_declarator_list
@@ -90,59 +73,25 @@ init_declarator_list
 	;
 	
 init_declarator
-	: ( declarator '=' )? initializer
-	;
-	
-struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';'
+	: declarator ( '=' initializer<iz> { printInitializer(iz); } )?
 	;
 
-specifier_qualifier_list
-	: ( type_specifier | type_qualifier ) ( specifier_qualifier_list )?
-	;
-
-struct_declarator_list
-	: ( struct_declarator_list ',' )? struct_declarator
-	;
-	
-struct_declarator
-	: declarator
-	| ( declarator )? ':' constant_expression<ce>
-	;
-
-enum_specifier
-	: ENUM ( id<i> )? '{' enumerator_list '}'
-	| ENUM id<i>
-	;
-	
-enumerator_list
-	: ( enumerator_list ',' )? enumerator
-	;
-	
-enumerator
-	: id<i> ( '=' constant_expression<ce> )?
+specifier_qualifier_list<%out type_pt t>
+	: { *t = malloc(sizeof *t); }( type_specifier<t> | type_qualifier<t> ) ( specifier_qualifier_list<tt> { mergeTypeTs(*t, tt); } )?
 	;
 	
 declarator
-	: ( pointer )? direct_declarator
-	;
-	
-direct_declarator
 	: id<i>
 	| '(' declarator ')'
-	| direct_declarator 
+	| declarator 
 		( '[' ( expression<e> )? ']'
 		| '(' parameter_type_list ')'
-		| '(' ( identifier_list )? ')' 
+		| '(' ( identifier_list<il> )? ')' 
 		)
 	;
 	
-pointer
-	: '*' ( type_qualifier_list )? ( pointer )?
-	;
-	
-type_qualifier_list
-	: ( type_qualifier_list )? type_qualifier
+type_qualifier_list<%out type_pt t>
+	: { *t = malloc(sizeof *t); } type_qualifier<t> ( type_qualifier<t> )*
 	;
 	
 parameter_type_list
@@ -150,24 +99,25 @@ parameter_type_list
 	;
 
 parameter_list
-	: ( parameter_list ',' )? parameter_declaration
+	: ( parameter_declaration ',' )* parameter_declaration
 	;
 	
 parameter_declaration
-	: declaration_specifiers ( declarator | ( abstract_declarator )? )
+	: declaration_specifiers<t> ( declarator | abstract_declarator )?
 	;
 	
-identifier_list
-	: ( identifier_list ',' )? id<i>
+identifier_list<%out identlist_pt il>
+	: { *il = makeIdentlist(); }( id<i> { growIdentlist(*il, i); } ',' )* id<i2> { growIdentlist(*il, i2); }
 	;
 	
-initializer
-	: assignment_expression<ae>
-	| '{' initializer_list ( ',' )? '}'
-	;
+initializer<%out initializer_pt i>
+	: { *i = makeInitializer(); fprintf(stderr, "Initializate!\n"); }
+	( assignment_expression<ae> { growInitializera(*i, ae); }
+	| '{' initializer_list<i> ( ',' )? '}'
+	) ;
 	
-initializer_list
-	: ( initializer_list ',' )? initializer
+initializer_list<%in initializer_pt i>
+	: ( initializer_list<i> ',' )? initializer<iz> { growInitializeri(i, iz); }
 	;
 	
 type_name
@@ -175,18 +125,9 @@ type_name
 	;
 	
 abstract_declarator
-	: pointer
-	| ( pointer )? direct_abstract_declarator
-	;
-	
-direct_abstract_declarator
 	: '(' abstract_declarator ')'
-	| ( direct_abstract_declarator )? ( '[' ( expression<e> )? ']'
+	| ( abstract_declarator )? ( '[' ( expression<e> )? ']'
 		| '(' ( parameter_type_list )? ')' )
-	;
-	
-typedef_name
-	: id<i>
 	;
 	
 statement<%out statement_pt ret>
@@ -196,7 +137,7 @@ statement<%out statement_pt ret>
 	| compound_statement<cs> { fprintf(stderr, "Confound!\n"); (*ret)->type = 'c'; (*ret)->comps = cs; printStatement(*ret); }
 	| selection_statement<s> { fprintf(stderr, "Select!\n"); *ret = s; printStatement(*ret); }
 	| iteration_statement<s> { fprintf(stderr, "Iterate!\n"); *ret = s; printStatement(*ret); }
-	| jump_statement { fprintf(stderr, "Jump!\n"); }
+	| jump_statement<s> { fprintf(stderr, "Jump!\n"); }
 	| print_statement { fprintf(stderr, "Print!\n"); }
 	| input_statement { fprintf(stderr, "Input!\n"); }
 	)
@@ -216,11 +157,6 @@ compound_statement<%out compstatement_pt cs>
 	: { *cs = makeCompStmt(); }'{' ( declaration_list )? ( statement_list<cs> )? '}'
 	;
 	
- /* statement_or_declaration
-	: statement
-	| declaration
-	; */
-	
 statement_list<%in compstatement_pt cs>
 	: ( statement<s> { growCompStmt(cs, s); } )* statement<s> { growCompStmt(cs, s); }
 	;
@@ -238,12 +174,13 @@ iteration_statement<%out statement_pt is>
 	| FOR { (*is)->type = 'f'; (*is)->fors = makeForStmt(); } '(' ( expression<e> { (*is)->fors->exp1= e; } )? ';' ( expression<e> { (*is)->fors->exp2= e; } )? ';' ( expression<e> { (*is)->fors->exp3= e; } )? ')' statement<s> {  { (*is)->fors->body= s; } }
 	) ;
 	
-jump_statement
-	: GOTO id<i> ';' /* warning: labels & GOTO's make Dijkstra angry! */
-	| CONTINUE ';'
-	| BREAK ';'
+jump_statement<%out statement_pt js>
+	: { *js = makeStatement(); }
+	( GOTO id<i> ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(0, i); } /* warning: labels & GOTO's make Dijkstra angry! */
+	| CONTINUE ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(0, NULL); }
+	| BREAK ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(1, NULL); }
 	| RETURN ( expression<e> { printExpression(e, 0); } )? ';'
-	;
+	) ;
 
 print_statement
 	: PRINT argument_expression_list<ae> ';'

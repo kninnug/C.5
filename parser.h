@@ -42,7 +42,7 @@ typedef struct type{
 	/* specifiers */
 	unsigned signedness : 1;
 	unsigned longness : 2; /* 0: unspecified / normal, 1: short, 2: long, 3: undefined */
-	unsigned type : 3; /* 0: int, 1: char, 2: float (double is a long float), 3: struct, 4: union, 5: enum */
+	unsigned type : 2; /* 0: int, 1: char, 2: float (double is a long float), 3: void */
 } type_t;
 
 typedef struct constant{
@@ -82,7 +82,8 @@ typedef struct forstatement{
 } forstatement_t, * forstatement_pt;
 
 typedef struct gotostatement{
-	char * label;
+	constant_t * label;
+	int type;
 } gotostatement_t, * gotostatement_pt;
 
 typedef struct returnstatement{
@@ -129,6 +130,26 @@ typedef struct statement{
 	};
 } * statement_pt;
 
+typedef struct initializer{
+	size_t length;
+	struct{
+		int type;
+		union{
+			struct initializer * iz;
+			expression_t * ae;
+		};
+	} * values;
+} initializer_t, * initializer_pt;
+
+typedef struct identifier{
+	char * s;
+} identifier_t, * identifier_pt;
+
+typedef struct identlist{
+	size_t length;
+	constant_t ** idents;
+} identlist_t, * identlist_pt;
+
 char* mystrdup(const char * yytext);
 
 constant_t * makeIntConst(unsigned long int i);
@@ -144,12 +165,23 @@ ifstatement_t * makeIfStmt(expression_t * cond, statement_t * body);
 switchstatement_t * makeSwitchStmt(expression_t * cond, statement_t * body);
 whilestatement_t * makeWhileStmt(expression_t * cond, statement_t * body);
 forstatement_t * makeForStmt();
+gotostatement_t * makeGotoStmt(int type, constant_t * i);
 
 size_t growCompStmt(compstatement_t * cs, statement_t * s);
+
+initializer_t * makeInitializer();
+identlist_t * makeIdentlist();
+
+void growInitializeri(initializer_t * iz, initializer_t * i);
+void growInitializera(initializer_t * iz, expression_t * ae);
+void growIdentlist(identlist_t * il, constant_t * i);
+
+void mergeTypeTs(type_t * out, type_t * in);
 
 void printExpression(const expression_t * exp, size_t level);
 void printConstant(const constant_t * c);
 
 void printStatement(const statement_t * s);
+void printInitializer(initializer_t * iz);
 
 #endif

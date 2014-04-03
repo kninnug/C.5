@@ -131,6 +131,60 @@ forstatement_t * makeForStmt(){
 	return ret;
 }
 
+gotostatement_t * makeGotoStmt(int type, constant_t * i){
+	gotostatement_t * ret = malloc(sizeof *ret);
+	ret->type = type;
+	ret->label = i;
+}
+
+initializer_t * makeInitializer(){
+	initializer_t * ret = malloc(sizeof *ret);
+	ret->length = 0;
+	ret->values = NULL;
+	
+	return ret;
+}
+
+void growInitializeri(initializer_t * iz, initializer_t * i){
+	iz->length++;
+	iz->values = realloc(iz->values, iz->length * sizeof *iz->values);
+	iz->values[iz->length - 1].type = 0;
+	iz->values[iz->length - 1].iz = i;
+}
+
+void growInitializera(initializer_t * iz, expression_t * ae){
+	iz->length++;
+	iz->values = realloc(iz->values, iz->length * sizeof *iz->values);
+	iz->values[iz->length - 1].type = 1;
+	iz->values[iz->length - 1].ae = ae;
+}
+
+identlist_t * makeIdentlist(){
+	identlist_t * ret = malloc(sizeof *ret);
+	ret->length = 0;
+	ret->idents = NULL;
+}
+
+void growIdentlist(identlist_t * il, constant_t * i){
+	il->length++;
+	il->idents = realloc(il->idents, il->length * sizeof *il->idents);
+	il->idents[il->length - 1] = i;
+}
+
+void mergeTypeTs(type_t * out, type_t * in){
+	out->storeAuto |= in->storeAuto;
+	out->storeStatic |= in->storeStatic;
+	out->storeRegister |= in->storeRegister;
+	out->storeExtern |= in->storeExtern;
+	
+	out->qualConst |= in->qualConst;
+	out->qualVolatile |= in->qualVolatile;
+	
+	out->signedness |= in->signedness;
+	out->longness = in->longness;
+	out->type = in->type;
+}
+
 void printExpression(const expression_t * exp, size_t level){
 	size_t i, j;
 	if(!exp) return;
@@ -210,6 +264,17 @@ void printStatement(const statement_t * s){
 			printStatement(s->fors->body);
 		break;
 	}
+}
+
+void printInitializer(initializer_t * iz){
+	size_t i;
+	putchar('{');
+	for(i = 0; i < iz->length; i++){
+		if(iz->values[i].type) printExpression(iz->values[i].ae, 0);
+		else printInitializer(iz->values[i].iz);
+		if(i < iz->length - 1) puts(", ");
+	}
+	putchar('}');
 }
 
 /*
