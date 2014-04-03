@@ -10,11 +10,12 @@
 	#include "parser.h"
 }
 
-%token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, 
-	DOUBLE, ELSE, ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, 
-	RETURN, SHORT, SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, 
-	UNSIGNED, VOID, VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, 
-	ASSIGN, COMPARE, ARIT_OP, INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, SHIFT, INCLUDE, CHARACTER, FLOATCONST, INTCONST, PRINT, INPUT, EXP;
+%token AUTO, BREAK, CASE, CHAR, CONST, CONTINUE, DEFAULT, DO, DOUBLE, ELSE, 
+	ENUM, EXTERN, FLOAT, FOR, GOTO, IF, INT, LONG, REGISTER, RETURN, SHORT, 
+	SIGNED, SIZEOF, STATIC, STRUCT, SWITCH, TYPEDEF, UNION, UNSIGNED, VOID, 
+	VOLATILE, WHILE, CONSTANT, STRING, ELLIPSIS, ASSIGN, COMPARE, ARIT_OP, 
+	INC_OP, DEC_OP, PTR_OP, LOGICAL_OR, LOGICAL_AND, IDENTIFIER, SHIFT, 
+	INCLUDE, CHARACTER, FLOATCONST, INTCONST, PRINT, INPUT, EXP;
 
 /* Rules: heavily modified, based on the official grammar as found in K&R ANSI-C second edition (§A13). */
 translation_unit
@@ -31,28 +32,28 @@ function_definition
 	;
 	
 declaration
-	: declaration_specifiers ( init_declarator_list )? ';'
+	: declaration_specifiers ( init_declarator_list )? ';' { fprintf(stderr, "Declarate!\n"); }
 	;
 	
 declaration_list
-	: declaration ( declaration )*
+	: ( declaration )* declaration
 	;
 	
 declaration_specifiers
-	: ( storage_class_specifier | type_specifier | type_qualifier )*
+	: ( storage_class_specifier | type_specifier | type_qualifier ) ( declaration_specifiers )?
 	;
 
 storage_class_specifier
-	: ( AUTO
+	: AUTO
 	| REGISTER
 	| STATIC
 	| EXTERN
-	| TYPEDEF )
+	| TYPEDEF
 	;
 
 /*typedef-name replaced with 'id' */
 type_specifier
-	: ( VOID
+	: VOID
 	| CHAR
 	| SHORT
 	| INT
@@ -60,9 +61,10 @@ type_specifier
 	| FLOAT
 	| DOUBLE
 	| SIGNED
-	| UNSIGNED )
-	| struct_or_union_specifier | enum_specifier
-	| id<i> {}
+	| UNSIGNED
+	| struct_or_union_specifier 
+	| enum_specifier
+/*	| id<i> { fprintf(stderr, "Type-specifier/id: "); printConstant(i); fputc('\n', stderr); } */
 	;
 	
 type_qualifier
@@ -186,14 +188,14 @@ typedef_name
 	;
 	
 statement
-	: labeled_statement
-	| expression_statement
-	| compound_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
-	| print_statement
-	| input_statement
+	: labeled_statement { fprintf(stderr, "Label!\n"); }
+	| expression_statement { fprintf(stderr, "Express!\n"); }
+	| compound_statement { fprintf(stderr, "Confound!\n"); }
+	| selection_statement { fprintf(stderr, "Select!\n"); }
+	| iteration_statement { fprintf(stderr, "Iterate!\n"); }
+	| jump_statement { fprintf(stderr, "Jump!\n"); }
+	| print_statement { fprintf(stderr, "Print!\n"); }
+	| input_statement { fprintf(stderr, "Input!\n"); }
 	;
 	
 labeled_statement
@@ -351,7 +353,7 @@ postfix_expression<%out expression_pt ret>
 primary_expression<%out expression_pt ret>
 	: id<i> { *ret = makeExpression(0, 1, 0, i); }
 	| constant<c> { *ret = makeExpression(0, 1, 0, c); }
-	| '(' expression<e> { *ret = e; } ')'
+	| '(' expression<e> ')' { *ret = e; }
 	;
 	
 argument_expression_list<%out expression_pt ret>

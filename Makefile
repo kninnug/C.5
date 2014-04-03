@@ -27,8 +27,8 @@ ass3.yy.c: ass3.flex yygrammar.c
 yygrammar.c: ass2.acc ass3.acc
 	$(ACCENTDIR)/accent/accent ass2.acc
 	$(ACCENTDIR)/accent/accent ass3.acc
-	echo "#ifndef YYGRAMMAR_H\n#define YYGRAMMAR_H\n"|cat - yygrammar.h > /tmp/out && mv /tmp/out yygrammar.h
-	echo "\n#endif\n" >> yygrammar.h
+#	echo '#ifndef YYGRAMMAR_H\n#define YYGRAMMAR_H\n' | cat - yygrammar.h > /tmp/out && mv /tmp/out yygrammar.h
+#	echo '\n#endif\n' >> yygrammar.h
 
 yygrammar.o: yygrammar.c
 	gcc $(OPTIONS) $(MINGWHACKS) -c yygrammar.c
