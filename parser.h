@@ -166,6 +166,7 @@ switchstatement_t * makeSwitchStmt(expression_t * cond, statement_t * body);
 whilestatement_t * makeWhileStmt(expression_t * cond, statement_t * body);
 forstatement_t * makeForStmt();
 gotostatement_t * makeGotoStmt(int type, constant_t * i);
+returnstatement_t * makeReturnStmt();
 
 size_t growCompStmt(compstatement_t * cs, statement_t * s);
 

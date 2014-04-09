@@ -179,7 +179,7 @@ jump_statement<%out statement_pt js>
 	( GOTO id<i> ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(0, i); } /* warning: labels & GOTO's make Dijkstra angry! */
 	| CONTINUE ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(0, NULL); }
 	| BREAK ';' { (*js)->type = 'g'; (*js)->gotos = makeGotoStmt(1, NULL); }
-	| RETURN ( expression<e> { printExpression(e, 0); } )? ';'
+	| { (*js)->type = 'r'; (*js)->returns = makeReturnStmt(); } RETURN ( expression<e> { printExpression(e, 0); (*js)->returns->value = e; } )? ';'
 	) ;
 
 print_statement

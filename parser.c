@@ -185,6 +185,13 @@ void mergeTypeTs(type_t * out, type_t * in){
 	out->type = in->type;
 }
 
+returnstatement_t * makeReturnStmt(){
+	returnstatement_t * ret = malloc(sizeof *ret);
+	ret->value = NULL;
+	
+	return ret;
+}
+
 void printExpression(const expression_t * exp, size_t level){
 	size_t i, j;
 	if(!exp) return;
@@ -262,6 +269,14 @@ void printStatement(const statement_t * s){
 			if(s->fors->exp1) printExpression(s->fors->exp3, 0);
 			puts(")");
 			printStatement(s->fors->body);
+		break;
+		case 'r':
+			puts("return");
+			if(s->returns->value != NULL){
+				putchar(' ');
+				printExpression(s->returns->value, 0);
+			}
+			puts(";\n");
 		break;
 	}
 }
